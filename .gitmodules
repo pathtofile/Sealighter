@@ -1,0 +1,4 @@
+[submodule "krabsetw"]
+	path = krabsetw
+	url = git@github.com:pathtofile/krabsetw.git
+	branch = fix/NativeAddAdditionalIncludeDir
