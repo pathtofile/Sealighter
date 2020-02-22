@@ -2,3 +2,6 @@
 	path = krabsetw
 	url = git@github.com:pathtofile/krabsetw.git
 	branch = fix/NativeAddAdditionalIncludeDir
+[submodule "json"]
+	path = json
+	url = https://github.com/nlohmann/json.git

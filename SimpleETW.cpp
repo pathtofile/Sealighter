@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include "jsonHandler.h"
 #include "krabs.hpp"
 
 krabs::user_trace SIMPLEETW_TRACE(L"SimpleETW");
@@ -47,6 +48,7 @@ BOOL WINAPI CtrlCHandler(DWORD fdwCtrlType)
 
 int main()
 {
+    return jsonTest();
 
     if (!SetConsoleCtrlHandler(CtrlCHandler, TRUE))
     {
