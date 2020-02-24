@@ -1,5 +1,5 @@
 .vs/
-Debug/
 x64/
 packages/
+emon/x64
 *.vcxproj.user

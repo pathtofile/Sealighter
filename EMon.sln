@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EMon", "EMon.vcxproj", "{6624B356-3AA7-4A88-BDFC-B525697ECB38}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EMon", "emon\EMon.vcxproj", "{6624B356-3AA7-4A88-BDFC-B525697ECB38}"
 	ProjectSection(ProjectDependencies) = postProject
 		{ED4E6027-541F-440A-A5EE-15DBB7B89423} = {ED4E6027-541F-440A-A5EE-15DBB7B89423}
 	EndProjectSection
