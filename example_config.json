@@ -1,0 +1,73 @@
+{
+    "session_properties": {
+        "session_name": "EMon",
+        "buffer_size": 256,
+        "minimum_buffers": 12,
+        "maximum_buffers": 48,
+        "flush_timer": 1
+    },
+    "providers": [
+        {
+            "name": "Microsoft-Windows-Kernel-Process",
+            "keywords_any": 16,
+            "ZZZZ_keywords_all": 0,
+            "ZZZZ_level": 1,
+            "ZZZZ_trace_flags": 0,
+            "filters": [
+                {
+                    "id_is": 1
+                },
+                {
+                    "id_is": 2
+                }
+            ],
+            "ZZZZ_filters": [
+                {
+                    "id_is": 7937,
+                    "opcode_id": 0,
+                    "process_id_is": 0,
+                    "version_id": 0,
+                    "property_is": {
+                        "name": "AAAA",
+                        "value": "BBBB"
+                    },
+                    "property_contains": {
+                        "name": "AAAA",
+                        "value": "BBBB"
+                    },
+                    "property_ends_with": {
+                        "name": "AAAA",
+                        "value": "BBBB"
+                    },
+                    "property_equals": {
+                        "name": "AAAA",
+                        "value": "BBBB"
+                    },
+                    "property_icontains": {
+                        "name": "AAAA",
+                        "value": "BBBB"
+                    },
+                    "property_iends_with": {
+                        "name": "AAAA",
+                        "value": "BBBB"
+                    },
+                    "property_iequals": {
+                        "name": "AAAA",
+                        "value": "BBBB"
+                    },
+                    "property_istarts_with": {
+                        "name": "AAAA",
+                        "value": "BBBB"
+                    },
+                    "property_starts_with": {
+                        "name": "AAAA",
+                        "value": "BBBB"
+                    },
+                    "filter_not": {
+                        "id_is": 7937
+                    }
+                }
+            ]
+        }
+    ]
+}
