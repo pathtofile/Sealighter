@@ -16,7 +16,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>SimpleETW</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>EMon</ProjectName>
+    <ProjectName>eMon</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -88,23 +88,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="etw_handler.cpp" />
-    <ClCompile Include="json_handler.cpp" />
+    <ClCompile Include="output_logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="krabsetw\Microsoft.O365.Security.Native.ETW\Microsoft.O365.Security.Native.ETW.vcxproj">
+    <ProjectReference Include="..\krabsetw\Microsoft.O365.Security.Native.ETW\Microsoft.O365.Security.Native.ETW.vcxproj">
       <Project>{ed4e6027-541f-440a-a5ee-15dbb7b89423}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="etw_handler.h" />
-    <ClInclude Include="json_handler.h" />
+    <ClInclude Include="output_logger.h" />
     <ClInclude Include="json\single_include\nlohmann\json.hpp" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="example_config.json" />
+    <None Include="..\example_config.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

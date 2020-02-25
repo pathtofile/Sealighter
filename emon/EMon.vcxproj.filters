@@ -24,10 +24,10 @@
     <ClCompile Include="etw_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="json_handler.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="output_logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,15 +38,15 @@
     <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="json_handler.h">
+    <ClInclude Include="etw_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="etw_handler.h">
+    <ClInclude Include="output_logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="example_config.json">
+    <None Include="..\example_config.json">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

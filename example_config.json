@@ -1,5 +1,6 @@
 {
     "session_properties": {
+        "output_format": "all",
         "session_name": "EMon",
         "buffer_size": 256,
         "minimum_buffers": 12,
@@ -10,10 +11,15 @@
         {
             "name": "Microsoft-Windows-Kernel-Process",
             "keywords_any": 16,
-            "ZZZZ_keywords_all": 0,
-            "ZZZZ_level": 1,
-            "ZZZZ_trace_flags": 0,
             "filters": [
+                {
+                    "property_icontains": {
+                        "name": "ImageName",
+                        "value": "cmd.exe"
+                    }
+                }
+            ],
+            "ZZZZ2_filters": [
                 {
                     "id_is": 1
                 },
@@ -21,12 +27,15 @@
                     "id_is": 2
                 }
             ],
+            "ZZZZ_keywords_all": 0,
+            "ZZZZ_level": 1,
+            "ZZZZ_trace_flags": 0,
             "ZZZZ_filters": [
                 {
                     "id_is": 7937,
-                    "opcode_id": 0,
+                    "opcode_is": 0,
                     "process_id_is": 0,
-                    "version_id": 0,
+                    "version_is": 0,
                     "property_is": {
                         "name": "AAAA",
                         "value": "BBBB"

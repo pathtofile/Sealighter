@@ -1,6 +1,13 @@
 #pragma once
 #include "etw_handler.h"
 
+enum output_formats
+{
+    output_stdout,
+    output_event_log,
+    output_all
+};
+
 
 std::string convert_wstr_str
 (
