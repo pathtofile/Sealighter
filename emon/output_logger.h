@@ -6,6 +6,6 @@
 
 void log_event
 (
-    output_formats  output_format,
-    std::string     eventString
+    Output_format  output_format,
+    std::string    eventString
 );

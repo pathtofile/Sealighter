@@ -2,18 +2,15 @@
 
 void log_event
 (
-    output_formats  output_format,
+    Output_format  output_format,
     std::string     eventString
 )
 {
-    if (output_format == output_all || output_stdout)
-    {
-        printf("%s\n", eventString.c_str());
-        printf("--------------------\n");
+    if (Output_format::output_all  == output_format || Output_format::output_stdout == output_format) {
+        threaded_println(eventString.c_str());
     }
 
-    if (output_format == output_all || output_event_log)
-    {
-
+    if (Output_format::output_all == output_format || Output_format::output_event_log == output_format) {
+        // TODO: Log to event log
     }
 }

@@ -1,79 +1,37 @@
 {
     "session_properties": {
         "output_format": "all",
-        "session_name": "EMon",
+        "session_name": "EMON-Trace",
         "buffer_size": 256,
         "minimum_buffers": 12,
         "maximum_buffers": 48,
-        "flush_timer": 1
+        "flush_timer": 1,
+        "event_count_max": 100
     },
-    "providers": [
+    "user_providers": [
+        {
+            "name": "Microsoft-Windows-Kernel-Process"
+        }
+    ],
+    "ZZZZkernel_providers": [
+        {
+            "name": "process"
+        }
+    ],
+    "ZZuser_providers": [
         {
             "name": "Microsoft-Windows-Kernel-Process",
-            "keywords_any": 16,
+            "keywords_any": 16
+        }
+    ],
+    "ZZkernel_providers": [
+        {
+            "name": "process",
             "filters": [
                 {
                     "property_icontains": {
-                        "name": "ImageName",
-                        "value": "cmd.exe"
-                    }
-                }
-            ],
-            "ZZZZ2_filters": [
-                {
-                    "id_is": 1
-                },
-                {
-                    "id_is": 2
-                }
-            ],
-            "ZZZZ_keywords_all": 0,
-            "ZZZZ_level": 1,
-            "ZZZZ_trace_flags": 0,
-            "ZZZZ_filters": [
-                {
-                    "id_is": 7937,
-                    "opcode_is": 0,
-                    "process_id_is": 0,
-                    "version_is": 0,
-                    "property_is": {
-                        "name": "AAAA",
-                        "value": "BBBB"
-                    },
-                    "property_contains": {
-                        "name": "AAAA",
-                        "value": "BBBB"
-                    },
-                    "property_ends_with": {
-                        "name": "AAAA",
-                        "value": "BBBB"
-                    },
-                    "property_equals": {
-                        "name": "AAAA",
-                        "value": "BBBB"
-                    },
-                    "property_icontains": {
-                        "name": "AAAA",
-                        "value": "BBBB"
-                    },
-                    "property_iends_with": {
-                        "name": "AAAA",
-                        "value": "BBBB"
-                    },
-                    "property_iequals": {
-                        "name": "AAAA",
-                        "value": "BBBB"
-                    },
-                    "property_istarts_with": {
-                        "name": "AAAA",
-                        "value": "BBBB"
-                    },
-                    "property_starts_with": {
-                        "name": "AAAA",
-                        "value": "BBBB"
-                    },
-                    "filter_not": {
-                        "id_is": 7937
+                        "name": "CommandLine",
+                        "value": "notepad"
                     }
                 }
             ]

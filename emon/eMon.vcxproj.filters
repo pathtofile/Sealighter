@@ -32,9 +32,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="json\single_include\nlohmann\json.hpp">
-      <Filter>ExternalHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -43,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="output_logger.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\json\single_include\nlohmann\json.hpp">
+      <Filter>ExternalHeaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

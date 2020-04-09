@@ -1,4 +1,3 @@
-// EMon.cpp
 #include "etw_handler.h"
 #include <iostream>
 
@@ -23,18 +22,20 @@ int main
 )
 {
     int ret = 0;
-    if (argc != 2)
-    {
+    if (2 != argc) {
         printf("Usage: %s <config_file>\n", argv[0]);
         return 1;
     }
-    if (!SetConsoleCtrlHandler(crl_c_handler, TRUE))
-    {
+
+    if (!SetConsoleCtrlHandler(crl_c_handler, TRUE)) {
         printf("Failed to set ctrl-C handler\n");
         return 2;
     }
 
     ret = trace_start(argv[1]);
+    if (0 != ret) {
+        printf("ERROR %d\n", ret);
+    }
 
     return ret;
 }

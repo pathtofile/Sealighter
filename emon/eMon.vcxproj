@@ -98,9 +98,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\json\single_include\nlohmann\json.hpp" />
     <ClInclude Include="etw_handler.h" />
     <ClInclude Include="output_logger.h" />
-    <ClInclude Include="json\single_include\nlohmann\json.hpp" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
