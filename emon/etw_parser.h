@@ -12,14 +12,6 @@ using namespace krabs;
 
 void handleEvent
 (
-    const EVENT_RECORD&     record,
-    const trace_context&    trace_context
+    const EVENT_RECORD& record,
+    const trace_context& trace_context
 );
-
-DWORD trace_start
-(
-    std::string config_path
-);
-
-
-void trace_stop( );

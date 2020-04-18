@@ -1,4 +1,5 @@
 #include "output_logger.h"
+#include "provider.h"
 
 void log_event
 (
@@ -11,6 +12,34 @@ void log_event
     }
 
     if (Output_format::output_all == output_format || Output_format::output_event_log == output_format) {
-        // TODO: Log to event log
+        DWORD status = 0;
+        status = EventWriteEMON_REPORT_EVENT(eventString.c_str());
+        if (status != ERROR_SUCCESS) {
+            printf("Error %ul line %d\n", status, __LINE__);
+            return;
+        }
     }
 }
+
+//void test_logging()
+//{
+//    DWORD status = 0;
+//    status = EventRegisterEMon();
+//    if (status != ERROR_SUCCESS) {
+//        printf("Error %ul line %d\n", status, __LINE__);
+//        return;
+//    }
+//
+//    const char* json_data = "{ \"a\": \"b\" }";
+//    status = EventWriteEMON_REPORT_EVENT(json_data);
+//    if (status != ERROR_SUCCESS) {
+//        printf("Error %ul line %d\n", status, __LINE__);
+//        return;
+//    }
+//
+//    status = EventUnregisterEMon();
+//    if (status != ERROR_SUCCESS) {
+//        printf("Error %ul line %d\n", status, __LINE__);
+//        return;
+//    }
+//}

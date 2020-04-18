@@ -9,3 +9,6 @@ void log_event
     Output_format  output_format,
     std::string    eventString
 );
+
+
+//void test_logging();

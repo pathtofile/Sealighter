@@ -1,13 +1,6 @@
 #pragma once
 #include "etw_handler.h"
 
-enum class Output_format
-{
-    output_stdout,
-    output_event_log,
-    output_all
-};
-
 struct cmp_wstr
 {
     bool operator()(const wchar_t* a, const wchar_t* b) const
@@ -15,6 +8,15 @@ struct cmp_wstr
         return std::wcscmp(a, b) < 0;
     }
 };
+
+enum class Output_format
+{
+    output_stdout,
+    output_event_log,
+    output_all
+};
+static Output_format           g_output_format = Output_format::output_stdout;
+
 
 void threaded_println(const char* to_print);
 
@@ -28,6 +30,11 @@ std::wstring convert_str_wstr(
 );
 
 std::string convert_bytes_filetimestring
+(
+    const std::vector<BYTE>& bytes
+);
+
+std::string convert_bytes_systemtimestring
 (
     const std::vector<BYTE>& bytes
 );

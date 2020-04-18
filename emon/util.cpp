@@ -28,15 +28,6 @@ std::wstring convert_str_wstr
     return to;
 }
 
-std::string convert_bytes_filetimestring
-(
-    const std::vector<BYTE>& bytes
-)
-{
-    // TODO: Convert FILETIMES
-    return convert_bytes_hexstring(bytes);
-}
-
 std::string convert_guid_str
 (
     const GUID& in_guid
@@ -52,6 +43,24 @@ std::string convert_guid_str
         in_guid.Data4[6], in_guid.Data4[7]);
     
     return std::string(guid_string);
+}
+
+std::string convert_bytes_systemtimestring
+(
+    const std::vector<BYTE>& bytes
+)
+{
+    // TODO: Convert SYSTEMTIMEs
+    // Could call "SystemTimeToFileTime" first then use that function
+    return convert_bytes_hexstring(bytes);
+}
+std::string convert_bytes_filetimestring
+(
+    const std::vector<BYTE>& bytes
+)
+{
+    // TODO: Convert FILETIMEs
+    return convert_bytes_hexstring(bytes);
 }
 
 std::string convert_bytes_sidstring
@@ -73,10 +82,7 @@ std::string convert_bytes_hexstring
     for (int c : bytes) {
         ss << std::setw(2) << c;
     }
-
-    std::string ret = ss.str();
-
-    return ret;
+    return ss.str();
 }
 
 int convert_bytes_int
