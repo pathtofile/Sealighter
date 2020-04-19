@@ -5,45 +5,6 @@
 
 using json = nlohmann::json;
 
-bool should_report_event
-(
-    krabs::schema           schema
-)
-{
-    UNREFERENCED_PARAMETER(schema);
-    //// If limiting the number of unique events, check that first
-    //if (0 != g_max_events) {
-    //    const wchar_t* provider_name = schema.provider_name();
-    //    // Use a combination of the opcode and event_id for a unique Id
-    //    // OPCODEs are USHORTS, 
-    //    UINT32 check_id = (schema.event_opcode() << 16) | schema.event_id();
-
-    //    auto provider_i = g_max_events_map.find(provider_name);
-    //    if (provider_i == g_max_events_map.end()) {
-    //        // Add to dictionary
-    //        std::map<UINT32, UINT32> provider_map;
-    //        provider_map[check_id] = 1;
-    //        g_max_events_map[provider_name] = provider_map;
-    //    }
-    //    else {
-    //        auto event_i = provider_i->second.find(check_id);
-    //        if (event_i == provider_i->second.end()) {
-    //            // Add to dictionary
-    //            provider_i->second[check_id] = 1;
-    //        }
-    //        else if (event_i->second < g_max_events) {
-    //            // Increment but report
-    //            event_i->second++;
-    //        }
-    //        else {
-    //            // Over reporting limit, ignore
-    //            return false;
-    //        }
-    //    }
-    //}
-    return true;
-}
-
 std::string parse_event_to_json
 (
     krabs::schema           schema,

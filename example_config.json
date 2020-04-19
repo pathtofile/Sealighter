@@ -1,40 +1,56 @@
 {
     "session_properties": {
-        "output_format": "all",
-        "session_name": "EMON-Trace",
+        "output_format": "stdout",
+        "session_name": "EMon-Trace",
         "buffer_size": 256,
         "minimum_buffers": 12,
         "maximum_buffers": 48,
-        "flush_timer": 1,
-        "event_count_max": 100
+        "flush_timer": 1
     },
-    "user_providers": [
-        {
-            "name": "Microsoft-Windows-Kernel-Process"
-        }
-    ],
-    "ZZZZkernel_providers": [
-        {
-            "name": "process"
-        }
-    ],
-    "ZZuser_providers": [
-        {
-            "name": "Microsoft-Windows-Kernel-Process",
-            "keywords_any": 16
-        }
-    ],
-    "ZZkernel_providers": [
+    "kernel_providers": [
         {
             "name": "process",
-            "filters": [
-                {
-                    "property_icontains": {
-                        "name": "CommandLine",
-                        "value": "notepad"
+            "filters": {
+                "all_of": {
+                    "any_field_contains": "notepad"
+                }
+            }
+        }
+
+    ],
+        "ZZZuser_providers":
+        [
+            {
+                "name": "Microsoft-Windows-Kernel-Process",
+                "keywords_any": 16,
+                "filters": {
+                    "ZZZany_of": {
+                        "id_is": [ 1, 2 ],
+                        "opcode_is": 1
+                    },
+                    "any_of": {
+                        "ZZZid_is_max": [
+                            {
+                                "id_is": 1,
+                                "max_events_total": 1
+                            }
+                        ],
+                        "ZZZmax_events": 3,
+                        "any_field_contains": "notepad.exe",
+                        "ZZZZany_field_contains": [
+                            {
+                                "name": "ImageName",
+                                "value": "notepad.exe",
+                                "type": "STRINGA"
+                            },
+                            {
+                                "name": "ImageName",
+                                "value": "notepad.exe",
+                                "type": "STRINGW"
+                            }
+                        ]
                     }
                 }
-            ]
-        }
-    ]
+            }
+        ]
 }

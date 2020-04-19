@@ -41,154 +41,271 @@ void add_predicate_filter
     pNew_provider->add_filter(filter);
 }
 
+template <typename TPred, typename TJson1, typename TJson2>
+void add_value_to_vector_2
+(
+    json root,
+    std::string item1_name,
+    std::string item2_name,
+    std::vector<std::shared_ptr<predicates::details::predicate_base>>& pred_vector
+)
+{
+    std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
+    if (!root.is_null()) {
+        if (root.is_array()) {
+            for (json item : root) {
+                if (!item[item1_name].is_null() && !item[item2_name].is_null()) {
+                    TJson1 item1 = item[item1_name].get<TJson1>();
+                    TJson2 item2 = item[item2_name].get<TJson2>();
+                    list.emplace_back(std::shared_ptr<TPred>(new TPred(item1, item2)));
+                }
+            }
+            if (!list.empty()) {
+                pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
+            }
+        }
+        else {
+            if (!root[item1_name].is_null() && !root[item2_name].is_null()) {
+                TJson1 item1 = root[item1_name].get<TJson1>();
+                TJson2 item2 = root[item2_name].get<TJson2>();
+                pred_vector.emplace_back(std::shared_ptr<TPred>(new TPred(item1, item2)));
+            }
+        }
+    }
+}
+
+template <typename TPred, typename TJson1>
+void add_value_to_vector_1
+(
+    json root,
+    std::vector<std::shared_ptr<predicates::details::predicate_base>>& pred_vector
+)
+{
+    std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
+    if (!root.is_null()) {
+        if (root.is_array()) {
+            for (json item : root) {
+                list.emplace_back(std::shared_ptr<TPred>(new TPred(item.get<TJson1>())));
+            }
+            if (!list.empty()) {
+                pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
+            }
+        }
+        else {
+            pred_vector.emplace_back(std::shared_ptr<TPred>(new TPred(root.get<TJson1>())));
+        }
+    }
+}
+
+void add_property_is_to_vector_item
+(
+    json item,
+    std::vector<std::shared_ptr<predicates::details::predicate_base>>& list
+)
+{
+    if (!item["name"].is_null() && !item["value"].is_null() && !item["type"].is_null()) {
+        std::wstring name = convert_str_wstr(item["name"].get<std::string>());
+        std::string type = item["type"].get<std::string>();
+        if (type == "STRINGA") {
+            auto val = item["value"].get<std::string>();
+            list.emplace_back(std::shared_ptr<emon_property_is<std::string>>(new emon_property_is<std::string>(name, val)));
+        }
+        else if (type == "STRINGW") {
+            auto val = convert_str_wstr(item["value"].get<std::string>());
+            list.emplace_back(std::shared_ptr<emon_property_is<std::wstring>>(new emon_property_is<std::wstring>(name, val)));
+        }
+        else if (type == "INT8") {
+            auto val = item["value"].get<std::int8_t>();
+            list.emplace_back(std::shared_ptr<emon_property_is<std::int8_t>>(new emon_property_is<std::int8_t>(name, val)));
+        }
+        else if (type == "UINT8") {
+            auto val = item["value"].get<std::uint8_t>();
+            list.emplace_back(std::shared_ptr<emon_property_is<std::uint8_t>>(new emon_property_is<std::uint8_t>(name, val)));
+        }
+        else if (type == "INT16") {
+            auto val = item["value"].get<std::int16_t>();
+            list.emplace_back(std::shared_ptr<emon_property_is<std::int16_t>>(new emon_property_is<std::int16_t>(name, val)));
+        }
+        else if (type == "UINT16") {
+            auto val = item["value"].get<std::uint16_t>();
+            list.emplace_back(std::shared_ptr<emon_property_is<std::uint16_t>>(new emon_property_is<std::uint16_t>(name, val)));
+        }
+        else if (type == "INT32") {
+            auto val = item["value"].get<std::int32_t>();
+            list.emplace_back(std::shared_ptr<emon_property_is<std::int32_t>>(new emon_property_is<std::int32_t>(name, val)));
+        }
+        else if (type == "UINT32") {
+            auto val = item["value"].get<std::uint32_t>();
+            list.emplace_back(std::shared_ptr<emon_property_is<std::uint32_t>>(new emon_property_is<std::uint32_t>(name, val)));
+        }
+        else if (type == "INT64") {
+            auto val = item["value"].get<std::int64_t>();
+            list.emplace_back(std::shared_ptr<emon_property_is<std::int64_t>>(new emon_property_is<std::int64_t>(name, val)));
+        }
+        else if (type == "UINT64") {
+            auto val = item["value"].get<std::uint64_t>();
+            list.emplace_back(std::shared_ptr<emon_property_is<std::uint64_t>>(new emon_property_is<std::uint64_t>(name, val)));
+        }
+    }
+}
+
+void add_property_is_to_vector
+(
+    json root,
+    std::vector<std::shared_ptr<predicates::details::predicate_base>>& pred_vector
+)
+{
+    std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
+    if (!root.is_null()) {
+        if (root.is_array()) {
+            for (json item : root) {
+                add_property_is_to_vector_item(item, list);
+            }
+            if (!list.empty()) {
+                pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
+            }
+        }
+        else {
+            add_property_is_to_vector_item(root, pred_vector);
+        }
+    }
+}
+
+template <typename ComparerA, typename ComparerW>
+void add_property_to_vector_item
+(
+    json item,
+    std::vector<std::shared_ptr<predicates::details::predicate_base>>& list
+)
+{
+    if (!item["name"].is_null() && !item["value"].is_null() && !item["type"].is_null()) {
+        std::wstring name = convert_str_wstr(item["name"].get<std::string>());
+        std::string type = item["type"].get<std::string>();
+        if (type == "STRINGA") {
+            std::string val = item["value"].get<std::string>();
+            auto pred = std::shared_ptr<
+                krabs::predicates::details::property_view_predicate<
+                    std::string,
+                    krabs::predicates::adapters::generic_string<char>,
+                    ComparerA
+                >
+            >(new krabs::predicates::details::property_view_predicate<
+                    std::string,
+                    krabs::predicates::adapters::generic_string<char>,
+                    ComparerA
+            >(
+                name,
+                val,
+                krabs::predicates::adapters::generic_string<char>(),
+                ComparerA()
+            ));
+            list.emplace_back(pred);
+        }
+        else if (type == "STRINGW") {
+            std::wstring val = convert_str_wstr(item["value"].get<std::string>());
+
+            auto pred = std::shared_ptr<
+                krabs::predicates::details::property_view_predicate<
+                std::wstring,
+                krabs::predicates::adapters::generic_string<wchar_t>,
+                ComparerW
+                >
+            >(new krabs::predicates::details::property_view_predicate<
+                std::wstring,
+                krabs::predicates::adapters::generic_string<wchar_t>,
+                ComparerW
+            >(
+                name,
+                val,
+                krabs::predicates::adapters::generic_string<wchar_t>(),
+                ComparerW()
+            ));
+            list.emplace_back(pred);
+        }
+    }
+}
+
+template <typename ComparerA, typename ComparerW>
+void add_property_to_vector
+(
+    json root,
+    std::vector<std::shared_ptr<predicates::details::predicate_base>>& pred_vector
+)
+{
+    std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
+    if (!root.is_null()) {
+        if (root.is_array()) {
+            for (json item : root) {
+                add_property_to_vector_item<ComparerA, ComparerW>(item, list);
+            }
+            if (!list.empty()) {
+                pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
+            }
+        }
+        else {
+            add_property_to_vector_item<ComparerA, ComparerW>(root, pred_vector);
+        }
+    }
+}
 
 void add_filters_to_vector(std::vector<std::shared_ptr<predicates::details::predicate_base>>& pred_vector, json json_list)
 {
     // Add any of the header filters
     std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
+    
+    // Add the basic single-value filters
+    add_value_to_vector_1<predicates::id_is, std::uint64_t>(json_list["id_is"], pred_vector);
+    add_value_to_vector_1<predicates::opcode_is, std::uint64_t>(json_list["opcode_is"], pred_vector);
+    add_value_to_vector_1<predicates::process_id_is, std::uint64_t>(json_list["process_id_is"], pred_vector);
+    add_value_to_vector_1<predicates::version_is, std::uint64_t>(json_list["version_is"], pred_vector);
 
-    // ID_IS
-    if (!json_list["id_is"].is_null()) {
-        for (json item : json_list["id_is"]) {
-            list.emplace_back(std::shared_ptr<predicates::id_is>(new predicates::id_is(item.get<std::uint64_t>())));
-        }
-        pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
-        list.clear();
-    }
+    // Add all the property filters
+    add_property_is_to_vector(json_list["property_is"], pred_vector);
 
-    // OPCODE_IS
-    if (!json_list["opcode_is"].is_null()) {
-        for (json item : json_list["opcode_is"]) {
-            list.emplace_back(std::shared_ptr<predicates::opcode_is>(new predicates::opcode_is(item.get<std::uint64_t>())));
-        }
-        pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
-        list.clear();
-    }
+    add_property_to_vector<
+        krabs::predicates::comparers::equals<std::equal_to<krabs::predicates::adapters::generic_string<char>::value_type>>,
+        krabs::predicates::comparers::equals<std::equal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>
+    >(json_list["property_equals"], pred_vector);
 
-    // PROCESS_ID_IS
-    if (!json_list["process_id_is"].is_null()) {
-        for (json item : json_list["process_id_is"]) {
-            list.emplace_back(std::shared_ptr<predicates::process_id_is>(new predicates::process_id_is(item.get<std::uint64_t>())));
-        }
-        pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
-        list.clear();
-    }
+    add_property_to_vector<
+        krabs::predicates::comparers::equals<iequal_to<krabs::predicates::adapters::generic_string<char>::value_type>>,
+        krabs::predicates::comparers::equals<iequal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>
+    >(json_list["property_iequals"], pred_vector);
 
-    // VERSION_IS
-    if (!json_list["version_is"].is_null()) {
-        for (json item : json_list["version_is"]) {
-            list.emplace_back(std::shared_ptr<predicates::version_is>(new predicates::version_is(item.get<std::uint64_t>())));
-        }
-        pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
-        list.clear();
-    }
+    add_property_to_vector<
+        krabs::predicates::comparers::contains<std::equal_to<krabs::predicates::adapters::generic_string<char>::value_type>>,
+        krabs::predicates::comparers::contains<std::equal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>
+    >(json_list["property_contains"], pred_vector);
 
-    // ID_IS_MAX
-    if (!json_list["id_is_max"].is_null()) {
-        for (json item : json_list["id_is_max"]) {
-            std::uint64_t id_is = item["id_is"].get<std::uint64_t>();
-            std::uint64_t max_events = item["max_events"].get<std::uint64_t>();
-            list.emplace_back(std::shared_ptr<emon_id_is_max>(new emon_id_is_max(id_is, max_events)));
-        }
-        pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
-        list.clear();
-    }
+    add_property_to_vector<
+        krabs::predicates::comparers::contains<iequal_to<krabs::predicates::adapters::generic_string<char>::value_type>>,
+        krabs::predicates::comparers::contains<iequal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>
+    >(json_list["property_icontains"], pred_vector);
 
-    // MAX_EVENTS
-    if (!json_list["max_events"].is_null()) {
-        // This isn't an array
-        std::uint64_t max_events = json_list["max_events"].get<std::uint64_t>();
-        pred_vector.emplace_back(std::shared_ptr<emon_max_events>(new emon_max_events(max_events)));
-    }
+    add_property_to_vector<
+        krabs::predicates::comparers::starts_with<std::equal_to<krabs::predicates::adapters::generic_string<char>::value_type>>,
+        krabs::predicates::comparers::starts_with<std::equal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>
+    >(json_list["property_starts_with"], pred_vector);
 
-    // PROPERTY_IS
-    if (!json_list["property_is"].is_null()) {
-        for (json item : json_list["property_is"]) {
-            if (!item["name"].is_null() && !item["value"].is_null() && !item["type"].is_null()) {
-                std::wstring name = convert_str_wstr(item["name"].get<std::string>());
-                std::string type = item["type"].get<std::string>();
-                if (type == "STRINGA") {
-                    auto val = item["value"].get<std::string>();
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::string>>(new emon_property_is<std::string>(name, val)));
-                }
-                else if (type == "STRINGW") {
-                    auto val = convert_str_wstr(item["value"].get<std::string>());
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::wstring>>(new emon_property_is<std::wstring>(name, val)));
-                }
-                else if (type == "INT8") {
-                    auto val = item["value"].get<std::int8_t>();
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::int8_t>>(new emon_property_is<std::int8_t>(name, val)));
-                }
-                else if (type == "UINT8") {
-                    auto val = item["value"].get<std::uint8_t>();
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::uint8_t>>(new emon_property_is<std::uint8_t>(name, val)));
-                }
-                else if (type == "INT16") {
-                    auto val = item["value"].get<std::int8_t>();
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::int8_t>>(new emon_property_is<std::int8_t>(name, val)));
-                }
-                else if (type == "UINT16") {
-                    auto val = item["value"].get<std::uint16_t>();
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::uint16_t>>(new emon_property_is<std::uint16_t>(name, val)));
-                }
-                else if (type == "INT32") {
-                    auto val = item["value"].get<std::int8_t>();
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::int8_t>>(new emon_property_is<std::int8_t>(name, val)));
-                }
-                else if (type == "UINT32") {
-                    auto val = item["value"].get<std::uint32_t>();
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::uint32_t>>(new emon_property_is<std::uint32_t>(name, val)));
-                }
-                else if (type == "INT64") {
-                    auto val = item["value"].get<std::int8_t>();
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::int8_t>>(new emon_property_is<std::int8_t>(name, val)));
-                }
-                else if (type == "UINT64") {
-                    auto val = item["value"].get<std::uint64_t>();
-                    list.emplace_back(std::shared_ptr<emon_property_is<std::uint64_t>>(new emon_property_is<std::uint64_t>(name, val)));
-                }
-            }
-        }
-        pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
-        list.clear();
-    }
+    add_property_to_vector<
+        krabs::predicates::comparers::starts_with<iequal_to<krabs::predicates::adapters::generic_string<char>::value_type>>,
+        krabs::predicates::comparers::starts_with<iequal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>
+    >(json_list["property_istarts_with"], pred_vector);
 
-    // PROPERTY_ICONTAINS
-    if (!json_list["property_icontains"].is_null()) {
-        for (json item : json_list["property_icontains"]) {
-            if (!item["name"].is_null() && !item["value"].is_null() && !item["type"].is_null()) {
-                std::wstring name = convert_str_wstr(item["name"].get<std::string>());
-                std::string type = item["type"].get<std::string>();
-                if (type == "STRINGW") {
-                    std::wstring val = convert_str_wstr(item["value"].get<std::string>());
+    add_property_to_vector<
+        krabs::predicates::comparers::ends_with<std::equal_to<krabs::predicates::adapters::generic_string<char>::value_type>>,
+        krabs::predicates::comparers::ends_with<std::equal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>
+    >(json_list["property_starts_with"], pred_vector);
 
-                    auto pred = std::shared_ptr<krabs::predicates::details::property_view_predicate<std::wstring, krabs::predicates::adapters::generic_string<wchar_t>, krabs::predicates::comparers::contains<iequal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>>>(new krabs::predicates::details::property_view_predicate<std::wstring, krabs::predicates::adapters::generic_string<wchar_t>, krabs::predicates::comparers::contains<iequal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>>(
-                            name,
-                            val,
-                            krabs::predicates::adapters::generic_string<wchar_t>(),
-                            krabs::predicates::comparers::contains<
-                            iequal_to<
-                            krabs::predicates::adapters::generic_string<wchar_t>::value_type
-                            >>()));
-                    list.emplace_back(pred);
-                }
-                else if (type == "STRINGA") {
-                    auto val = item["value"].get<std::string>();    
-                    auto pred = std::shared_ptr<krabs::predicates::details::property_view_predicate<std::string, krabs::predicates::adapters::generic_string<char>, krabs::predicates::comparers::contains<iequal_to<krabs::predicates::adapters::generic_string<char>::value_type>>>>(new krabs::predicates::details::property_view_predicate<std::string, krabs::predicates::adapters::generic_string<char>, krabs::predicates::comparers::contains<iequal_to<krabs::predicates::adapters::generic_string<char>::value_type>>>(
-                        name,
-                        val,
-                        krabs::predicates::adapters::generic_string<char>(),
-                        krabs::predicates::comparers::contains<
-                        iequal_to<
-                        krabs::predicates::adapters::generic_string<char>::value_type
-                        >>()));
-                    list.emplace_back(pred);
-                }
-            }
-        }
-        pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
-        list.clear();
-    }
+    add_property_to_vector<
+        krabs::predicates::comparers::ends_with<iequal_to<krabs::predicates::adapters::generic_string<char>::value_type>>,
+        krabs::predicates::comparers::ends_with<iequal_to<krabs::predicates::adapters::generic_string<wchar_t>::value_type>>
+    >(json_list["property_istarts_with"], pred_vector);
+
+    // Add own own created Predicates
+    add_value_to_vector_1<emon_max_events_total, std::uint64_t>(json_list["max_events_total"], pred_vector);
+    add_value_to_vector_2<emon_max_events_id, std::uint64_t, std::uint64_t>(json_list["max_events_id"], "id_is", "max_events", pred_vector);
+    add_value_to_vector_1<emon_any_field_contains, std::string>(json_list["any_field_contains"], pred_vector);
 }
 
 template <typename T>
@@ -227,53 +344,6 @@ void add_filters
         krabs::event_filter filter(top_pred);
         filter.add_on_event_callback((c_provider_callback)&handleEvent);
         pNew_provider->add_filter(filter);
-        return;
-
-
-
-
-
-        //for (json json_filter : json_provider["filters"]) {
-        //    // Add any of the header filters
-        //    if (!json_filter["id_is"].is_null()) {
-        //        for (json json_filter_i: json_filter["id_is"]) {
-        //            add_predicate_filter(pNew_provider, predicates::id_is(json_filter_i.get<std::uint64_t>()));
-        //        }
-        //    }
-
-        //    if (!json_filter["opcode_is"].is_null()) {
-        //        for (json json_filter_i: json_filter["opcode_is"]) {
-        //            add_predicate_filter(pNew_provider,
-        //                predicates::opcode_is(json_filter_i.get<std::uint64_t>()));
-        //        }
-        //    }
-
-        //    if (!json_filter["process_id_is"].is_null()) {
-        //        for (json json_filter_i : json_filter["process_id_is"]) {
-        //            add_predicate_filter(pNew_provider,
-        //                predicates::process_id_is(json_filter_i.get<std::uint64_t>()));
-        //        }
-        //    }
-
-        //    if (!json_filter["version_is"].is_null()) {
-        //        for (json json_filter_i : json_filter["version_is"]) {
-        //            add_predicate_filter(pNew_provider,
-        //                predicates::version_is(json_filter_i.get<std::uint64_t>()));
-        //        }
-        //    }
-
-        //    // Add any of the property filters
-        //    // TODO: Macros is how I usually stop code repitition, but is there a better c++ way?
-        //    ADD_PROP_FILTER(pNew_provider, json_filter, "property_is", property_is);
-        //    ADD_PROP_FILTER(pNew_provider, json_filter, "property_contains", property_contains);
-        //    ADD_PROP_FILTER(pNew_provider, json_filter, "property_ends_with", property_ends_with);
-        //    ADD_PROP_FILTER(pNew_provider, json_filter, "property_equals", property_equals);
-        //    ADD_PROP_FILTER(pNew_provider, json_filter, "property_starts_with", property_starts_with);
-        //    ADD_PROP_FILTER(pNew_provider, json_filter, "property_icontains", property_icontains);
-        //    ADD_PROP_FILTER(pNew_provider, json_filter, "property_iends_with", property_iends_with);
-        //    ADD_PROP_FILTER(pNew_provider, json_filter, "property_iequals", property_iequals);
-        //    ADD_PROP_FILTER(pNew_provider, json_filter, "property_istarts_with", property_istarts_with);
-        //}
     }
 }
 

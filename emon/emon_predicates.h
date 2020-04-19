@@ -1,6 +1,7 @@
 #pragma once
 #include "krabs.hpp"
 #include <vector>
+#include <locale>
 
 /**
  * <summary>
@@ -77,8 +78,8 @@ private:
      But only until we see a maximum number of events.
  * </summary>
  */
-struct emon_id_is_max : krabs::predicates::details::predicate_base {
-    emon_id_is_max(size_t id_expected, UINT64 max_events)
+struct emon_max_events_id: krabs::predicates::details::predicate_base {
+    emon_max_events_id(uint64_t id_expected, uint64_t max_events)
         : id_expected_(USHORT(id_expected))
         , max_events_(max_events)
     {}
@@ -96,8 +97,8 @@ struct emon_id_is_max : krabs::predicates::details::predicate_base {
     }
 private:
     USHORT id_expected_;
-    UINT64 max_events_;
-    mutable UINT64 count_ = 0;
+    uint64_t max_events_;
+    mutable uint64_t count_ = 0;
 };
 
 /**
@@ -106,8 +107,8 @@ private:
      But only until we see a maximum number of events.
  * </summary>
  */
-struct emon_max_events : krabs::predicates::details::predicate_base {
-    emon_max_events(UINT64 max_events)
+struct emon_max_events_total : krabs::predicates::details::predicate_base {
+    emon_max_events_total(UINT64 max_events)
         : max_events_(max_events)
     {}
 
@@ -155,59 +156,106 @@ private:
     const T expected_;
 };
 
+
 /**
  * <summary>
- *   Gets a collection_view of a property using the specified adapter
- *   and executes the specified predicate against the view.
- *   This is used to provide type-specialization for properties
- *   that can be represented by the collection_view.
+ *   Accepts if 'to_find' is it the event at all, either in a property name,
+     Or in a STRINGA or STRINGW field
  * </summary>
  */
-template <typename T, typename Adapter, typename Predicate>
-struct emon_property_view_predicate : krabs::predicates::details::predicate_base
-{
-    emon_property_view_predicate(
-        const std::wstring& property,
-        const T& expected,
-        Adapter adapter,
-        Predicate predicate)
-        : property_(property)
-        , expected_(expected)
-        , adapter_(adapter)
-        , predicate_(predicate)
-    { }
+struct emon_any_field_contains : krabs::predicates::details::predicate_base {
+    emon_any_field_contains(std::string to_find)
+        : to_findW_(convert_str_wstr(boost::algorithm::to_lower_copy(to_find)))
+        , to_findA_(boost::algorithm::to_lower_copy(to_find))
+    {}
 
-    bool operator()(const EVENT_RECORD& record, const krabs::trace_context& trace_context) const
-    {
-        krabs::schema schema(record, trace_context.schema_locator);
+    bool operator()(const EVENT_RECORD& record, const krabs::trace_context& trace_context) const {
+        schema schema(record, trace_context.schema_locator);
         krabs::parser parser(schema);
 
-        try {
-            auto view = parser.view_of(property_, adapter_);
-            return predicate_(view.begin(), view.end(), expected_.begin(), expected_.end());
+        for (krabs::property& prop : parser.properties())
+        {
+            // First check the property name
+            if (boost::algorithm::to_lower_copy(prop.name()).find(to_findW_) != std::string::npos) {
+                return true;
+            };
+
+            switch (prop.type())
+            {
+                case TDH_INTYPE_ANSISTRING:
+                    if (boost::algorithm::to_lower_copy(parser.parse<std::string>(prop.name())).find(to_findA_) != std::string::npos) {
+                        return true;
+                    };
+                    break;
+                case TDH_INTYPE_UNICODESTRING:
+                    if (boost::algorithm::to_lower_copy(parser.parse<std::wstring>(prop.name())).find(to_findW_) != std::string::npos) {
+                        return true;
+                    };
+                    break;
+                // These *might* contains somethinf of use
+                // If we search the raw bytes
+                case TDH_INTYPE_MANIFEST_COUNTEDSTRING:
+                case TDH_INTYPE_MANIFEST_COUNTEDANSISTRING:
+                case TDH_INTYPE_RESERVED24:
+                case TDH_INTYPE_MANIFEST_COUNTEDBINARY:
+                case TDH_INTYPE_COUNTEDSTRING:
+                case TDH_INTYPE_COUNTEDANSISTRING:
+                case TDH_INTYPE_HEXINT32:
+                case TDH_INTYPE_HEXINT64:
+                case TDH_INTYPE_REVERSEDCOUNTEDSTRING:
+                case TDH_INTYPE_REVERSEDCOUNTEDANSISTRING:
+                case TDH_INTYPE_NONNULLTERMINATEDSTRING:
+                case TDH_INTYPE_NONNULLTERMINATEDANSISTRING:
+                case TDH_INTYPE_UNICODECHAR:
+                case TDH_INTYPE_ANSICHAR:
+                case TDH_INTYPE_BINARY:
+                case TDH_INTYPE_HEXDUMP:
+                case TDH_INTYPE_NULL:
+                    // Use BOOST to see if we can find it in the raw bytes
+                    if (check_byes(parser.parse<krabs::binary>(prop.name()).bytes())) {
+                        return true;
+                    }
+                    break;
+                // These are just numbers or arbitrary bytes, they won't contain text
+                case TDH_INTYPE_INT8:
+                case TDH_INTYPE_UINT8:
+                case TDH_INTYPE_INT16:
+                case TDH_INTYPE_UINT16:
+                case TDH_INTYPE_INT32:
+                case TDH_INTYPE_UINT32:
+                case TDH_INTYPE_INT64:
+                case TDH_INTYPE_UINT64:
+                case TDH_INTYPE_FLOAT:
+                case TDH_INTYPE_DOUBLE:
+                case TDH_INTYPE_BOOLEAN:
+                case TDH_INTYPE_GUID:
+                case TDH_INTYPE_FILETIME:
+                case TDH_INTYPE_SID:
+                case TDH_INTYPE_WBEMSID:
+                case TDH_INTYPE_POINTER:
+                case TDH_INTYPE_SYSTEMTIME:
+                case TDH_INTYPE_SIZET:
+                default:
+                    continue;
+            }
         }
-        catch (...) {
-            return false;
+        return false;
+    }
+private:
+    bool check_byes(std::vector<BYTE> bytes) const {
+        auto to_find_bytesA = std::vector<BYTE>(to_findA_.begin(), to_findA_.end());
+        auto to_find_bytesW = std::vector<BYTE>(to_findW_.begin(), to_findW_.end());
+        auto r1 = boost::make_iterator_range(bytes.begin(), bytes.end());
+        auto r2A = boost::make_iterator_range(to_find_bytesA.begin(), to_find_bytesA.end());
+        auto r2W = boost::make_iterator_range(to_find_bytesW.begin(), to_find_bytesW.end());
+        if (boost::contains(r1, r2A)) {
+            return true;
+        }
+        else {
+            return boost::contains(r1, r2W);
         }
     }
 
-private:
-    const std::wstring property_;
-    const T expected_;
-    Adapter adapter_;
-    Predicate predicate_;
+    std::wstring to_findW_;
+    std::string to_findA_;
 };
-
-/**
- * Accepts events if property case insensitive contains expected value
- */
-template <
-    typename Adapter = krabs::predicates::adapters::generic_string<wchar_t>,
-    typename T,
-    typename Comparer = contains<iequal_to<typename Adapter::value_type>>>
-    emon_property_view_predicate<T, Adapter, Comparer>* emon_property_icontains(
-        const std::wstring& prop,
-        const T& expected)
-{
-    return { prop, expected, Adapter(), Comparer() };
-}
