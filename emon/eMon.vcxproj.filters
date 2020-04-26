@@ -18,32 +18,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="util.cpp">
+    <ClCompile Include="emon_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="etw_handler.cpp">
+    <ClCompile Include="emon_controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="emon_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="output_logger.cpp">
+    <ClCompile Include="emon_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="etw_parser.cpp">
+    <ClCompile Include="emon_logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="etw_handler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="output_logger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\json\single_include\nlohmann\json.hpp">
       <Filter>ExternalHeaders</Filter>
     </ClInclude>
@@ -56,7 +47,25 @@
     <ClInclude Include="emon_predicates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="etw_parser.h">
+    <ClInclude Include="emon_errors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emon_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emon_krabs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emon_json.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emon_controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emon_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emon_logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

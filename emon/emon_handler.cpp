@@ -1,17 +1,20 @@
-#include "etw_parser.h"
-#include "util.h"
-#include "output_logger.h"
-#include "nlohmann/json.hpp"
+#include "emon_krabs.h"
+#include "emon_handler.h"
+#include "emon_logger.h"
+#include "emon_util.h"
 
-using json = nlohmann::json;
 
+/*
+    Convert an ETW Event to JSON
+*/
 std::string parse_event_to_json
 (
-    krabs::schema           schema,
-    const   bool                    pretty_print
+    krabs::schema   schema,
+    const   bool    pretty_print
 )
 {
     krabs::parser parser(schema);
+    json json_payload;
     json json_header = {
         { "event_id", schema.event_id() },
         { "event_name", convert_wstr_str(schema.event_name()) },
@@ -24,7 +27,6 @@ std::string parse_event_to_json
         { "provider_name", convert_wstr_str(schema.provider_name()) }
     };
     json json_event = { {"header", json_header} };
-    json json_payload;
 
     for (krabs::property& prop : parser.properties())
     {
@@ -37,7 +39,8 @@ std::string parse_event_to_json
             json_payload[prop_name + " <STRINGA>"] = parser.parse<std::string>(prop_name_wstr);
             break;
         case TDH_INTYPE_UNICODESTRING:
-            json_payload[prop_name + " <STRINGW>"] = convert_wstr_str(parser.parse<std::wstring>(prop_name_wstr));
+            json_payload[prop_name + " <STRINGW>"] =
+                convert_wstr_str(parser.parse<std::wstring>(prop_name_wstr));
             break;
         case TDH_INTYPE_INT8:
             json_payload[prop_name + " <INT8>"] = parser.parse<std::int8_t>(prop_name_wstr);
@@ -70,18 +73,16 @@ std::string parse_event_to_json
             json_payload[prop_name + " <DOUBLE>"] = parser.parse<std::double_t>(prop_name_wstr);
             break;
         case TDH_INTYPE_BOOLEAN:
-            if (convert_bytes_int(parser.parse<krabs::binary>(prop_name_wstr).bytes())) {
-                json_payload[prop_name + " <BOOLEAN>"] = true;
-            }
-            else {
-                json_payload[prop_name + " <BOOLEAN>"] = false;
-            }
+            json_payload[prop_name + " <BOOLEAN>"] =
+                convert_bytes_bool(parser.parse<krabs::binary>(prop_name_wstr).bytes());
             break;
         case TDH_INTYPE_BINARY:
-            json_payload[prop_name + " <BINARY>"] = convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
+            json_payload[prop_name + " <BINARY>"] =
+                convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
             break;
         case TDH_INTYPE_GUID:
-            json_payload[prop_name + " <GUID>"] = convert_guid_str(parser.parse<krabs::guid>(prop_name_wstr));
+            json_payload[prop_name + " <GUID>"] =
+                convert_guid_str(parser.parse<krabs::guid>(prop_name_wstr));
             break;
         case TDH_INTYPE_FILETIME:
             json_payload[prop_name + " <FILETIME>"] = convert_bytes_filetimestring(
@@ -97,7 +98,8 @@ std::string parse_event_to_json
                 parser.parse<krabs::binary>(prop_name_wstr).bytes());
             break;
         case TDH_INTYPE_POINTER:
-            json_payload[prop_name + " <POINTER>"] = convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
+            json_payload[prop_name + " <POINTER>"] =
+                convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
             break;
         case TDH_INTYPE_SYSTEMTIME:
             json_payload[prop_name + " <SYSTEMTIME>"] = convert_bytes_systemtimestring(
@@ -123,28 +125,33 @@ std::string parse_event_to_json
         default:
             printf("[*] Unhandled TYPE: %d\n", prop.type());
             //RaiseException(1,0,0, NULL);
-            json_payload[prop_name + " <OTHER>"] = convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
+            json_payload[prop_name + " <OTHER>"] =
+                convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
             break;
         }
     }
     json_event["payload"] = json_payload;
 
-    if (pretty_print) {
-        return json_event.dump(4);
-    }
-    else {
-        return json_event.dump();
-    }
+    return convert_json_string(json_event, pretty_print);
 }
 
-void handleEvent
+
+void handle_event
 (
     const EVENT_RECORD& record,
     const trace_context& trace_context
 )
 {
     schema schema(record, trace_context.schema_locator);
-    std::string eventString = parse_event_to_json(schema, true);
-    if (!eventString.empty())
-        log_event(g_output_format, eventString);
+    std::string event_string;
+    // If writing to a file, don't pretty print
+    // This makes it 1 line per event
+    if (Output_format::output_file == g_output_format) {
+        event_string = parse_event_to_json(schema, false);
+    }
+    else {
+        event_string = parse_event_to_json(schema, true);
+    }
+    if (!event_string.empty())
+        log_event(g_output_format, event_string);
 }

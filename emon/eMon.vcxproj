@@ -97,11 +97,11 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="etw_handler.cpp" />
-    <ClCompile Include="etw_parser.cpp" />
-    <ClCompile Include="output_logger.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="util.cpp" />
+    <ClCompile Include="emon_controller.cpp" />
+    <ClCompile Include="emon_main.cpp" />
+    <ClCompile Include="emon_handler.cpp" />
+    <ClCompile Include="emon_logger.cpp" />
+    <ClCompile Include="emon_util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\krabsetw\Microsoft.O365.Security.Native.ETW\Microsoft.O365.Security.Native.ETW.vcxproj">
@@ -110,13 +110,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\json\single_include\nlohmann\json.hpp" />
+    <ClInclude Include="emon_controller.h" />
+    <ClInclude Include="emon_errors.h" />
+    <ClInclude Include="emon_json.h" />
+    <ClInclude Include="emon_krabs.h" />
     <ClInclude Include="emon_predicates.h" />
-    <ClInclude Include="etw_handler.h" />
-    <ClInclude Include="etw_parser.h" />
-    <ClInclude Include="output_logger.h" />
+    <ClInclude Include="emon_handler.h" />
+    <ClInclude Include="emon_logger.h" />
     <ClInclude Include="provider.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="util.h" />
+    <ClInclude Include="emon_util.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\example_config.json" />

@@ -1,5 +1,5 @@
 #pragma once
-#include "krabs.hpp"
+#include "emon_krabs.h"
 #include <vector>
 #include <locale>
 
@@ -8,12 +8,12 @@
  *   Accepts an event if any of the predicates in the vector matches
  * </summary>
  */
-struct emon_any_of : krabs::predicates::details::predicate_base {
-    emon_any_of(std::vector<std::shared_ptr<krabs::predicates::details::predicate_base>> list)
+struct emon_any_of : predicates::details::predicate_base {
+    emon_any_of(std::vector<std::shared_ptr<predicates::details::predicate_base>> list)
         : list_(list)
     {}
 
-    bool operator()(const EVENT_RECORD& record, const krabs::trace_context& trace_context) const {
+    bool operator()(const EVENT_RECORD& record, const trace_context& trace_context) const {
         for (auto& item : list_) {
             if (item->operator()(record, trace_context)) {
                 return true;
@@ -22,7 +22,7 @@ struct emon_any_of : krabs::predicates::details::predicate_base {
         return false;
     }
 private:
-    std::vector<std::shared_ptr<krabs::predicates::details::predicate_base>> list_;
+    std::vector<std::shared_ptr<predicates::details::predicate_base>> list_;
 };
 
 /**
@@ -30,12 +30,12 @@ private:
  *   Accepts an event if all of the predicates in the vector matches
  * </summary>
  */
-struct emon_all_of : krabs::predicates::details::predicate_base {
-    emon_all_of(std::vector<std::shared_ptr<krabs::predicates::details::predicate_base>> list)
+struct emon_all_of : predicates::details::predicate_base {
+    emon_all_of(std::vector<std::shared_ptr<predicates::details::predicate_base>> list)
         : list_(list)
     {}
 
-    bool operator()(const EVENT_RECORD& record, const krabs::trace_context& trace_context) const {
+    bool operator()(const EVENT_RECORD& record, const trace_context& trace_context) const {
         if (list_.empty()) {
             return false;
         }
@@ -47,7 +47,7 @@ struct emon_all_of : krabs::predicates::details::predicate_base {
         return true;
     }
 private:
-    std::vector<std::shared_ptr<krabs::predicates::details::predicate_base>> list_;
+    std::vector<std::shared_ptr<predicates::details::predicate_base>> list_;
 };
 
 /**
@@ -55,12 +55,12 @@ private:
  *   Accepts an event only if none of the predicates in the vector match
  * </summary>
  */
-struct emon_none_of : krabs::predicates::details::predicate_base {
-    emon_none_of(std::vector<std::shared_ptr<krabs::predicates::details::predicate_base>> list)
+struct emon_none_of : predicates::details::predicate_base {
+    emon_none_of(std::vector<std::shared_ptr<predicates::details::predicate_base>> list)
         : list_(list)
     {}
 
-    bool operator()(const EVENT_RECORD& record, const krabs::trace_context& trace_context) const {
+    bool operator()(const EVENT_RECORD& record, const trace_context& trace_context) const {
         for (auto& item : list_) {
             if (item->operator()(record, trace_context)) {
                 return false;
@@ -69,7 +69,7 @@ struct emon_none_of : krabs::predicates::details::predicate_base {
         return true;
     }
 private:
-    std::vector<std::shared_ptr<krabs::predicates::details::predicate_base>> list_;
+    std::vector<std::shared_ptr<predicates::details::predicate_base>> list_;
 };
 
 /**
@@ -78,13 +78,13 @@ private:
      But only until we see a maximum number of events.
  * </summary>
  */
-struct emon_max_events_id: krabs::predicates::details::predicate_base {
+struct emon_max_events_id: predicates::details::predicate_base {
     emon_max_events_id(uint64_t id_expected, uint64_t max_events)
         : id_expected_(USHORT(id_expected))
         , max_events_(max_events)
     {}
 
-    bool operator()(const EVENT_RECORD& record, const krabs::trace_context&) const {
+    bool operator()(const EVENT_RECORD& record, const trace_context&) const {
         // Match correct id first
         if (record.EventHeader.EventDescriptor.Id == id_expected_) {
             if (count_ < max_events_) {
@@ -107,12 +107,12 @@ private:
      But only until we see a maximum number of events.
  * </summary>
  */
-struct emon_max_events_total : krabs::predicates::details::predicate_base {
+struct emon_max_events_total : predicates::details::predicate_base {
     emon_max_events_total(UINT64 max_events)
         : max_events_(max_events)
     {}
 
-    bool operator()(const EVENT_RECORD&, const krabs::trace_context&) const {
+    bool operator()(const EVENT_RECORD&, const trace_context&) const {
         if (count_ < max_events_) {
             // Increment  count
             count_++;
@@ -132,16 +132,16 @@ private:
 * </summary>
 */
 template <typename T>
-struct emon_property_is : krabs::predicates::details::predicate_base {
+struct emon_property_is : predicates::details::predicate_base {
     emon_property_is(const std::wstring& property, const T& expected)
         : property_(property)
         , expected_(expected)
     {}
 
-    bool operator()(const EVENT_RECORD& record, const krabs::trace_context& trace_context) const
+    bool operator()(const EVENT_RECORD& record, const trace_context& trace_context) const
     {
-        krabs::schema schema(record, trace_context.schema_locator);
-        krabs::parser parser(schema);
+        schema schema(record, trace_context.schema_locator);
+        parser parser(schema);
 
         try {
             return (expected_ == parser.parse<T>(property_));
@@ -163,17 +163,17 @@ private:
      Or in a STRINGA or STRINGW field
  * </summary>
  */
-struct emon_any_field_contains : krabs::predicates::details::predicate_base {
+struct emon_any_field_contains : predicates::details::predicate_base {
     emon_any_field_contains(std::string to_find)
         : to_findW_(convert_str_wstr(boost::algorithm::to_lower_copy(to_find)))
         , to_findA_(boost::algorithm::to_lower_copy(to_find))
     {}
 
-    bool operator()(const EVENT_RECORD& record, const krabs::trace_context& trace_context) const {
+    bool operator()(const EVENT_RECORD& record, const trace_context& trace_context) const {
         schema schema(record, trace_context.schema_locator);
-        krabs::parser parser(schema);
+        parser parser(schema);
 
-        for (krabs::property& prop : parser.properties())
+        for (property& prop : parser.properties())
         {
             // First check the property name
             if (boost::algorithm::to_lower_copy(prop.name()).find(to_findW_) != std::string::npos) {
@@ -212,7 +212,7 @@ struct emon_any_field_contains : krabs::predicates::details::predicate_base {
                 case TDH_INTYPE_HEXDUMP:
                 case TDH_INTYPE_NULL:
                     // Use BOOST to see if we can find it in the raw bytes
-                    if (check_byes(parser.parse<krabs::binary>(prop.name()).bytes())) {
+                    if (check_byes(parser.parse<binary>(prop.name()).bytes())) {
                         return true;
                     }
                     break;
