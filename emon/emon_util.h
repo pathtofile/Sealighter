@@ -3,28 +3,6 @@
 #include "emon_json.h"
 
 
-/*  
-    Hold whether we should be outputting the parsed JSON event
-*/
-enum class Output_format
-{
-    output_stdout,
-    output_event_log,
-    output_file
-};
-static Output_format g_output_format = Output_format::output_stdout;
-
-
-/*
-    Simple function to print a line to stdout, ensuring the output isn't
-    interupted part way through by another print
-*/
-void threaded_println
-(
-    std::string to_print
-);
-
-
 /*
     Helper to convert json to string
 */

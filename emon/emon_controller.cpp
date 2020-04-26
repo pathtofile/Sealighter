@@ -7,7 +7,7 @@
 #include "emon_json.h"
 #include "emon_predicates.h"
 #include "emon_handler.h"
-#include "provider.h"
+#include "emon_provider.h"
 
 // -------------------------
 // GLOBALS - START
@@ -716,17 +716,25 @@ int parse_config
 
             if (!json_props["output_format"].is_null()) {
                 std::string format = json_props["output_format"].get<std::string>();
-                if ("file" == format) {
-                    g_output_format = Output_format::output_file;
-                }
-                else if ("stdout" == format) {
-                    g_output_format = Output_format::output_stdout;
+                if ("stdout" == format) {
+                    set_output_format(Output_format::output_stdout);
                 }
                 else if ("event_log" == format) {
-                    g_output_format = Output_format::output_event_log;
+                    set_output_format(Output_format::output_event_log);
+                }
+                else if ("file" == format) {
+                    if (json_props["output_filename"].is_null()) {
+                        printf("When output_format == 'file', also set 'output_filename'\n");
+                        status = EMON_ERROR_OUTPUT_FILE;
+                    }
+                    else {
+                        //g_output_format = Output_format::output_file;
+                        set_output_format(Output_format::output_file);
+                        status = setup_logger_file(json_props["output_filename"].get<std::string>());
+                    }
                 }
                 else {
-                    printf("Invalid g_output_format\n");
+                    printf("Invalid output_format\n");
                     status = EMON_ERROR_OUTPUT_FORMAT;
                 }
                 printf("Output: %s\n", format.c_str());
@@ -811,6 +819,7 @@ void stop_traces()
     if (NULL != g_kernel_session) {
         g_kernel_session->stop();
     }
+    teardown_logger_file();
 }
 
 

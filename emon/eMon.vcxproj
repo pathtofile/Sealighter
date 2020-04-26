@@ -100,7 +100,6 @@
     <ClCompile Include="emon_controller.cpp" />
     <ClCompile Include="emon_main.cpp" />
     <ClCompile Include="emon_handler.cpp" />
-    <ClCompile Include="emon_logger.cpp" />
     <ClCompile Include="emon_util.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -116,8 +115,7 @@
     <ClInclude Include="emon_krabs.h" />
     <ClInclude Include="emon_predicates.h" />
     <ClInclude Include="emon_handler.h" />
-    <ClInclude Include="emon_logger.h" />
-    <ClInclude Include="provider.h" />
+    <ClInclude Include="emon_provider.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="emon_util.h" />
   </ItemGroup>
@@ -125,7 +123,7 @@
     <None Include="..\example_config.json" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="provider.rc" />
+    <ResourceCompile Include="emon_provider.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

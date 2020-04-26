@@ -1,23 +1,8 @@
 #include "emon_krabs.h"
-#include <mutex>
 #include <sstream>
 #include <fstream>
 #include "emon_json.h"
 #include "emon_util.h"
-
-
-// Helper mutex to ensure threaded_println prints
-// a whole line without interruption
-static std::mutex g_print_mutex;
-void threaded_println
-(
-    std::string to_print
-)
-{
-    g_print_mutex.lock();
-    printf("%s\n", to_print.c_str());
-    g_print_mutex.unlock();
-}
 
 
 std::string convert_json_string
@@ -99,16 +84,24 @@ std::string convert_bytes_sidstring
     const std::vector<BYTE>& bytes
 )
 {
-    //wchar_t user_name[MAX_NAME] = L""; // #define MAX_NAME 256
-    //wchar_t domain_name[MAX_NAME] = L"";
-    //DWORD user_name_size = MAX_NAME;
-    //DWORD domain_name_size = MAX_NAME;
-    //SID_NAME_USE name_use;
-    //const BYTE* data = (sid.bytes().data() + start_point);
-    //if (LookupAccountSid(NULL, (PSID)data, user_name, &user_name_size, domain_name, &domain_name_size, &name_use)) {
-    //    std::wcout << domain_name << L"\\" << user_name << L"\n";
-    // TODO: Convert SIDs
-    return convert_bytes_hexstring(bytes);
+#define MAX_NAME 256
+    char user_name[MAX_NAME] = "";
+    char domain_name[MAX_NAME] = "";
+    DWORD user_name_size = MAX_NAME;
+    DWORD domain_name_size = MAX_NAME;
+    SID_NAME_USE name_use;
+    const BYTE* data = (bytes.data());
+    std::string output;
+    if (LookupAccountSidA(NULL, (PSID)data, user_name, &user_name_size, domain_name, &domain_name_size, &name_use)) {
+        output = user_name;
+        output += "\\";
+        output += domain_name;
+    }
+    else {
+        // Fallback to printing the raw bytes
+        output = convert_bytes_hexstring(bytes);
+    }
+    return output;
 }
 
 

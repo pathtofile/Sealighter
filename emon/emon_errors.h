@@ -33,6 +33,9 @@
 
 // Config file doesn't exit
 #define EMON_ERROR_MISSING_CONFIG 12
+
+// Counld't open output stream to output file
+#define EMON_ERROR_OUTPUT_FILE 13
  
 
 
