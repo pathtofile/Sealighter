@@ -119,7 +119,7 @@ void add_filter_to_vector_property_compare
 {
     std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
     if (!root[element].is_null()) {
-        //printf("        %s: %s\n", element, convert_json_string(root[element], false).c_str());
+        printf("        %s: %s\n", element.c_str(), convert_json_string(root[element], false).c_str());
         if (root[element].is_array()) {
             for (json item : root[element]) {
                 add_filter_to_vector_property_compare_item<ComparerA, ComparerW>(item, list);
@@ -220,7 +220,7 @@ void add_filter_to_vector_property_is
 {
     std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
     if (!root.is_null()) {
-        //printf("        Property Is: %s\n", convert_json_string(root, false).c_str());
+        printf("        Property Is: %s\n", convert_json_string(root, false).c_str());
         if (root.is_array()) {
             for (json item : root) {
                 add_filter_to_vector_property_is_item(item, list);
@@ -254,7 +254,7 @@ void add_filter_to_vector_basic_pair
 {
     std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
     if (!root[element].is_null()) {
-        //printf("        %s: %s\n", element, convert_json_string(root[element], false).c_str());
+        printf("        %s: %s\n", element.c_str(), convert_json_string(root[element], false).c_str());
         if (root[element].is_array()) {
             for (json item : root[element]) {
                 if (!item[item1_name].is_null() && !item[item2_name].is_null()) {
@@ -295,7 +295,7 @@ void add_filter_to_vector_basic
 {
     std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
     if (!root[element].is_null()) {
-        //printf("        %s: %s\n", element, convert_json_string(root[element], false).c_str());
+        printf("        %s: %s\n", element.c_str(), convert_json_string(root[element], false).c_str());
         // If a list, filter can be any of them
         if (root[element].is_array()) {
             for (json item : root[element]) {

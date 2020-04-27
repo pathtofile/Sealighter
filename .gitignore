@@ -1,5 +1,9 @@
 .vs/
+.vscode/
 x64/
 packages/
 emon/x64
 *.vcxproj.user
+
+# Some testing might create this file:
+out.json
