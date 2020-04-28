@@ -370,12 +370,12 @@ int add_filters_to_vector
         add_filter_to_vector_property_compare<
             kpc::ends_with<std::equal_to<kpa::generic_string<char>::value_type>>,
             kpc::ends_with<std::equal_to<kpa::generic_string<wchar_t>::value_type>>
-        >(json_list, "property_starts_with", pred_vector);
+        >(json_list, "property_ends_with", pred_vector);
 
         add_filter_to_vector_property_compare<
             kpc::ends_with<iequal_to<kpa::generic_string<char>::value_type>>,
             kpc::ends_with<iequal_to<kpa::generic_string<wchar_t>::value_type>>
-        >(json_list, "property_istarts_with", pred_vector);
+        >(json_list, "property_iends_with", pred_vector);
 
         // Add own own created Predicates
         add_filter_to_vector_basic<emon_max_events_total, std::uint64_t>
