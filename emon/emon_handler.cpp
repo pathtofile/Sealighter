@@ -106,6 +106,7 @@ std::string parse_event_to_json
 {
     krabs::parser parser(schema);
     json json_payload;
+    json json_payload_types;
     json json_header = {
         { "event_id", schema.event_id() },
         { "event_name", convert_wstr_str(schema.event_name()) },
@@ -130,92 +131,92 @@ std::string parse_event_to_json
             switch (prop.type())
             {
             case TDH_INTYPE_ANSISTRING:
-                json_payload[prop_name]["type"] = "STRINGA";
-                json_payload[prop_name]["data"] = parser.parse<std::string>(prop_name_wstr);
+                json_payload_types[prop_name] = "STRINGA";
+                json_payload[prop_name] = parser.parse<std::string>(prop_name_wstr);
                 break;
             case TDH_INTYPE_UNICODESTRING:
-                json_payload[prop_name]["type"] = "STRINGW";
-                json_payload[prop_name]["data"] = convert_wstr_str(parser.parse<std::wstring>(prop_name_wstr));
+                json_payload_types[prop_name] = "STRINGW";
+                json_payload[prop_name] = convert_wstr_str(parser.parse<std::wstring>(prop_name_wstr));
                 break;
             case TDH_INTYPE_INT8:
-                json_payload[prop_name]["type"] = "INT8";
-                json_payload[prop_name]["data"] = parser.parse<std::int8_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "INT8";
+                json_payload[prop_name] = parser.parse<std::int8_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_UINT8:
-                json_payload[prop_name]["type"] = "UINT8";
-                json_payload[prop_name]["data"] = parser.parse<std::uint8_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "UINT8";
+                json_payload[prop_name] = parser.parse<std::uint8_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_INT16:
-                json_payload[prop_name]["type"] = "INT16";
-                json_payload[prop_name]["data"] = parser.parse<std::int16_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "INT16";
+                json_payload[prop_name] = parser.parse<std::int16_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_UINT16:
-                json_payload[prop_name]["type"] = "UINT16";
-                json_payload[prop_name]["data"] = parser.parse<std::uint16_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "UINT16";
+                json_payload[prop_name] = parser.parse<std::uint16_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_INT32:
-                json_payload[prop_name]["type"] = "INT32";
-                json_payload[prop_name]["data"] = parser.parse<std::int32_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "INT32";
+                json_payload[prop_name] = parser.parse<std::int32_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_UINT32:
-                json_payload[prop_name]["type"] = "UINT32";
-                json_payload[prop_name]["data"] = parser.parse<std::uint32_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "UINT32";
+                json_payload[prop_name] = parser.parse<std::uint32_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_INT64:
-                json_payload[prop_name]["type"] = "INT64";
-                json_payload[prop_name]["data"] = parser.parse<std::int64_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "INT64";
+                json_payload[prop_name] = parser.parse<std::int64_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_UINT64:
-                json_payload[prop_name]["type"] = "UINT64";
-                json_payload[prop_name]["data"] = parser.parse<std::uint64_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "UINT64";
+                json_payload[prop_name] = parser.parse<std::uint64_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_FLOAT:
-                json_payload[prop_name]["type"] = "FLOAT";
-                json_payload[prop_name]["data"] = parser.parse<std::float_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "FLOAT";
+                json_payload[prop_name] = parser.parse<std::float_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_DOUBLE:
-                json_payload[prop_name]["type"] = "DOUBLE";
-                json_payload[prop_name]["data"] = parser.parse<std::double_t>(prop_name_wstr);
+                json_payload_types[prop_name] = "DOUBLE";
+                json_payload[prop_name] = parser.parse<std::double_t>(prop_name_wstr);
                 break;
             case TDH_INTYPE_BOOLEAN:
-                json_payload[prop_name]["type"] = "BOOLEAN";
-                json_payload[prop_name]["data"] =
+                json_payload_types[prop_name] = "BOOLEAN";
+                json_payload[prop_name] =
                     convert_bytes_bool(parser.parse<krabs::binary>(prop_name_wstr).bytes());
                 break;
             case TDH_INTYPE_BINARY:
-                json_payload[prop_name]["type"] = "BINARY";
-                json_payload[prop_name]["data"] =
+                json_payload_types[prop_name] = "BINARY";
+                json_payload[prop_name] =
                     convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
                 break;
             case TDH_INTYPE_GUID:
-                json_payload[prop_name]["type"] = "GUID";
-                json_payload[prop_name]["data"] =
+                json_payload_types[prop_name] = "GUID";
+                json_payload[prop_name] =
                     convert_guid_str(parser.parse<krabs::guid>(prop_name_wstr));
                 break;
             case TDH_INTYPE_FILETIME:
-                json_payload[prop_name]["type"] = "FILETIME";
-                json_payload[prop_name]["data"] = convert_filetime_string(
+                json_payload_types[prop_name] = "FILETIME";
+                json_payload[prop_name] = convert_filetime_string(
                     parser.parse<FILETIME>(prop_name_wstr));
                 break;
             case TDH_INTYPE_SYSTEMTIME:
-                json_payload[prop_name]["type"] = "SYSTEMTIME";
-                json_payload[prop_name]["data"] = convert_systemtime_string(
+                json_payload_types[prop_name] = "SYSTEMTIME";
+                json_payload[prop_name] = convert_systemtime_string(
                     parser.parse<SYSTEMTIME>(prop_name_wstr));
                 break;
             case TDH_INTYPE_SID:
-                json_payload[prop_name]["type"] = "SID";
-                json_payload[prop_name]["data"] = convert_bytes_sidstring(
+                json_payload_types[prop_name] = "SID";
+                json_payload[prop_name] = convert_bytes_sidstring(
                     parser.parse<krabs::binary>(prop_name_wstr).bytes());
                 break;
             case TDH_INTYPE_WBEMSID:
                 // *Supposedly* like SID?
-                json_payload[prop_name]["type"] = "WBEMSID";
-                json_payload[prop_name]["data"] = convert_bytes_hexstring(
+                json_payload_types[prop_name] = "WBEMSID";
+                json_payload[prop_name] = convert_bytes_hexstring(
                     parser.parse<krabs::binary>(prop_name_wstr).bytes());
                 break;
             case TDH_INTYPE_POINTER:
-                json_payload[prop_name]["type"] = "POINTER";
-                json_payload[prop_name]["data"] =
+                json_payload_types[prop_name] = "POINTER";
+                json_payload[prop_name] =
                     convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
                 break;
             case TDH_INTYPE_HEXINT32:
@@ -236,8 +237,8 @@ std::string parse_event_to_json
             case TDH_INTYPE_HEXDUMP:
             case TDH_INTYPE_NULL:
             default:
-                json_payload[prop_name]["type"] = "OTHER";
-                json_payload[prop_name]["data"] =
+                json_payload_types[prop_name] = "OTHER";
+                json_payload[prop_name] =
                     convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
                 break;
             }
@@ -245,11 +246,12 @@ std::string parse_event_to_json
         catch (std::runtime_error&)
         {
             // Failed to parse, default to hex
-            json_payload[prop_name]["type"] = "OTHER";
-            json_payload[prop_name]["data"] =
+            json_payload_types[prop_name] = "OTHER";
+            json_payload[prop_name] =
                 convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
         }
     }
+    json_event["payload_types"] = json_payload_types;
     json_event["payload"] = json_payload;
 
     return convert_json_string(json_event, pretty_print);
