@@ -58,24 +58,29 @@ std::string convert_guid_str
 }
 
 
-std::string convert_bytes_systemtimestring
+std::string convert_filetime_string
 (
-    const std::vector<BYTE>& bytes
+    const FILETIME ftime
 )
 {
-    // TODO: Convert SYSTEMTIMEs
-    // Could call "SystemTimeToFileTime" first then use that function
-    return convert_bytes_hexstring(bytes);
+    SYSTEMTIME stime;
+    ::FileTimeToSystemTime(std::addressof(ftime), std::addressof(stime));
+    return convert_systemtime_string(stime);
 }
 
 
-std::string convert_bytes_filetimestring
+std::string convert_systemtime_string
 (
-    const std::vector<BYTE>& bytes
+    const SYSTEMTIME stime
 )
 {
-    // TODO: Convert FILETIMEs
-    return convert_bytes_hexstring(bytes);
+    std::ostringstream stm;
+    const auto w2 = std::setw(2);
+    stm << std::setfill('0') << std::setw(4) << stime.wYear << '-' << w2 << stime.wMonth
+        << '-' << w2 << stime.wDay << ' ' << w2 << stime.wHour
+        << ':' << w2 << stime.wMinute << ':' << w2 << stime.wSecond << 'Z';
+
+    return stm.str();
 }
 
 
@@ -85,17 +90,17 @@ std::string convert_bytes_sidstring
 )
 {
 #define MAX_NAME 256
-    char user_name[MAX_NAME] = "";
     char domain_name[MAX_NAME] = "";
+    char user_name[MAX_NAME] = "";
     DWORD user_name_size = MAX_NAME;
     DWORD domain_name_size = MAX_NAME;
     SID_NAME_USE name_use;
     const BYTE* data = (bytes.data());
     std::string output;
     if (LookupAccountSidA(NULL, (PSID)data, user_name, &user_name_size, domain_name, &domain_name_size, &name_use)) {
-        output = user_name;
+        output = domain_name;
         output += "\\";
-        output += domain_name;
+        output += user_name;
     }
     else {
         // Fallback to printing the raw bytes

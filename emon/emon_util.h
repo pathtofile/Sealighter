@@ -31,22 +31,20 @@ std::wstring convert_str_wstr(
 
 
 /*
-    Helper to convert byte array to string,
-    treating the bytes as a FILETIME struct
+    Helper to convert FILETIME to string
 */
-std::string convert_bytes_filetimestring
+std::string convert_filetime_string
 (
-    const std::vector<BYTE>& bytes
+    const FILETIME ftime
 );
 
 
 /*
-    Helper to convert byte array to string,
-    treating the bytes as a SYSTEMTIME struct
+    Helper to convert SYSTEMTIME to string
 */
-std::string convert_bytes_systemtimestring
+std::string convert_systemtime_string
 (
-    const std::vector<BYTE>& bytes
+    const SYSTEMTIME stime
 );
 
 

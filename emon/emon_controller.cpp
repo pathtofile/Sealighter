@@ -598,29 +598,47 @@ int add_user_providers
     try {
         // Parse the Usermode Providers
         for (json json_provider : json_config["user_providers"]) {
+            GUID provider_guid;
             provider<>* pNew_provider;
-            std::string provider_name;
+            std::wstring provider_name;
             if (json_provider["name"].is_null()) {
                 printf("Invalid Provider\n");
                 status = EMON_ERROR_PARSE_USER_PROVIDER;
                 break;
             }
-            provider_name = json_provider["name"].get<std::string>();
-            pNew_provider = new provider<>(convert_str_wstr(provider_name));
-            printf("User Provider: %s\n", provider_name.c_str());
 
-            if (!json_provider["keywords_all"].is_null()) {
-                uint64_t data = json_provider["keywords_all"].get<std::uint64_t>();
-                printf("    Keywords All: 0x%llx\n", data);
-                pNew_provider->all(data);
+            // If provider_name is a GUID, use that
+            // Otherwise pass it off to Krabs to try to resolve
+            provider_name = convert_str_wstr(json_provider["name"].get<std::string>());
+            if (S_OK == CLSIDFromString(provider_name.c_str(),
+                                        (LPCLSID)&provider_guid)) {
+                pNew_provider = new provider<>(provider_guid);
+            }
+            else {
+                pNew_provider = new provider<>(provider_name);
             }
 
-            if (!json_provider["keywords_any"].is_null()) {
-                uint64_t data = json_provider["keywords_any"].get<std::uint64_t>();
-                printf("    Keywords Any: 0x%llx\n", data);
-                pNew_provider->any(data);
-            }
+            wprintf(L"User Provider: %s\n", provider_name.c_str());
 
+            // If no keywords_all or keywords_any is set
+            // then set a default 'match anything'
+            if (json_provider["keywords_all"].is_null() && json_provider["keywords_any"].is_null()) {
+                printf("    Keywords Any: 0xffffffffffff\n");
+                pNew_provider->any(0xffffffffffff);
+            }
+            else {
+                if (!json_provider["keywords_all"].is_null()) {
+                    uint64_t data = json_provider["keywords_all"].get<std::uint64_t>();
+                    printf("    Keywords All: 0x%llx\n", data);
+                    pNew_provider->all(data);
+                }
+
+                if (!json_provider["keywords_any"].is_null()) {
+                    uint64_t data = json_provider["keywords_any"].get<std::uint64_t>();
+                    printf("    Keywords Any: 0x%llx\n", data);
+                    pNew_provider->any(data);
+                }
+            }
             if (!json_provider["level"].is_null()) {
                 uint64_t data = json_provider["level"].get<std::uint64_t>();
                 printf("    Level: 0x%llx\n", data);
@@ -639,7 +657,7 @@ int add_user_providers
                 g_user_session->enable(*pNew_provider);
             }
             else {
-                printf("Failed to add filters to: %s\n", provider_name.c_str());
+                wprintf(L"Failed to add filters to: %s\n", provider_name.c_str());
                 break;
             }
         }
@@ -684,7 +702,7 @@ int parse_config
         session_properties.MinimumBuffers = 12;
         session_properties.MaximumBuffers = 48;
         session_properties.FlushTimer = 1;
-        session_properties.LogFileMode = EVENT_TRACE_REAL_TIME_MODE;
+        session_properties.LogFileMode = EVENT_TRACE_REAL_TIME_MODE | EVENT_TRACE_INDEPENDENT_SESSION_MODE;
 
         // Parse the config json for any custom properties
         json json_props = json_config["session_properties"];
