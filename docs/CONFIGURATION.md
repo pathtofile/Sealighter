@@ -39,13 +39,21 @@ Config Files have 3 Parts:
 _____________
 
 # session_properties
-These are where you specify properties of the ETW Session. You can specify the following:
+These are where you specify properties of the ETW Session, e.g:
+```json
+"session_properties": {
+    "session_name": "My-Trace",
+    "output_format": "stdout",
+    "output_filename": "path/to/output.json",
+},
+```
+You can specify the following options:
 
-## session_name
+### session_name
 The name of the ETW Session.
 Default: EMon
 
-## output_format
+### output_format
 Where to output the events to. Can be one of:
  - stdout
  - event_log
@@ -59,16 +67,21 @@ If specifying file, also specify `output_filename`:
 },
 ```
 
+### output_filename
+If outputing to a file, the path to write the output events to.
+
 The following are advanced session properties:
-## buffer_size
+### buffer_size
 The Size of the in-memory buffer.
 Default: 256
 
-## minimum_buffers
+### minimum_buffers
 Minumum Buffers to allocate. Default 12
-## maximum_buffers
+
+### maximum_buffers
 Max Buffers to allocate. Default 48
-## flush_timer
+
+### flush_timer
 Buffer Flush timer in seconds. Default 1
 
 _____________
