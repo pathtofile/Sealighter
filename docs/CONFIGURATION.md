@@ -32,9 +32,9 @@ The file is in JSON. An example config file looks like this:
 ```
 
 Config Files have 3 Parts:
- - [session_properties](#-session_properties)
- - [user_providers](#-user_providers)
- - [kernel_providers](#-kernel_providers)
+ - [session_properties](#session_properties)
+ - [user_providers](#user_providers)
+ - [kernel_providers](#kernel_providers)
 
 _____________
 
