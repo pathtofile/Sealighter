@@ -503,6 +503,9 @@ int add_kernel_providers
             else if (provider_name == "dpc") {
                 pNew_provider = new kernel::dpc_provider();
             }
+            else if (provider_name == "debug_print") {
+                pNew_provider = new kernel::debug_print_provider();
+            }
             else if (provider_name == "interrupt") {
                 pNew_provider = new kernel::interrupt_provider();
             }
@@ -553,6 +556,12 @@ int add_kernel_providers
             }
             else if (provider_name == "file_init_io") {
                 pNew_provider = new kernel::file_init_io_provider();
+            }
+            else if (provider_name == "vamap") {
+                pNew_provider = new kernel::vamap_provider();
+            }
+            else if (provider_name == "object_manager") {
+                pNew_provider = new kernel::object_manager_provider();
             }
             else {
                 printf("Invalid Provider: %s\n", provider_name.c_str());
