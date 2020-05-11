@@ -23,6 +23,8 @@ Projects like [JDU2600's Event List ](https://github.com/jdu2600/Windows10EtwEve
 # Like SilkETW?
 Yep, this plays in the same space as FuzzySec's [SilkETW](https://github.com/fireeye/SilkETW). But While Silk is more production-ready, this is designed for researchers like myself, and as such contains a number of features that I couldn't get with Silk, mostly due to the different Libary they used to power the tool. Please see [Here](docs/COMPARISION.md) for more information.
 
+# Intended Audience
+Probably someone who understands the basic of ETW, and really wants to dive into discovering what data you can glean from it.
 
 # Getting Started
 
@@ -30,9 +32,7 @@ Please read the following pages:
 
 **[Installation](docs/INSTALLATION.md)** - How to start running EMon, including a simple config, and how to setup Windows Event logging if required.
 
-**[Configuration](docs/CONFIGURATION.md)** - How to configure EMon
-
-**[Providers](docs/PROVIDERS.md)** - Overview on how to specify different Kernel, Usermode, and WPP Providers
+**[Configuration](docs/CONFIGURATION.md)** - How to configure EMon, including how to specify what Providers to Log, and where to log to.
 
 **[Filtering](docs/FILTERING.md)** - Deep dive into all the types of filtering EMon provides
 

@@ -29,6 +29,19 @@ std::wstring convert_str_wstr(
     const std::string& from
 );
 
+/*
+    Helper to convert LARGE_INTEGER timestamp to string
+    MSDN States this is:
+        Time at which the information in this structure was updated,
+        in 100-nanosecond intervals since midnight, January 1, 1601.
+
+    This is the same as a FILETIME
+*/
+std::string convert_timestamp_string
+(
+    const LARGE_INTEGER timestamp
+);
+
 
 /*
     Helper to convert FILETIME to string

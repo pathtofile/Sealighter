@@ -5,3 +5,4 @@
 
  * Document everything!
    * Including how to install manifest
+ * Rename to Highlighter?

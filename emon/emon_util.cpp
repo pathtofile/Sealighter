@@ -57,6 +57,20 @@ std::string convert_guid_str
     return std::string(guid_string);
 }
 
+std::string convert_timestamp_string
+(
+    const LARGE_INTEGER timestamp
+)
+{
+    // Both LARGE_INTEGER timestamps and FILETIMES are
+    // "100-nanosecond intervals since midnight, January 1, 1601"
+    FILETIME ft;
+
+    ft.dwHighDateTime = timestamp.HighPart;
+    ft.dwLowDateTime = timestamp.LowPart;
+
+    return convert_filetime_string(ft);
+}
 
 std::string convert_filetime_string
 (
