@@ -18,7 +18,7 @@ The file is in JSON. An example config file looks like this:
             "name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
             "filters": {
                 "any_of": {
-                    "opcode_is": [ 1, 2 ]
+                    "opcode_is": [1, 2]
                 }
             }
         },
@@ -98,7 +98,7 @@ This is an array of the Usermode or WPP provders you want to subscribe to, e.g.:
             "name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
             "filters": {
                 "any_of": {
-                    "opcode_is": [ 1 ]
+                    "opcode_is": [1, 2]
                 }
             }
         },
@@ -107,18 +107,18 @@ This is an array of the Usermode or WPP provders you want to subscribe to, e.g.:
 
 User Providers have the following options, all are optional except for `name`:
 
-## name
+### name
 The name or GUID of the Provider to enable.
 For WPP Traces, this *must* be the GUID.
 
-## keywords_any
+### keywords_any
 Only report on Events that has these at least some of these keyword flags. See [Scenarios](SCENARIOS.md) for examples on finding information on a provider's kywords.
 
 Whilst you can also use filters to filter based on keywords (fileters explainer later), the `keywords_any` filtering happens in the Kernel, instead of in userland inside EMon, and is therefore much more efficient to filter.
 
 It is advices to `keywords_any` as much as possible to ensure you don't drop any events.
 
-## keywords_all
+### keywords_all
 Similar to `keywords_any`, but an event must match all of the keywords.
 
 If neither `keywords_any` or `keywords_all` is specified, all events will be passed onto the filters to be reported on.
@@ -126,23 +126,39 @@ If neither `keywords_any` or `keywords_all` is specified, all events will be pas
 `keywords_any` and `keywords_all` take precedence of filters.
 
 
-## Level
+### Level
 Only report if events are at least this logging level.
 Like the `keywords_*` options, it is more efficient use this instead of a Filter, and this will take precedence of a Filter
 
-## trace_flags
+### trace_flags
 Any advanced flags
 
-## filters
+### filters
 An array of filters to further filter the events to report on. These can be quite complex, so read the [Filtering](FILTERING.md) section for details.
 
 _____________
 
 # kernel_providers
 
-This is an array of the special sub-providers of the Special `NT Kernel Trace` that you wish to log. The have two options:
+This is an array of the special sub-providers of the Special `NT Kernel Trace` that you wish to log, e.g.:
+```json
+"kernel_providers": [
+    {
+        "name": "process",
+        "filters": {
+            "any_of": {
+                "opcode_is": [1, 2]
+            }
+        }
+    },
+    {
+        "name": "image_load",
+    }
+]
+```
+Kernel Providers have two options:
 
-## name
+### name
 The kernel provider to log. Must be one of:
 - process
 - thread
@@ -172,5 +188,5 @@ The kernel provider to log. Must be one of:
 - object_manager
 
 
-## filters
+### filters
 Like `user_providers`, this is a list of filters to filter the events to report on. These can be quite complex, so read the [Filtering](FILTERING.md) section for details.
