@@ -1,3 +1,11 @@
+# User Tracing
+Per-provider configs:
+ - Name
+ - Trace Flags
+ - Kerwords All
+ - Keywords Any
+ - Level
+
 # Kernel providers
 - process
 - thread
@@ -22,3 +30,6 @@
 - profile
 - file_io
 - file_init_io
+- debug_print
+- vamap_provider
+- object_manager
