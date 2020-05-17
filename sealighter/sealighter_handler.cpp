@@ -59,15 +59,17 @@ void write_event_log
 
     status = EventWriteSEALIGHTER_REPORT_EVENT(
         event_string.c_str(),
+        convert_guid_str(schema.activity_id()).c_str(),
+        (USHORT)schema.event_flags(),
         (USHORT)schema.event_id(),
         schema.event_name(),
-        schema.thread_id(),
-        schema.timestamp().QuadPart,
-        (USHORT)schema.event_flags(),
         (UCHAR)schema.event_opcode(),
         (UCHAR)schema.event_version(),
         schema.process_id(),
-        schema.provider_name()
+        schema.provider_name(),
+        schema.task_name(),
+        schema.thread_id(),
+        schema.timestamp().QuadPart
     );
 
     //status = EventWriteSEALIGHTER_REPORT_EVENT(event_string.c_str());

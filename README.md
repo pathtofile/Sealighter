@@ -41,11 +41,13 @@ Please read the following pages:
 
 **[Configuration](docs/CONFIGURATION.md)** - How to configure Sealighter, including how to specify what Providers to Log, and where to log to.
 
-**[Filtering](docs/FILTERING.md)** - Deep dive into all the types of filtering Sealighter provides
+**[Filtering](docs/FILTERING.md)** - Deep dive into all the types of filtering Sealighter provides.
 
-**[Parsing Data](docs/PARSING_DATA.md)** - How to get and parse data from Sealighter
+**[Parsing Data](docs/PARSING_DATA.md)** - How to get and parse data from Sealighter.
 
 **[Scenarios](docs/SCENARIOS.md)** - Walkthrough example scenarios of how I've used Sealighter in my research.
+
+**[Limitations](docs/LIMITATIONS.md)** - Things Sealighter doesn't do well or at all.
 
 
 # Props and further reading

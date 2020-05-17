@@ -384,6 +384,9 @@ int add_filters_to_vector
             (json_list, "max_events_id", "id_is", "max_events", pred_vector);
         add_filter_to_vector_basic<sealighter_any_field_contains, std::string>
             (json_list, "any_field_contains", pred_vector);
+
+        add_filter_to_vector_basic<sealighter_process_name_contains, std::string>
+            (json_list, "process_name_contains", pred_vector);
     }
     catch (const nlohmann::detail::exception& e) {
         printf("failed to add filters from config to provider\n");

@@ -1,6 +1,7 @@
 #include "sealighter_krabs.h"
 #include <sstream>
 #include <fstream>
+#include <codecvt>
 #include "sealighter_json.h"
 #include "sealighter_util.h"
 
@@ -19,6 +20,26 @@ std::string convert_json_string
     }
 }
 
+std::string convert_str_str_lowercase(
+    const std::string& from
+)
+{
+    std::string to = from;
+    std::transform(to.begin(), to.end(), to.begin(),
+        [](unsigned char c) { return std::tolower(c); });
+    return to;
+}
+
+
+std::wstring convert_wstr_wstr_lowercase(
+    const std::wstring& from
+)
+{
+    std::wstring to = from;
+    std::transform(to.begin(), to.end(), to.begin(),
+        [](unsigned char c) { return std::tolower(c); });
+    return to;
+}
 
 std::string convert_wstr_str
 (
@@ -39,68 +60,102 @@ std::wstring convert_str_wstr
     return to;
 }
 
+std::wstring convert_str_wstr_lowercase(
+    const std::string& from
+)
+{
+    std::string from_lower = convert_str_str_lowercase(from);
+    std::wstring to = convert_str_wstr(from_lower);
+    return to;
+}
+
+std::vector<BYTE> convert_str_bytes_lowercase(
+    const std::string& from
+)
+{
+    std::string from_lower = convert_str_str_lowercase(from);
+    std::vector<BYTE> to(from_lower.begin(), from_lower.end());
+    return to;
+}
+
+std::vector<BYTE> convert_str_wbytes_lowercase(
+    const std::string& from
+)
+{
+    std::wstring from_wide_lower = convert_str_wstr_lowercase(from);
+    BYTE* from_bytes = (BYTE*)from_wide_lower.c_str();
+    // Size returns string len, so double as they are widechars
+    // But don't copy in trailing NULL so we can match mid-string
+    size_t from_bytes_size = from_wide_lower.size() * sizeof(WCHAR);
+
+    std::vector<BYTE> to(from_bytes, from_bytes + from_bytes_size);
+    return to;
+}
 
 std::string convert_guid_str
 (
-    const GUID& in_guid
+    const GUID& from
 )
 {
     char guid_string[39]; // 2 braces + 32 hex chars + 4 hyphens + null terminator
     snprintf(
         guid_string, sizeof(guid_string),
         "{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}",
-        in_guid.Data1, in_guid.Data2, in_guid.Data3,
-        in_guid.Data4[0], in_guid.Data4[1], in_guid.Data4[2],
-        in_guid.Data4[3], in_guid.Data4[4], in_guid.Data4[5],
-        in_guid.Data4[6], in_guid.Data4[7]);
-    
-    return std::string(guid_string);
+        from.Data1, from.Data2, from.Data3,
+        from.Data4[0], from.Data4[1], from.Data4[2],
+        from.Data4[3], from.Data4[4], from.Data4[5],
+        from.Data4[6], from.Data4[7]);
+    std::string to(guid_string);
+    return to;
 }
 
 std::string convert_timestamp_string
 (
-    const LARGE_INTEGER timestamp
+    const LARGE_INTEGER from
 )
 {
     // Both LARGE_INTEGER timestamps and FILETIMES are
     // "100-nanosecond intervals since midnight, January 1, 1601"
     FILETIME ft;
 
-    ft.dwHighDateTime = timestamp.HighPart;
-    ft.dwLowDateTime = timestamp.LowPart;
-
-    return convert_filetime_string(ft);
+    ft.dwHighDateTime = from.HighPart;
+    ft.dwLowDateTime = from.LowPart;
+    
+    std::string to = convert_filetime_string(ft);
+    return to;
 }
 
 std::string convert_filetime_string
 (
-    const FILETIME ftime
+    const FILETIME from
 )
 {
     SYSTEMTIME stime;
-    ::FileTimeToSystemTime(std::addressof(ftime), std::addressof(stime));
-    return convert_systemtime_string(stime);
+    ::FileTimeToSystemTime(std::addressof(from), std::addressof(stime));
+    std::string to = convert_systemtime_string(stime);
+    return to;
 }
 
 
 std::string convert_systemtime_string
 (
-    const SYSTEMTIME stime
+    const SYSTEMTIME from
 )
 {
     std::ostringstream stm;
     const auto w2 = std::setw(2);
-    stm << std::setfill('0') << std::setw(4) << stime.wYear << '-' << w2 << stime.wMonth
-        << '-' << w2 << stime.wDay << ' ' << w2 << stime.wHour
-        << ':' << w2 << stime.wMinute << ':' << w2 << stime.wSecond << 'Z';
+    stm << std::setfill('0') << std::setw(4) << from.wYear << '-' << w2 << from.wMonth
+        << '-' << w2 << from.wDay << ' ' << w2 << from.wHour
+        << ':' << w2 << from.wMinute << ':' << w2 << from.wSecond << 'Z';
 
-    return stm.str();
+    std::string to = stm.str();
+    return to;
 }
 
 
 std::string convert_bytes_sidstring
 (
-    const std::vector<BYTE>& bytes
+    const std::vector<BYTE>& from
 )
 {
 #define MAX_NAME 256
@@ -109,53 +164,55 @@ std::string convert_bytes_sidstring
     DWORD user_name_size = MAX_NAME;
     DWORD domain_name_size = MAX_NAME;
     SID_NAME_USE name_use;
-    const BYTE* data = (bytes.data());
-    std::string output;
+    const BYTE* data = (from.data());
+    std::string to;
     if (LookupAccountSidA(NULL, (PSID)data, user_name, &user_name_size, domain_name, &domain_name_size, &name_use)) {
-        output = domain_name;
-        output += "\\";
-        output += user_name;
+        to = domain_name;
+        to += "\\";
+        to += user_name;
     }
     else {
         // Fallback to printing the raw bytes
-        output = convert_bytes_hexstring(bytes);
+        to = convert_bytes_hexstring(from);
     }
-    return output;
+    return to;
 }
 
 
 std::string convert_bytes_hexstring
 (
-    const std::vector<BYTE>& bytes
+    const std::vector<BYTE>& from
 )
 {
     std::ostringstream ss;
     ss << std::hex << std::uppercase << std::setfill('0');
-    for (int c : bytes) {
+    for (int c : from) {
         ss << std::setw(2) << c;
     }
-    return ss.str();
+
+    std::string to = ss.str();
+    return to;
 }
 
 
 int convert_bytes_sint32
 (
-    const std::vector<BYTE>& bytes
+    const std::vector<BYTE>& from
 )
 {
-    int ret = 0;
-    if (bytes.size() == 4) {
-        ret = (bytes[3] << 24) | (bytes[2] << 16) | (bytes[1] << 8) | (bytes[0]);
+    int to = 0;
+    if (from.size() == 4) {
+        to = (from[3] << 24) | (from[2] << 16) | (from[1] << 8) | (from[0]);
     }
-    return ret;
+    return to;
 }
 
 bool convert_bytes_bool
 (
-    const std::vector<BYTE>& bytes
+    const std::vector<BYTE>& from
 )
 {
-    if (convert_bytes_sint32(bytes)) {
+    if (convert_bytes_sint32(from)) {
         return true;
     }
     return false;

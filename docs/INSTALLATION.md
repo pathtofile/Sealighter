@@ -46,7 +46,7 @@ Once installed, in the Event Viewer UI under "Applications and Service Logs" you
 
 If you move Sealighter, run the command again. To uninstall the log, run:
 ```batch
-wevtutil um Sealighter
+wevtutil um path/to/sealighter_provider.man
 ```
 
 You can also change the size of the Log on disk in the Event Viewer UI, if you plan on recording a large number of events.

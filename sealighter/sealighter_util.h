@@ -14,6 +14,20 @@ std::string convert_json_string
 
 
 /*
+    Helper to convert string to a lowercase version of that string
+*/
+std::string convert_str_str_lowercase(
+    const std::string& from
+);
+
+/*
+    Helper to convert wstring to a lowercase version of that string
+*/
+std::wstring convert_wstr_wstr_lowercase(
+    const std::wstring& from
+);
+
+/*
     Helper to convert widestring to string
 */
 std::string convert_wstr_str
@@ -30,6 +44,27 @@ std::wstring convert_str_wstr(
 );
 
 /*
+    Helper to convert string to widestring lowercase
+*/
+std::wstring convert_str_wstr_lowercase(
+    const std::string& from
+);
+
+/*
+    Helper to convert string to lowercase byte vector
+*/
+std::vector<BYTE> convert_str_bytes_lowercase(
+    const std::string& from
+);
+
+/*
+    Helper to convert string to lowercase widechar byte vector
+*/
+std::vector<BYTE> convert_str_wbytes_lowercase(
+    const std::string& from
+);
+
+/*
     Helper to convert LARGE_INTEGER timestamp to string
     MSDN States this is:
         Time at which the information in this structure was updated,
@@ -39,7 +74,7 @@ std::wstring convert_str_wstr(
 */
 std::string convert_timestamp_string
 (
-    const LARGE_INTEGER timestamp
+    const LARGE_INTEGER from
 );
 
 
@@ -48,7 +83,7 @@ std::string convert_timestamp_string
 */
 std::string convert_filetime_string
 (
-    const FILETIME ftime
+    const FILETIME from
 );
 
 
@@ -57,7 +92,7 @@ std::string convert_filetime_string
 */
 std::string convert_systemtime_string
 (
-    const SYSTEMTIME stime
+    const SYSTEMTIME from
 );
 
 
@@ -67,7 +102,7 @@ std::string convert_systemtime_string
 */
 std::string convert_guid_str
 (
-    const GUID& in_guid
+    const GUID& from
 );
 
 
@@ -77,7 +112,7 @@ std::string convert_guid_str
 */
 std::string convert_bytes_sidstring
 (
-    const std::vector<BYTE>& bytes
+    const std::vector<BYTE>& from
 );
 
 
@@ -88,7 +123,7 @@ std::string convert_bytes_sidstring
 */
 std::string convert_bytes_hexstring
 (
-    const std::vector<BYTE>& bytes
+    const std::vector<BYTE>& from
 );
 
 
@@ -97,7 +132,7 @@ std::string convert_bytes_hexstring
 */
 int convert_bytes_sint32
 (
-    const std::vector<BYTE>& bytes
+    const std::vector<BYTE>& from
 );
 
 
@@ -108,7 +143,7 @@ int convert_bytes_sint32
 */
 bool convert_bytes_bool
 (
-    const std::vector<BYTE>& bytes
+    const std::vector<BYTE>& from
 );
 
 /*
