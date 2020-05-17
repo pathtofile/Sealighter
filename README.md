@@ -31,7 +31,7 @@ Projects like [JDU2600's Event List ](https://github.com/jdu2600/Windows10EtwEve
 In a way, this plays in a similar space as FuzzySec's [SilkETW](https://github.com/fireeye/SilkETW). But While Silk is more production-ready for defenders, this is designed for researchers like myself, and as such contains a number of features that I couldn't get with Silk, mostly due to the different Libary they used to power the tool. Please see [Here](docs/COMPARISION.md) for more information.
 
 # Intended Audience
-Probably someone who understands the basic of ETW, and really wants to dive into discovering what data you can glean from it.
+Probably someone who understands the basic of ETW, and really wants to dive into discovering what data you can glean from it, without having to write code or manually figure out how to get and parse events.
 
 # Getting Started
 
@@ -48,6 +48,9 @@ Please read the following pages:
 **[Scenarios](docs/SCENARIOS.md)** - Walkthrough example scenarios of how I've used Sealighter in my research.
 
 **[Limitations](docs/LIMITATIONS.md)** - Things Sealighter doesn't do well or at all.
+
+# Why it's called Sealighter
+The name is a contraction of [Seafood Highlighter](https://en.wikipedia.org/wiki/Seafood_extender), which is what we call fake crabmeat in Oz. As it's built on Krabs ETW, I thought the name was funny.
 
 
 # Props and further reading

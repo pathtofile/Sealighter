@@ -13,6 +13,7 @@
  - max_events_total
  - max_events_id
  - any_field_contains
+ - process_name_contains
 
 ## Property checks:
  - proprty_is
