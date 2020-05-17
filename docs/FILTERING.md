@@ -208,7 +208,7 @@ These are the types of propert filters:
     }
 }
 ```
-Words
+An event will be reported if the property exists, matches the type and value.
 
 
 ### property_equals/property_iequals
@@ -221,7 +221,7 @@ Words
     }
 }
 ```
-Words
+An event will be reported if the property exists, matches the type, and is equal to the value. `property_iequals` is the case-insensitive version.
 
 ### property_contains/property_icontains
 ```json
@@ -233,7 +233,7 @@ Words
     }
 }
 ```
-Words
+An event will be reported if the property exists, matches the type, and contains the value. `property_icontains` is the case-insensitive version.
 
 ### property_starts_with/property_istarts_with
 ```json
@@ -245,7 +245,7 @@ Words
     }
 }
 ```
-Words
+An event will be reported if the property exists, matches the type, and starts with the value. `property_istarts_with` is the case-insensitive version.
 
 ### property_ends_with/property_iends_with
 ```json
@@ -257,7 +257,7 @@ Words
     }
 }
 ```
-Words
+An event will be reported if the property exists, matches the type, and ends with the value. `property_iends_with` is the case-insensitive version.
 
 -------
 
