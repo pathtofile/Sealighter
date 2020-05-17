@@ -1,6 +1,6 @@
 #include <iostream>
-#include "emon_controller.h"
-#include "emon_errors.h"
+#include "sealighter_controller.h"
+#include "sealighter_errors.h"
 
 /*
     Main entrypoint
@@ -14,10 +14,10 @@ int main
     int status = 0;
     if (2 != argc) {
         printf("usage: %s <config_file>\n", argv[0]);
-        return EMON_ERROR_NOCONFIG;
+        return SEALIGHTER_ERROR_NOCONFIG;
     }
 
-    status = run_emon(argv[1]);
+    status = run_sealighter(argv[1]);
 
     return status;
 }

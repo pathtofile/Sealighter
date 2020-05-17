@@ -1,13 +1,13 @@
-#include "emon_krabs.h"
+#include "sealighter_krabs.h"
 #include <iostream>
 #include <fstream>
 #include <thread>
-#include "emon_errors.h"
-#include "emon_util.h"
-#include "emon_json.h"
-#include "emon_predicates.h"
-#include "emon_handler.h"
-#include "emon_provider.h"
+#include "sealighter_errors.h"
+#include "sealighter_util.h"
+#include "sealighter_json.h"
+#include "sealighter_predicates.h"
+#include "sealighter_handler.h"
+#include "sealighter_provider.h"
 
 // -------------------------
 // GLOBALS - START
@@ -125,7 +125,7 @@ void add_filter_to_vector_property_compare
                 add_filter_to_vector_property_compare_item<ComparerA, ComparerW>(item, list);
             }
             if (!list.empty()) {
-                pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
+                pred_vector.emplace_back(std::shared_ptr<sealighter_any_of>(new sealighter_any_of(list)));
             }
         }
         else {
@@ -149,53 +149,53 @@ void add_filter_to_vector_property_is_item
         std::string type = item["type"].get<std::string>();
         if (type == "STRINGA") {
             auto val = item["value"].get<std::string>();
-            list.emplace_back(std::shared_ptr<emon_property_is<std::string>>
-                (new emon_property_is<std::string>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::string>>
+                (new sealighter_property_is<std::string>(name, val)));
         }
         else if (type == "STRINGW") {
             auto val = convert_str_wstr(item["value"].get<std::string>());
-            list.emplace_back(std::shared_ptr<emon_property_is<std::wstring>>
-                (new emon_property_is<std::wstring>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::wstring>>
+                (new sealighter_property_is<std::wstring>(name, val)));
         }
         else if (type == "INT8") {
             auto val = item["value"].get<std::int8_t>();
-            list.emplace_back(std::shared_ptr<emon_property_is<std::int8_t>>
-                (new emon_property_is<std::int8_t>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::int8_t>>
+                (new sealighter_property_is<std::int8_t>(name, val)));
         }
         else if (type == "UINT8") {
             auto val = item["value"].get<std::uint8_t>();
-            list.emplace_back(std::shared_ptr<emon_property_is<std::uint8_t>>
-                (new emon_property_is<std::uint8_t>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::uint8_t>>
+                (new sealighter_property_is<std::uint8_t>(name, val)));
         }
         else if (type == "INT16") {
             auto val = item["value"].get<std::int16_t>();
-            list.emplace_back(std::shared_ptr<emon_property_is<std::int16_t>>
-                (new emon_property_is<std::int16_t>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::int16_t>>
+                (new sealighter_property_is<std::int16_t>(name, val)));
         }
         else if (type == "UINT16") {
             auto val = item["value"].get<std::uint16_t>();
-            list.emplace_back(std::shared_ptr<emon_property_is<std::uint16_t>>
-                (new emon_property_is<std::uint16_t>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::uint16_t>>
+                (new sealighter_property_is<std::uint16_t>(name, val)));
         }
         else if (type == "INT32") {
             auto val = item["value"].get<std::int32_t>();
-            list.emplace_back(std::shared_ptr<emon_property_is<std::int32_t>>
-                (new emon_property_is<std::int32_t>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::int32_t>>
+                (new sealighter_property_is<std::int32_t>(name, val)));
         }
         else if (type == "UINT32") {
             auto val = item["value"].get<std::uint32_t>();
-            list.emplace_back(std::shared_ptr<emon_property_is<std::uint32_t>>
-                (new emon_property_is<std::uint32_t>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::uint32_t>>
+                (new sealighter_property_is<std::uint32_t>(name, val)));
         }
         else if (type == "INT64") {
             auto val = item["value"].get<std::int64_t>();
-            list.emplace_back(std::shared_ptr<emon_property_is<std::int64_t>>
-                (new emon_property_is<std::int64_t>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::int64_t>>
+                (new sealighter_property_is<std::int64_t>(name, val)));
         }
         else if (type == "UINT64") {
             auto val = item["value"].get<std::uint64_t>();
-            list.emplace_back(std::shared_ptr<emon_property_is<std::uint64_t>>
-                (new emon_property_is<std::uint64_t>(name, val)));
+            list.emplace_back(std::shared_ptr<sealighter_property_is<std::uint64_t>>
+                (new sealighter_property_is<std::uint64_t>(name, val)));
         }
     }
     else {
@@ -226,7 +226,7 @@ void add_filter_to_vector_property_is
                 add_filter_to_vector_property_is_item(item, list);
             }
             if (!list.empty()) {
-                pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
+                pred_vector.emplace_back(std::shared_ptr<sealighter_any_of>(new sealighter_any_of(list)));
             }
         }
         else {
@@ -264,7 +264,7 @@ void add_filter_to_vector_basic_pair
                 }
             }
             if (!list.empty()) {
-                pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
+                pred_vector.emplace_back(std::shared_ptr<sealighter_any_of>(new sealighter_any_of(list)));
             }
         }
         else {
@@ -302,7 +302,7 @@ void add_filter_to_vector_basic
                 list.emplace_back(std::shared_ptr<TPred>(new TPred(item.get<TJson1>())));
             }
             if (!list.empty()) {
-                pred_vector.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
+                pred_vector.emplace_back(std::shared_ptr<sealighter_any_of>(new sealighter_any_of(list)));
             }
         }
         else {
@@ -378,17 +378,17 @@ int add_filters_to_vector
         >(json_list, "property_iends_with", pred_vector);
 
         // Add own own created Predicates
-        add_filter_to_vector_basic<emon_max_events_total, std::uint64_t>
+        add_filter_to_vector_basic<sealighter_max_events_total, std::uint64_t>
             (json_list, "max_events_total", pred_vector);
-        add_filter_to_vector_basic_pair<emon_max_events_id>
+        add_filter_to_vector_basic_pair<sealighter_max_events_id>
             (json_list, "max_events_id", "id_is", "max_events", pred_vector);
-        add_filter_to_vector_basic<emon_any_field_contains, std::string>
+        add_filter_to_vector_basic<sealighter_any_field_contains, std::string>
             (json_list, "any_field_contains", pred_vector);
     }
     catch (const nlohmann::detail::exception& e) {
         printf("failed to add filters from config to provider\n");
         printf("%s\n", e.what());
-        status = EMON_ERROR_PARSE_FILTER;
+        status = SEALIGHTER_ERROR_PARSE_FILTER;
     }    
     return status;
 }
@@ -424,7 +424,7 @@ int add_filters
             std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
             status = add_filters_to_vector(list, json_provider["filters"]["any_of"]);
             if (ERROR_SUCCESS == status) {
-                top_list.emplace_back(std::shared_ptr<emon_any_of>(new emon_any_of(list)));
+                top_list.emplace_back(std::shared_ptr<sealighter_any_of>(new sealighter_any_of(list)));
             }
         }
         if (ERROR_SUCCESS == status && !json_provider["filters"]["all_of"].is_null()) {
@@ -432,7 +432,7 @@ int add_filters
             std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
             status = add_filters_to_vector(list, json_provider["filters"]["all_of"]);
             if (ERROR_SUCCESS == status) {
-                top_list.emplace_back(std::shared_ptr<emon_all_of>(new emon_all_of(list)));
+                top_list.emplace_back(std::shared_ptr<sealighter_all_of>(new sealighter_all_of(list)));
             }
         }
         if (ERROR_SUCCESS == status && !json_provider["filters"]["none_of"].is_null()) {
@@ -440,13 +440,13 @@ int add_filters
             std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
             status = add_filters_to_vector(list, json_provider["filters"]["none_of"]);
             if (ERROR_SUCCESS == status) {
-                top_list.emplace_back(std::shared_ptr<emon_none_of>(new emon_none_of(list)));
+                top_list.emplace_back(std::shared_ptr<sealighter_none_of>(new sealighter_none_of(list)));
             }
         }
 
         // Add top level list to a filter
         if (ERROR_SUCCESS == status) {
-            emon_all_of top_pred = emon_all_of(top_list);
+            sealighter_all_of top_pred = sealighter_all_of(top_list);
             event_filter filter(top_pred);
             filter.add_on_event_callback((c_provider_callback)&handle_event);
             pNew_provider->add_filter(filter);
@@ -480,7 +480,7 @@ int add_kernel_providers
 
             if (json_provider["name"].is_null()) {
                 printf("Invalid Provider, missing name\n");
-                status = EMON_ERROR_PARSE_KERNEL_PROVIDER;
+                status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
                 break;
             }
             provider_name = json_provider["name"].get<std::string>();
@@ -565,7 +565,7 @@ int add_kernel_providers
             }
             else {
                 printf("Invalid Provider: %s\n", provider_name.c_str());
-                status = EMON_ERROR_PARSE_KERNEL_PROVIDER;
+                status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
                 break;
             }
 
@@ -585,7 +585,7 @@ int add_kernel_providers
     catch (const nlohmann::detail::exception & e) {
         printf("invalid kernel provider in config file\n");
         printf("%s\n", e.what());
-        status = EMON_ERROR_PARSE_KERNEL_PROVIDER;
+        status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
     }
     return status;
 }
@@ -612,7 +612,7 @@ int add_user_providers
             std::wstring provider_name;
             if (json_provider["name"].is_null()) {
                 printf("Invalid Provider\n");
-                status = EMON_ERROR_PARSE_USER_PROVIDER;
+                status = SEALIGHTER_ERROR_PARSE_USER_PROVIDER;
                 break;
             }
 
@@ -674,7 +674,7 @@ int add_user_providers
     catch (const nlohmann::detail::exception & e) {
         printf("invalid providers in config file\n");
         printf("%s\n", e.what());
-        status = EMON_ERROR_PARSE_USER_PROVIDER;
+        status = SEALIGHTER_ERROR_PARSE_USER_PROVIDER;
     }
     return status;
 }
@@ -692,11 +692,11 @@ int parse_config
     int     status = ERROR_SUCCESS;
     json    json_config;
     EVENT_TRACE_PROPERTIES  session_properties = { 0 };
-    std::wstring    session_name = L"EMon-Trace";
+    std::wstring    session_name = L"Sealighter-Trace";
 
     if (!file_exists(config_path)) {
         printf("Error: Config file doesn't exist\n");
-        return EMON_ERROR_MISSING_CONFIG;
+        return SEALIGHTER_ERROR_MISSING_CONFIG;
     }
 
     try {
@@ -752,7 +752,7 @@ int parse_config
                 else if ("file" == format) {
                     if (json_props["output_filename"].is_null()) {
                         printf("When output_format == 'file', also set 'output_filename'\n");
-                        status = EMON_ERROR_OUTPUT_FILE;
+                        status = SEALIGHTER_ERROR_OUTPUT_FILE;
                     }
                     else {
                         //g_output_format = Output_format::output_file;
@@ -762,7 +762,7 @@ int parse_config
                 }
                 else {
                     printf("Invalid output_format\n");
-                    status = EMON_ERROR_OUTPUT_FORMAT;
+                    status = SEALIGHTER_ERROR_OUTPUT_FORMAT;
                 }
                 printf("Output: %s\n", format.c_str());
             }
@@ -771,13 +771,13 @@ int parse_config
     catch (const nlohmann::detail::exception& e) {
         printf("invalid session properties in config file\n");
         printf("%s\n", e.what());
-        status = EMON_ERROR_PARSE_CONFIG_PROPS;
+        status = SEALIGHTER_ERROR_PARSE_CONFIG_PROPS;
     }
 
     if (ERROR_SUCCESS == status) {
         if (json_config["user_providers"].is_null() && json_config["kernel_providers"].is_null()) {
             printf("No User or Kernel providers in config file\n");
-            status = EMON_ERROR_PARSE_NO_PROVIDERS;
+            status = SEALIGHTER_ERROR_PARSE_NO_PROVIDERS;
         }
         else {
             if (!json_config["user_providers"].is_null()) {
@@ -810,7 +810,7 @@ void teardown()
     }
     
     // Unregister Event Logger
-    status = EventUnregisterEMon();
+    status = EventUnregisterSealighter();
     if (ERROR_SUCCESS != status) {
         printf("Error unregisting event logger: %ul\n", status);
     }
@@ -874,7 +874,7 @@ BOOL WINAPI crl_c_handler
 // -------------------------
 // PUBLIC FUNCTIONS - START
 // -------------------------
-int run_emon
+int run_sealighter
 (
     std::string config_path
 )
@@ -882,16 +882,16 @@ int run_emon
     int status = ERROR_SUCCESS;
 
     // Setup Event Logging
-    status = EventRegisterEMon();
+    status = EventRegisterSealighter();
     if (ERROR_SUCCESS != status) {
         printf("Error registering event log: %ul\n", status);
-        return EMON_ERROR_EVENTLOG_REGISTER;
+        return SEALIGHTER_ERROR_EVENTLOG_REGISTER;
     }
 
     // Add ctrl+C handler to make sure we stop the trace
     if (!SetConsoleCtrlHandler(crl_c_handler, true)) {
         printf("failed to set ctrl-c handler\n");
-        return EMON_ERROR_CTRL_C_REGISTER;
+        return SEALIGHTER_ERROR_CTRL_C_REGISTER;
     }
 
     // Parse config file
@@ -901,7 +901,7 @@ int run_emon
     }
     if (NULL == g_user_session && NULL == g_kernel_session) {
         printf("Failed to define any ETW Session\n");
-        return EMON_ERROR_NO_SESSION_CREATED;
+        return SEALIGHTER_ERROR_NO_SESSION_CREATED;
     }
     // Start Trace we've configured
     // Don't run multithreaded if we don't have to

@@ -1,10 +1,10 @@
-# EMon - Sysmon-Like tool for ETW
+# Sealighter - Sysmon-Like tool for ETW
 
 I created this project to help non-developers dive into researching Event Tracing for Windows (ETW) and Windows PreProcessor Tracing(WPP).
 
 It leverages the feature-rich [Krabs ETW]([htttps://](https://github.com/microsoft/krabsetw)) Library to enable detailed filtering and triage of ETW and WPP Providers and Events.
 
-You can subscribe and filter multiple provers, including Usermode Providers, Kernel Tracing, and WPP Tracing, and output events as JSON to either stdout, a file, or the Windows Event Log (useful for high-volume traces like `FileIO`). No knowledge of the events the provider may produce, or their format, is nesesary, EMon automatically captures and parses any events it is asked to.
+You can subscribe and filter multiple provers, including Usermode Providers, Kernel Tracing, and WPP Tracing, and output events as JSON to either stdout, a file, or the Windows Event Log (useful for high-volume traces like `FileIO`). No knowledge of the events the provider may produce, or their format, is nesesary, Sealighter automatically captures and parses any events it is asked to.
 
 Events can then be parsed from JSON in Python, PowerShell, or forwarded to Splunk or ELK for further searching.
 
@@ -37,20 +37,20 @@ Probably someone who understands the basic of ETW, and really wants to dive into
 
 Please read the following pages:
 
-**[Installation](docs/INSTALLATION.md)** - How to start running EMon, including a simple config, and how to setup Windows Event logging if required.
+**[Installation](docs/INSTALLATION.md)** - How to start running Sealighter, including a simple config, and how to setup Windows Event logging if required.
 
-**[Configuration](docs/CONFIGURATION.md)** - How to configure EMon, including how to specify what Providers to Log, and where to log to.
+**[Configuration](docs/CONFIGURATION.md)** - How to configure Sealighter, including how to specify what Providers to Log, and where to log to.
 
-**[Filtering](docs/FILTERING.md)** - Deep dive into all the types of filtering EMon provides
+**[Filtering](docs/FILTERING.md)** - Deep dive into all the types of filtering Sealighter provides
 
-**[Parsing Data](docs/PARSING_DATA.md)** - How to get and parse data from EMon
+**[Parsing Data](docs/PARSING_DATA.md)** - How to get and parse data from Sealighter
 
-**[Scenarios](docs/SCENARIOS.md)** - Walkthrough example scenarios of how I've used EMon in my research.
+**[Scenarios](docs/SCENARIOS.md)** - Walkthrough example scenarios of how I've used Sealighter in my research.
 
 
 # Props and further reading
 - [Great Blog on ETW and WPP from  Matt Graeber](https://posts.specterops.io/data-source-analysis-and-dynamic-windows-re-using-wpp-and-tracelogging-e465f8b653f7)
 - [JDU2600's Event List ](https://github.com/jdu2600/Windows10EtwEvents)
 - [ETWExplorer](https://github.com/zodiacon/EtwExplorer)
-- [Krabs ETW, the library that powers EMon](https://github.com/microsoft/krabsetw)
+- [Krabs ETW, the library that powers Sealighter](https://github.com/microsoft/krabsetw)
 - [SilkETW](https://github.com/fireeye/SilkETW)

@@ -547,48 +547,48 @@ Remarks:
 #endif // MCGEN_DISABLE_PROVIDER_CODE_GENERATION
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Provider "EMon" event count 2
+// Provider "Sealighter" event count 2
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 // Provider GUID = cdd5f0cc-ab0c-4abe-97b2-cc82b7e68f30
-EXTERN_C __declspec(selectany) const GUID EMON_PROVIDER = {0xcdd5f0cc, 0xab0c, 0x4abe, {0x97, 0xb2, 0xcc, 0x82, 0xb7, 0xe6, 0x8f, 0x30}};
+EXTERN_C __declspec(selectany) const GUID SEALIGHTER_PROVIDER = {0xcdd5f0cc, 0xab0c, 0x4abe, {0x97, 0xb2, 0xcc, 0x82, 0xb7, 0xe6, 0x8f, 0x30}};
 
-#ifndef EMON_PROVIDER_Traits
-#define EMON_PROVIDER_Traits NULL
-#endif // EMON_PROVIDER_Traits
+#ifndef SEALIGHTER_PROVIDER_Traits
+#define SEALIGHTER_PROVIDER_Traits NULL
+#endif // SEALIGHTER_PROVIDER_Traits
 
 //
 // Channel
 //
-#define EMON_OPERATIONAL 0x10
+#define SEALIGHTER_OPERATIONAL 0x10
 
 //
 // Opcodes
 //
-#define EMON_REPORT_OPCODE 0xa
-#define EMON_CONTROL_OPCODE 0xb
+#define SEALIGHTER_REPORT_OPCODE 0xa
+#define SEALIGHTER_CONTROL_OPCODE 0xb
 
 //
 // Tasks
 //
-#define EMON_REPORT_TASK 0x1
+#define SEALIGHTER_REPORT_TASK 0x1
 EXTERN_C __declspec(selectany) const GUID ReportId = {0xf87d5c2b, 0xe51e, 0x466b, {0xac, 0x10, 0x54, 0xd2, 0x31, 0x22, 0x0f, 0x98}};
-#define EMON_CONTROL_TASK 0x2
+#define SEALIGHTER_CONTROL_TASK 0x2
 EXTERN_C __declspec(selectany) const GUID ControlId = {0x287b4aac, 0xf144, 0x4dc6, {0xa3, 0xca, 0x0e, 0xe8, 0x41, 0xcb, 0xcf, 0x3b}};
 
 //
 // Keyword
 //
-#define EMON_REPORT_KEYWORD 0x1
-#define EMON_CONTROL_KEYWORD 0x2
+#define SEALIGHTER_REPORT_KEYWORD 0x1
+#define SEALIGHTER_CONTROL_KEYWORD 0x2
 
 //
 // Event Descriptors
 //
-EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR EMON_REPORT_EVENT = {0x1, 0x1, 0x10, 0x4, 0xa, 0x1, 0x8000000000000001};
-#define EMON_REPORT_EVENT_value 0x1
-EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR EMON_CONTROL_EVENT = {0x2, 0x1, 0x10, 0x4, 0xb, 0x2, 0x8000000000000002};
-#define EMON_CONTROL_EVENT_value 0x2
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR SEALIGHTER_REPORT_EVENT = {0x1, 0x1, 0x10, 0x4, 0xa, 0x1, 0x8000000000000001};
+#define SEALIGHTER_REPORT_EVENT_value 0x1
+EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR SEALIGHTER_CONTROL_EVENT = {0x2, 0x1, 0x10, 0x4, 0xb, 0x2, 0x8000000000000002};
+#define SEALIGHTER_CONTROL_EVENT_value 0x2
 
 //
 // MCGEN_DISABLE_PROVIDER_CODE_GENERATION macro:
@@ -600,25 +600,25 @@ EXTERN_C __declspec(selectany) const EVENT_DESCRIPTOR EMON_CONTROL_EVENT = {0x2,
 //
 // Event Enablement Bits
 //
-EXTERN_C __declspec(selectany) DECLSPEC_CACHEALIGN ULONG EMonEnableBits[1];
-EXTERN_C __declspec(selectany) const ULONGLONG EMonKeywords[2] = {0x8000000000000001, 0x8000000000000002};
-EXTERN_C __declspec(selectany) const unsigned char EMonLevels[2] = {4, 4};
+EXTERN_C __declspec(selectany) DECLSPEC_CACHEALIGN ULONG SealighterEnableBits[1];
+EXTERN_C __declspec(selectany) const ULONGLONG SealighterKeywords[2] = {0x8000000000000001, 0x8000000000000002};
+EXTERN_C __declspec(selectany) const unsigned char SealighterLevels[2] = {4, 4};
 
 //
 // Provider context
 //
-EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT EMON_PROVIDER_Context = {0, (ULONG_PTR)EMON_PROVIDER_Traits, 0, 0, 0, 0, 0, 0, 2, EMonEnableBits, EMonKeywords, EMonLevels};
+EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT SEALIGHTER_PROVIDER_Context = {0, (ULONG_PTR)SEALIGHTER_PROVIDER_Traits, 0, 0, 0, 0, 0, 0, 2, SealighterEnableBits, SealighterKeywords, SealighterLevels};
 
 //
 // Provider REGHANDLE
 //
-#define EMonHandle (EMON_PROVIDER_Context.RegistrationHandle)
+#define SealighterHandle (SEALIGHTER_PROVIDER_Context.RegistrationHandle)
 
 //
 // This macro is set to 0, indicating that the EventWrite[Name] macros do not
 // have an Activity parameter. This is controlled by the -km and -um options.
 //
-#define EMON_PROVIDER_EventWriteActivity 0
+#define SEALIGHTER_PROVIDER_EventWriteActivity 0
 
 //
 // Register with ETW using the control GUID specified in the manifest.
@@ -629,16 +629,16 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT EMON_PROVIDER_Context = {0, (
 // returns an error, it is generally safe to use EventWrite and
 // EventUnregister macros (they will be no-ops if EventRegister failed).
 //
-#ifndef EventRegisterEMon
-#define EventRegisterEMon() McGenEventRegister(&EMON_PROVIDER, McGenControlCallbackV2, &EMON_PROVIDER_Context, &EMonHandle)
+#ifndef EventRegisterSealighter
+#define EventRegisterSealighter() McGenEventRegister(&SEALIGHTER_PROVIDER, McGenControlCallbackV2, &SEALIGHTER_PROVIDER_Context, &SealighterHandle)
 #endif
 
 //
 // Register with ETW using a specific control GUID (i.e. a GUID other than what
 // is specified in the manifest). Advanced scenarios only.
 //
-#ifndef EventRegisterByGuidEMon
-#define EventRegisterByGuidEMon(Guid) McGenEventRegister(&(Guid), McGenControlCallbackV2, &EMON_PROVIDER_Context, &EMonHandle)
+#ifndef EventRegisterByGuidSealighter
+#define EventRegisterByGuidSealighter(Guid) McGenEventRegister(&(Guid), McGenControlCallbackV2, &SEALIGHTER_PROVIDER_Context, &SealighterHandle)
 #endif
 
 //
@@ -649,37 +649,37 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT EMON_PROVIDER_Context = {0, (
 // (not optional): failure to unregister a provider before DLL or driver unload
 // will result in crashes.
 //
-#ifndef EventUnregisterEMon
-#define EventUnregisterEMon() McGenEventUnregister(&EMonHandle)
+#ifndef EventUnregisterSealighter
+#define EventUnregisterSealighter() McGenEventUnregister(&SealighterHandle)
 #endif
 
 //
-// Enablement check macro for EMON_REPORT_EVENT
+// Enablement check macro for SEALIGHTER_REPORT_EVENT
 //
-#define EventEnabledEMON_REPORT_EVENT() MCGEN_EVENT_BIT_SET(EMonEnableBits, 0)
+#define EventEnabledSEALIGHTER_REPORT_EVENT() MCGEN_EVENT_BIT_SET(SealighterEnableBits, 0)
 
 //
-// Event write macros for EMON_REPORT_EVENT
+// Event write macros for SEALIGHTER_REPORT_EVENT
 //
-#define EventWriteEMON_REPORT_EVENT(json, event_id, event_name, thread_id, timestamp, event_flags, event_opcode, event_version, process_id, provider_name) \
-        MCGEN_EVENT_ENABLED(EMON_REPORT_EVENT) \
-        ? McTemplateU0shzqihuuqz(&EMON_PROVIDER_Context, &EMON_REPORT_EVENT, json, event_id, event_name, thread_id, timestamp, event_flags, event_opcode, event_version, process_id, provider_name) : 0
-#define EventWriteEMON_REPORT_EVENT_AssumeEnabled(json, event_id, event_name, thread_id, timestamp, event_flags, event_opcode, event_version, process_id, provider_name) \
-        McTemplateU0shzqihuuqz(&EMON_PROVIDER_Context, &EMON_REPORT_EVENT, json, event_id, event_name, thread_id, timestamp, event_flags, event_opcode, event_version, process_id, provider_name)
+#define EventWriteSEALIGHTER_REPORT_EVENT(json, event_id, event_name, thread_id, timestamp, event_flags, event_opcode, event_version, process_id, provider_name) \
+        MCGEN_EVENT_ENABLED(SEALIGHTER_REPORT_EVENT) \
+        ? McTemplateU0shzqihuuqz(&SEALIGHTER_PROVIDER_Context, &SEALIGHTER_REPORT_EVENT, json, event_id, event_name, thread_id, timestamp, event_flags, event_opcode, event_version, process_id, provider_name) : 0
+#define EventWriteSEALIGHTER_REPORT_EVENT_AssumeEnabled(json, event_id, event_name, thread_id, timestamp, event_flags, event_opcode, event_version, process_id, provider_name) \
+        McTemplateU0shzqihuuqz(&SEALIGHTER_PROVIDER_Context, &SEALIGHTER_REPORT_EVENT, json, event_id, event_name, thread_id, timestamp, event_flags, event_opcode, event_version, process_id, provider_name)
 
 //
-// Enablement check macro for EMON_CONTROL_EVENT
+// Enablement check macro for SEALIGHTER_CONTROL_EVENT
 //
-#define EventEnabledEMON_CONTROL_EVENT() MCGEN_EVENT_BIT_SET(EMonEnableBits, 1)
+#define EventEnabledSEALIGHTER_CONTROL_EVENT() MCGEN_EVENT_BIT_SET(SealighterEnableBits, 1)
 
 //
-// Event write macros for EMON_CONTROL_EVENT
+// Event write macros for SEALIGHTER_CONTROL_EVENT
 //
-#define EventWriteEMON_CONTROL_EVENT() \
-        MCGEN_EVENT_ENABLED(EMON_CONTROL_EVENT) \
-        ? McTemplateU0(&EMON_PROVIDER_Context, &EMON_CONTROL_EVENT) : 0
-#define EventWriteEMON_CONTROL_EVENT_AssumeEnabled() \
-        McTemplateU0(&EMON_PROVIDER_Context, &EMON_CONTROL_EVENT)
+#define EventWriteSEALIGHTER_CONTROL_EVENT() \
+        MCGEN_EVENT_ENABLED(SEALIGHTER_CONTROL_EVENT) \
+        ? McTemplateU0(&SEALIGHTER_PROVIDER_Context, &SEALIGHTER_CONTROL_EVENT) : 0
+#define EventWriteSEALIGHTER_CONTROL_EVENT_AssumeEnabled() \
+        McTemplateU0(&SEALIGHTER_PROVIDER_Context, &SEALIGHTER_CONTROL_EVENT)
 
 #endif // MCGEN_DISABLE_PROVIDER_CODE_GENERATION
 
@@ -694,7 +694,7 @@ EXTERN_C __declspec(selectany) MCGEN_TRACE_CONTEXT EMON_PROVIDER_Context = {0, (
 // Template Functions
 //
 //
-//Template from manifest : EMON_CONTROL_TEMPLATE
+//Template from manifest : SEALIGHTER_CONTROL_TEMPLATE
 //
 #ifndef McTemplateU0_def
 #define McTemplateU0_def
@@ -714,7 +714,7 @@ McTemplateU0(
 #endif // McTemplateU0_def
 
 //
-//Template from manifest : EMON_REPORT_TEMPLATE
+//Template from manifest : SEALIGHTER_REPORT_TEMPLATE
 //
 #ifndef McTemplateU0shzqihuuqz_def
 #define McTemplateU0shzqihuuqz_def
@@ -775,13 +775,13 @@ McTemplateU0shzqihuuqz(
 };
 #endif
 
-#define MSG_EMON_PROVIDER_Keyword_EMON_REPORT_message 0x10000001L
-#define MSG_EMON_PROVIDER_Keyword_EMON_CONTROL_message 0x10000002L
-#define MSG_EMON_PROVIDER_opcode_EMON_REPORT_OPCODE_message 0x3000000AL
-#define MSG_EMON_PROVIDER_opcode_EMON_CONTROL_OPCODE_message 0x3000000BL
+#define MSG_SEALIGHTER_PROVIDER_Keyword_SEALIGHTER_REPORT_message 0x10000001L
+#define MSG_SEALIGHTER_PROVIDER_Keyword_SEALIGHTER_CONTROL_message 0x10000002L
+#define MSG_SEALIGHTER_PROVIDER_opcode_SEALIGHTER_REPORT_OPCODE_message 0x3000000AL
+#define MSG_SEALIGHTER_PROVIDER_opcode_SEALIGHTER_CONTROL_OPCODE_message 0x3000000BL
 #define MSG_level_Informational              0x50000004L
-#define MSG_EMon_task_EMON_REPORT_TASK_message 0x70000001L
-#define MSG_EMon_task_EMON_CONTROL_TASK_message 0x70000002L
-#define MSG_EMON_PROVIDER_channel_EMON_OPERATIONAL_message 0x90000001L
-#define MSG_EMon_event_1_message             0xB0010001L
-#define MSG_EMon_event_2_message             0xB0010002L
+#define MSG_Sealighter_task_SEALIGHTER_REPORT_TASK_message 0x70000001L
+#define MSG_Sealighter_task_SEALIGHTER_CONTROL_TASK_message 0x70000002L
+#define MSG_SEALIGHTER_PROVIDER_channel_SEALIGHTER_OPERATIONAL_message 0x90000001L
+#define MSG_Sealighter_event_1_message             0xB0010001L
+#define MSG_Sealighter_event_2_message             0xB0010002L

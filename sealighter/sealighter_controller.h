@@ -2,9 +2,9 @@
 
 
 /*
- * Start EMon
+ * Start Sealighter
  */
-int run_emon
+int run_sealighter
 (
     std::string config_path
 );

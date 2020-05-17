@@ -1,6 +1,6 @@
 # Configuration File
 
-The EMon config file is how you specifiy what events from what providers to log, how to log them, and other ETW session properties.
+The Sealighter config file is how you specifiy what events from what providers to log, how to log them, and other ETW session properties.
 
 The file is in JSON. An example config file looks like this:
 ```json
@@ -51,7 +51,7 @@ You can specify the following options:
 
 ### session_name
 The name of the ETW Session.
-Default: EMon
+Default: Sealighter
 
 ### output_format
 Where to output the events to. Can be one of:
@@ -114,7 +114,7 @@ For WPP Traces, this *must* be the GUID.
 ### keywords_any
 Only report on Events that has these at least some of these keyword flags. See [Scenarios](SCENARIOS.md) for examples on finding information on a provider's kywords.
 
-Whilst you can also use filters to filter based on keywords (fileters explainer later), the `keywords_any` filtering happens in the Kernel, instead of in userland inside EMon, and is therefore much more efficient to filter.
+Whilst you can also use filters to filter based on keywords (fileters explainer later), the `keywords_any` filtering happens in the Kernel, instead of in userland inside Sealighter, and is therefore much more efficient to filter.
 
 It is advices to `keywords_any` as much as possible to ensure you don't drop any events.
 

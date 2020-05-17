@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by eMon.rc
+// Used by sealighter.rc
 //
 
 // Next default values for new objects

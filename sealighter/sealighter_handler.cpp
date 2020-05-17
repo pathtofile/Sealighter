@@ -1,8 +1,8 @@
-#include "emon_krabs.h"
-#include "emon_handler.h"
-#include "emon_errors.h"
-#include "emon_util.h"
-#include "emon_provider.h"
+#include "sealighter_krabs.h"
+#include "sealighter_handler.h"
+#include "sealighter_errors.h"
+#include "sealighter_util.h"
+#include "sealighter_provider.h"
 
 #include <iostream>
 #include <fstream>
@@ -57,7 +57,7 @@ void write_event_log
 {
     DWORD status = ERROR_SUCCESS;
 
-    status = EventWriteEMON_REPORT_EVENT(
+    status = EventWriteSEALIGHTER_REPORT_EVENT(
         event_string.c_str(),
         (USHORT)schema.event_id(),
         schema.event_name(),
@@ -70,7 +70,7 @@ void write_event_log
         schema.provider_name()
     );
 
-    //status = EventWriteEMON_REPORT_EVENT(event_string.c_str());
+    //status = EventWriteSEALIGHTER_REPORT_EVENT(event_string.c_str());
 
     if (status != ERROR_SUCCESS) {
         printf("Error %ul line %d\n", status, __LINE__);
@@ -306,7 +306,7 @@ int setup_logger_file
         return ERROR_SUCCESS;
     }
     else {
-        return EMON_ERROR_OUTPUT_FILE;
+        return SEALIGHTER_ERROR_OUTPUT_FILE;
     }
 }
 

@@ -18,9 +18,9 @@ with open("output.json", "r") as f:
 ```
 
 ## Parsing Event Logs
-If the `output_format` was `event_log`, the events are written to the `Emon/Operational` Event Log. You can use PowerShell to get and parse these Events:
+If the `output_format` was `event_log`, the events are written to the `Sealighter/Operational` Event Log. You can use PowerShell to get and parse these Events:
 ```powershell
-$events = Get-WinEvent -LogName "Emon/Operational"
+$events = Get-WinEvent -LogName "Sealighter/Operational"
 
 foreach ($event in $events) {
     $event_name = $event.Properties[2].Value
