@@ -86,6 +86,9 @@ Sealighter will attempt to parse every property of every event based upon the pr
 To assist in writing [filters](FILTERING.md), we also log the `TDH_INTYPE` of each property. This can also help if you do wish to write your own code to parse specific events.
 
 
+_____________
+
+
 # Parsing Data
 
 ## Parsing Output Files

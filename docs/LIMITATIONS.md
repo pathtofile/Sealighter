@@ -15,8 +15,4 @@ I mainly work in C, and resort to it more than I probably should, so some of the
 
 
 # TODO before v1.0
- * Fix EventLog Message:
-   * task_name
-   * activity_id
-
  * Document everything!
