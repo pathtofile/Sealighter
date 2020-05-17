@@ -89,20 +89,20 @@ _____________
 # user_providers
 This is an array of the Usermode or WPP provders you want to subscribe to, e.g.:
 ```json
-    "user_providers": [
-        {
-            "name": "Microsoft-Windows-Kernel-Process",
-            "keywords_any": 16
-        },
-        {
-            "name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
-            "filters": {
-                "any_of": {
-                    "opcode_is": [1, 2]
-                }
+"user_providers": [
+    {
+        "name": "Microsoft-Windows-Kernel-Process",
+        "keywords_any": 16
+    },
+    {
+        "name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
+        "filters": {
+            "any_of": {
+                "opcode_is": [1, 2]
             }
-        },
-    ]
+        }
+    },
+]
 ```
 
 User Providers have the following options, all are optional except for `name`:

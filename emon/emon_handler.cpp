@@ -100,7 +100,9 @@ void threaded_write_file_ln
 */
 std::string parse_event_to_json
 (
-    krabs::schema   schema,
+    const EVENT_RECORD&,
+    const trace_context&,
+    krabs::schema       schema,
     const   bool    pretty_print
 )
 {
@@ -110,15 +112,17 @@ std::string parse_event_to_json
     json json_header = {
         { "event_id", schema.event_id() },
         { "event_name", convert_wstr_str(schema.event_name()) },
+        { "task_name", convert_wstr_str(schema.task_name()) },
         { "thread_id", schema.thread_id() },
-        { "timestamp", schema.timestamp().QuadPart },
+        { "timestamp", convert_timestamp_string(schema.timestamp()) },
         { "event_flags", schema.event_flags() },
         { "event_opcode", schema.event_opcode() },
         { "event_version", schema.event_version() },
         { "process_id", schema.process_id()},
-        { "provider_name", convert_wstr_str(schema.provider_name()) }
+        { "provider_name", convert_wstr_str(schema.provider_name()) },
+        { "activity_id", convert_guid_str(schema.activity_id()) }
     };
-    
+
     json json_event = { {"header", json_header} };
 
     for (krabs::property& prop : parser.properties())
@@ -269,10 +273,10 @@ void handle_event
     // If writing to a file, don't pretty print
     // This makes it 1 line per event
     if (Output_format::output_file == g_output_format) {
-        event_string = parse_event_to_json(schema, false);
+        event_string = parse_event_to_json(record, trace_context, schema, false);
     }
     else {
-        event_string = parse_event_to_json(schema, true);
+        event_string = parse_event_to_json(record, trace_context, schema, true);
     }
 
     // Log event if we successfully parsed it
