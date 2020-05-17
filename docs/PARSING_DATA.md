@@ -20,7 +20,7 @@ Events are outputted as JSON, for example:
         "thread_id": 25932,
         "timestamp": "2020-05-17 11:54:24Z"
     },
-    "payload": {
+    "properties": {
         "CreateTime": "2020-05-17 11:54:24Z",
         "Flags": 0,
         "ImageChecksum": 219193,
@@ -37,7 +37,7 @@ Events are outputted as JSON, for example:
         "SessionID": 4,
         "TimeDateStamp": 587902357
     },
-    "payload_types": {
+    "property_types": {
         "CreateTime": "FILETIME",
         "Flags": "UINT32",
         "ImageChecksum": "UINT32",
@@ -59,8 +59,8 @@ Events are outputted as JSON, for example:
 
 There are 3 sections to the JSON:
  - [header](#header)
- - [payload](#payload)
- - [payload_types](#payload_types)
+ - [properties](#properties)
+ - [property_types](#property_types)
 
 ## header
 This section is the same for every event, and contains the event metadata.
@@ -77,12 +77,12 @@ It will always contains these fields, which are taken from the Event Header:
 - thread_id
 - timestamp
 
-## payload
-This is the meat of the event. Unique to every event type, and sometimes even events of the same event ID can have different payloads.
+## properties
+This is the meat of the event. Unique to every event type, and sometimes even events of the same event ID can have different properties.
 
 Sealighter will attempt to parse every property of every event based upon the property's `TDH_INTYPE`. If the Event does not supply this information, or it's `INTYPE` isn't a simple number, GUID, or string, the property data will be the hex encoded bytes.
 
-## payload_types
+## property_types
 To assist in writing [filters](FILTERING.md), we also log the `TDH_INTYPE` of each property. This can also help if you do wish to write your own code to parse specific events.
 
 
