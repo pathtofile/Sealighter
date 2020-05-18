@@ -105,6 +105,24 @@ std::string convert_guid_str
     const GUID& from
 );
 
+/*
+    Helper to convert widestring to GUID.
+    If this fails the GUID will be NULL_GUID
+*/
+GUID convert_wstr_guid
+(
+    std::wstring from
+);
+
+/*
+    Helper to convert string to GUID.
+    If this fails the GUID will be NULL_GUID
+*/
+GUID convert_str_guid
+(
+    std::string from
+);
+
 
 /*
     Helper to convert byte array to string,

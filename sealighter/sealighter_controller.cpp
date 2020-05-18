@@ -384,9 +384,10 @@ int add_filters_to_vector
             (json_list, "max_events_id", "id_is", "max_events", pred_vector);
         add_filter_to_vector_basic<sealighter_any_field_contains, std::string>
             (json_list, "any_field_contains", pred_vector);
-
         add_filter_to_vector_basic<sealighter_process_name_contains, std::string>
             (json_list, "process_name_contains", pred_vector);
+        add_filter_to_vector_basic<sealighter_activity_id_is, std::string>
+            (json_list, "activity_id_is", pred_vector);
     }
     catch (const nlohmann::detail::exception& e) {
         printf("failed to add filters from config to provider\n");
@@ -622,8 +623,8 @@ int add_user_providers
             // If provider_name is a GUID, use that
             // Otherwise pass it off to Krabs to try to resolve
             provider_name = convert_str_wstr(json_provider["name"].get<std::string>());
-            if (S_OK == CLSIDFromString(provider_name.c_str(),
-                                        (LPCLSID)&provider_guid)) {
+            provider_guid = convert_wstr_guid(provider_name);
+            if (provider_guid != GUID_NULL) {
                 pNew_provider = new provider<>(provider_guid);
             }
             else {

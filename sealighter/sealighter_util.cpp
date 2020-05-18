@@ -109,6 +109,30 @@ std::string convert_guid_str
     return to;
 }
 
+/*
+    Helper to convert byte array to string,
+    treating the bytes as a GUID
+*/
+GUID convert_wstr_guid
+(
+    std::wstring from
+)
+{
+    GUID to = GUID_NULL;
+    (void)CLSIDFromString(from.c_str(), (LPCLSID)&to);
+
+    return to;
+}
+GUID convert_str_guid
+(
+    std::string from
+)
+{
+    GUID to = GUID_NULL;
+    (void)CLSIDFromString(convert_str_wstr(from).c_str(), (LPCLSID)&to);
+    return to;
+}
+
 std::string convert_timestamp_string
 (
     const LARGE_INTEGER from

@@ -313,3 +313,24 @@ private:
     std::string process_name_;
 };
 
+/**
+ * <summary>
+ *   Accepts an event if it the Process name of the process that
+     created this event matches.
+ * </summary>
+ */
+struct sealighter_activity_id_is : predicates::details::predicate_base {
+    sealighter_activity_id_is(std::string guid_match)
+        : guid_match_(convert_str_guid(guid_match))
+    {}
+
+    bool operator()(const EVENT_RECORD& record, const trace_context& trace_context) const {
+        schema schema(record, trace_context.schema_locator);
+        if (guid_match_ == schema.activity_id()) {
+            return true;
+        }
+        return false;
+    }
+private:
+    GUID guid_match_;
+};

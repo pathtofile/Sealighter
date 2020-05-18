@@ -106,6 +106,7 @@ The possible filters are:
    - [opcode_is](#opcode_is)
    - [process_id_is](#process_id_is)
    - [version_is](#version_is)
+   - [activity_id_is](#activity_id_is)
    - [process_name_contains](#process_name_contains)
  - [Property Filters](#Property%20Filters)
    - [property_is](#property_is)
@@ -114,7 +115,7 @@ The possible filters are:
    - [property_starts_with/property_istarts_with](#property_starts_with/property_istarts_with)
    - [property_ends_with/property_iends_with](#property_ends_with/property_iends_with)
  - [Discovery Filters](#Discovery%20Filters)
-   - [max_events_total](#any_field_contains)
+   - [any_field_contains](#any_field_contains)
    - [max_events_total](#max_events_total)
    - [max_events_id](#max_events_id)
 
@@ -155,6 +156,14 @@ An event will be reported if the PID of the process that generated the event mat
 }
 ```
 An event will be reported if its Event version matches this number.
+
+### activity_id_is
+```json
+"any_of": {
+    "activity_id_is": "{00000000-0000-0000-0000-000000000000}"
+}
+```
+An event will be reported if its Event Activity ID matches this number. If an Event does not have an Activity ID, it will be a NULL GUID (i.e. all zeros). You can therefore use `activity_id_is` in the `none_of` list to filter out any events that do *not* have an activity ID.
 
 ### process_name_contains
 ```json
