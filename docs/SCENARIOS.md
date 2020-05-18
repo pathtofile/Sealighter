@@ -14,7 +14,8 @@ Prefably we would demonstrate events with matching activity IDs across providers
 
 
 # Track process execution
-Using `process_name_contains` with multiple providers at once
+Using `process_name_contains` with multiple providers at once.
+Use Zack Brown's blog as template: https://zacbrown.org/2017/04/11/hidden-treasure-intrusion-detection-with-etw-part-1
 
 # Find data in any field
 Using `any_field_contains` to find exec in ShellExecute WPP trace (i.e. a trace with no prior event data)
