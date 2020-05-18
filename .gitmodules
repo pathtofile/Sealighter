@@ -1,4 +1,7 @@
 [submodule "krabsetw"]
 	path = krabsetw
 	url = git@github.com:pathtofile/krabsetw.git
-	branch = fix/NativeAddAdditionalIncludeDir
+	branch = master
+[submodule "json"]
+	path = json
+	url = https://github.com/nlohmann/json.git

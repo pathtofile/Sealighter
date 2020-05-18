@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<instrumentationManifest xsi:schemaLocation="http://schemas.microsoft.com/win/2004/08/events eventman.xsd" xmlns="http://schemas.microsoft.com/win/2004/08/events" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:trace="http://schemas.microsoft.com/win/2004/08/events/trace">
+	<instrumentation>
+		<events>
+			<provider name="Sealighter" guid="{CDD5F0CC-AB0C-4ABE-97B2-CC82B7E68F30}" symbol="SEALIGHTER_PROVIDER" resourceFileName="!!SEALIGHTER_LOCATION!!" messageFileName="!!SEALIGHTER_LOCATION!!">
+				<events>
+					<event symbol="SEALIGHTER_REPORT_EVENT" value="1" version="1" channel="Sealighter/Operational" level="win:Informational" task="Report" opcode="Report" template="SEALIGHTER_REPORT_TEMPLATE" keywords="Report " message="$(string.Sealighter.event.1.message)"></event>
+				</events>
+				<levels></levels>
+				<tasks>
+					<task name="Report" symbol="SEALIGHTER_REPORT_TASK" value="1" eventGUID="{F87D5C2B-E51E-466B-AC10-54D231220F98}" message="$(string.Sealighter.task.SEALIGHTER_REPORT_TASK.message)"></task>
+				</tasks>
+				<opcodes>
+					<opcode name="Report" symbol="SEALIGHTER_REPORT_OPCODE" value="10" message="$(string.SEALIGHTER_PROVIDER.opcode.SEALIGHTER_REPORT_OPCODE.message)"></opcode>
+				</opcodes>
+				<channels>
+					<channel name="Sealighter/Operational" chid="Sealighter/Operational" symbol="SEALIGHTER_OPERATIONAL" type="Operational" enabled="true" message="$(string.SEALIGHTER_PROVIDER.channel.SEALIGHTER_OPERATIONAL.message)"></channel>
+				</channels>
+				<keywords>
+					<keyword name="Report" symbol="SEALIGHTER_REPORT_KEYWORD" mask="0x1" message="$(string.SEALIGHTER_PROVIDER.Keyword.SEALIGHTER_REPORT.message)"></keyword>
+				</keywords>
+				<templates>
+					<template tid="SEALIGHTER_REPORT_TEMPLATE">
+						<data name="json" inType="win:AnsiString" outType="win:Json"></data>
+						<data name="activity_id" inType="win:AnsiString" outType="xs:string"></data>
+						<data name="event_flags" inType="win:UInt16" outType="xs:unsignedShort"></data>
+						<data name="event_id" inType="win:UInt16" outType="xs:unsignedShort"></data>
+						<data name="event_name" inType="win:UnicodeString" outType="xs:string"></data>
+						<data name="event_opcode" inType="win:UInt8" outType="xs:unsignedByte"></data>
+						<data name="event_version" inType="win:UInt8" outType="xs:unsignedByte"></data>
+						<data name="process_id" inType="win:UInt32" outType="xs:unsignedInt"></data>
+						<data name="provider_name" inType="win:UnicodeString" outType="xs:string"></data>
+						<data name="task_name" inType="win:UnicodeString" outType="xs:string"></data>
+						<data name="thread_id" inType="win:UInt32" outType="xs:unsignedInt"></data>
+						<data name="timestamp" inType="win:Int64" outType="xs:long"></data>
+					</template>
+				</templates>
+			</provider>
+		</events>
+	</instrumentation>
+	<localization>
+		<resources culture="en-US">
+			<stringTable>
+				<string id="level.Informational" value="Information"></string>
+				<string id="Sealighter.task.SEALIGHTER_REPORT_TASK.message" value="Report on events"></string>
+				<string id="Sealighter.task.SEALIGHTER_CONTROL_TASK.message" value="Control Sealighter"></string>
+				<string id="Sealighter.opcode.a.message" value="a"></string>
+				<string id="Sealighter.event.2.message" value="Control Event"></string>
+				<string id="Sealighter.event.1.message" value="&#xA;%1"></string>
+				<string id="SEALIGHTER_PROVIDER.opcode.SEALIGHTER_REPORT_OPCODE.message" value="Report on events"></string>
+				<string id="SEALIGHTER_PROVIDER.opcode.SEALIGHTER_CONTROL_OPCODE.message" value="Control Sealighter"></string>
+				<string id="SEALIGHTER_PROVIDER.channel.SEALIGHTER_OPERATIONAL.message" value="Operational"></string>
+				<string id="SEALIGHTER_PROVIDER.Keyword.SEALIGHTER_REPORT.message" value="Report on events"></string>
+				<string id="SEALIGHTER_PROVIDER.Keyword.SEALIGHTER_CONTROL.message" value="Control Sealighter"></string>
+			</stringTable>
+		</resources>
+	</localization>
+</instrumentationManifest>

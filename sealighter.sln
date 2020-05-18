@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleETW", "SimpleETW.vcxproj", "{6624B356-3AA7-4A88-BDFC-B525697ECB38}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sealighter", "sealighter\sealighter.vcxproj", "{6624B356-3AA7-4A88-BDFC-B525697ECB38}"
 	ProjectSection(ProjectDependencies) = postProject
 		{ED4E6027-541F-440A-A5EE-15DBB7B89423} = {ED4E6027-541F-440A-A5EE-15DBB7B89423}
 	EndProjectSection
@@ -18,35 +18,21 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		DebugSigning|x64 = DebugSigning|x64
 		Release|x64 = Release|x64
-		ReleaseSigning|x64 = ReleaseSigning|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{6624B356-3AA7-4A88-BDFC-B525697ECB38}.Debug|x64.ActiveCfg = Debug|x64
 		{6624B356-3AA7-4A88-BDFC-B525697ECB38}.Debug|x64.Build.0 = Debug|x64
-		{6624B356-3AA7-4A88-BDFC-B525697ECB38}.DebugSigning|x64.ActiveCfg = Debug|x64
-		{6624B356-3AA7-4A88-BDFC-B525697ECB38}.DebugSigning|x64.Build.0 = Debug|x64
 		{6624B356-3AA7-4A88-BDFC-B525697ECB38}.Release|x64.ActiveCfg = Release|x64
 		{6624B356-3AA7-4A88-BDFC-B525697ECB38}.Release|x64.Build.0 = Release|x64
-		{6624B356-3AA7-4A88-BDFC-B525697ECB38}.ReleaseSigning|x64.ActiveCfg = Release|x64
-		{6624B356-3AA7-4A88-BDFC-B525697ECB38}.ReleaseSigning|x64.Build.0 = Release|x64
 		{ED4E6027-541F-440A-A5EE-15DBB7B89423}.Debug|x64.ActiveCfg = Debug|x64
 		{ED4E6027-541F-440A-A5EE-15DBB7B89423}.Debug|x64.Build.0 = Debug|x64
-		{ED4E6027-541F-440A-A5EE-15DBB7B89423}.DebugSigning|x64.ActiveCfg = DebugSigning|x64
-		{ED4E6027-541F-440A-A5EE-15DBB7B89423}.DebugSigning|x64.Build.0 = DebugSigning|x64
 		{ED4E6027-541F-440A-A5EE-15DBB7B89423}.Release|x64.ActiveCfg = Release|x64
 		{ED4E6027-541F-440A-A5EE-15DBB7B89423}.Release|x64.Build.0 = Release|x64
-		{ED4E6027-541F-440A-A5EE-15DBB7B89423}.ReleaseSigning|x64.ActiveCfg = ReleaseSigning|x64
-		{ED4E6027-541F-440A-A5EE-15DBB7B89423}.ReleaseSigning|x64.Build.0 = ReleaseSigning|x64
 		{11619B9B-AEF3-4C60-AE32-A7AFFA02306E}.Debug|x64.ActiveCfg = Debug|x64
 		{11619B9B-AEF3-4C60-AE32-A7AFFA02306E}.Debug|x64.Build.0 = Debug|x64
-		{11619B9B-AEF3-4C60-AE32-A7AFFA02306E}.DebugSigning|x64.ActiveCfg = Debug|x64
-		{11619B9B-AEF3-4C60-AE32-A7AFFA02306E}.DebugSigning|x64.Build.0 = Debug|x64
 		{11619B9B-AEF3-4C60-AE32-A7AFFA02306E}.Release|x64.ActiveCfg = Release|x64
 		{11619B9B-AEF3-4C60-AE32-A7AFFA02306E}.Release|x64.Build.0 = Release|x64
-		{11619B9B-AEF3-4C60-AE32-A7AFFA02306E}.ReleaseSigning|x64.ActiveCfg = Release|x64
-		{11619B9B-AEF3-4C60-AE32-A7AFFA02306E}.ReleaseSigning|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
