@@ -15,4 +15,5 @@ I mainly work in C, and resort to it more than I probably should, so some of the
 
 
 # TODO before v1.0
- * Document everything!
+ * Build release artefact, and add relase to github
+   * Probably using Azure Devops to do so
