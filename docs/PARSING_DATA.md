@@ -100,6 +100,11 @@ events = list()
 with open("output.json", "r") as f:
     for line in f:
         events.append(json.loads(line))
+
+# We we can do stuff with the json
+for event in events:
+    print(json.dumps(event, indent=True))
+
 ```
 
 ## Parsing Event Logs
