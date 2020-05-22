@@ -11,11 +11,16 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - uses: microsoft/setup-msbuild@v1
-    - name: build release
-      run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Release sealighter.sln
-    - name: build debug
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+    - name: Setup MsBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Build debug
       run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Debug sealighter.sln
+
+    - name: Build Release
+      run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Release sealighter.sln
