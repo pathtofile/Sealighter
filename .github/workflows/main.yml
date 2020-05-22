@@ -16,11 +16,11 @@ jobs:
         with:
           submodules: recursive
 
-    - name: Setup MsBuild
-      uses: microsoft/setup-msbuild@v1
+      - name: Setup MsBuild
+        uses: microsoft/setup-msbuild@v1
 
-    - name: Build debug
-      run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Debug sealighter.sln
+      - name: Build debug
+        run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Debug sealighter.sln
 
-    - name: Build Release
-      run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Release sealighter.sln
+      - name: Build Release
+        run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Release sealighter.sln
