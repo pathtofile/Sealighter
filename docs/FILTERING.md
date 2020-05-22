@@ -10,13 +10,15 @@ report on events of interest.
 
 Filters are applied per-provider after checking the `keyword_any` and `keyword_all` fields. The are defined in the config file, e.g.:
 ```json
-"user_providers": [
+"user_traces": [
     {
-        "name": "Microsoft-Windows-Kernel-Process",
+        "trace_name": "proc_trace",
+        "provider_name": "Microsoft-Windows-Kernel-Process",
         "keywords_any": 16
     },
     {
-        "name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
+        "trace_name": "guid_trace",
+        "provider_name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
         "filters": {
             "any_of": {
                 "opcode_is": [1, 2]

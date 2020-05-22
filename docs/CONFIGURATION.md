@@ -9,13 +9,15 @@ The file is in JSON. An example config file looks like this:
         "session_name": "My-Process-Trace",
         "output_format": "stdout"
     },
-    "user_providers": [
+    "user_traces": [
         {
-            "name": "Microsoft-Windows-Kernel-Process",
+            "trace_name": "proc_trace",
+            "provider_name": "Microsoft-Windows-Kernel-Process",
             "keywords_any": 16
         },
         {
-            "name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
+            "trace_name": "guid_trace",
+            "provider_name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
             "filters": {
                 "any_of": {
                     "opcode_is": [1, 2]
@@ -23,9 +25,10 @@ The file is in JSON. An example config file looks like this:
             }
         },
     ],
-    "kernel_providers": [
+    "kernel_traces": [
         {
-            "name": "process",
+            "trace_name": "kernel_proc_trace",
+            "provider_name": "process",
         }
     ]
 }
@@ -33,8 +36,8 @@ The file is in JSON. An example config file looks like this:
 
 Config Files have 3 Parts:
  - [session_properties](#session_properties)
- - [user_providers](#user_providers)
- - [kernel_providers](#kernel_providers)
+ - [user_traces](#user_traces)
+ - [kernel_traces](#kernel_traces)
 
 _____________
 
@@ -86,16 +89,18 @@ Buffer Flush timer in seconds. Default 1
 
 _____________
 
-# user_providers
+# user_traces
 This is an array of the Usermode or WPP provders you want to subscribe to, e.g.:
 ```json
-"user_providers": [
+"user_traces": [
     {
-        "name": "Microsoft-Windows-Kernel-Process",
+        "trace_name": "proc_trace",
+        "provider_name": "Microsoft-Windows-Kernel-Process",
         "keywords_any": 16
     },
     {
-        "name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
+        "trace_name": "guid_trace",
+        "provider_name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
         "filters": {
             "any_of": {
                 "opcode_is": [1, 2]
@@ -105,9 +110,14 @@ This is an array of the Usermode or WPP provders you want to subscribe to, e.g.:
 ]
 ```
 
-User Providers have the following options, all are optional except for `name`:
+User Providers have the following options, all are optional except for `trace_name` and `provider_name`:
 
-### name
+### trace_name
+Unique Name to give this provider, that will apear in the reported events.
+If running multiple `user_traces` that use the same provider, this will tell you which set of
+filters the event hit on.
+
+### provider_name
 The name or GUID of the Provider to enable.
 For WPP Traces, this *must* be the GUID.
 
@@ -138,13 +148,14 @@ An array of filters to further filter the events to report on. These can be quit
 
 _____________
 
-# kernel_providers
+# kernel_traces
 
 This is an array of the special sub-providers of the Special `NT Kernel Trace` that you wish to log, e.g.:
 ```json
-"kernel_providers": [
+"kernel_traces": [
     {
-        "name": "process",
+        "trace_name": "kernel_proc_trace",
+        "provider_name": "process",
         "filters": {
             "any_of": {
                 "opcode_is": [1, 2]
@@ -152,13 +163,19 @@ This is an array of the special sub-providers of the Special `NT Kernel Trace` t
         }
     },
     {
-        "name": "image_load",
+        "trace_name": "kernel_image_trace",
+        "provider_name": "image_load",
     }
 ]
 ```
-Kernel Providers have two options:
+Kernel Providers have three options, all are required:
 
-### name
+### trace_name
+Unique Name to give this provider, that will appear in header of reported events.
+If running multiple `user_traces` that use the same provider, this will tell you which set of
+filters the event hit on.
+
+### provider_name
 The kernel provider to log. Must be one of:
 - process
 - thread
@@ -189,4 +206,4 @@ The kernel provider to log. Must be one of:
 
 
 ### filters
-Like `user_providers`, this is a list of filters to filter the events to report on. These can be quite complex, so read the [Filtering](FILTERING.md) section for details.
+Like `user_traces`, this is a list of filters to filter the events to report on. These can be quite complex, so read the [Filtering](FILTERING.md) section for details.

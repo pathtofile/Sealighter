@@ -18,7 +18,8 @@ Events are outputted as JSON, for example:
         "provider_name": "Microsoft-Windows-Kernel-Process",
         "task_name": "ProcessStart",
         "thread_id": 25932,
-        "timestamp": "2020-05-17 11:54:24Z"
+        "timestamp": "2020-05-17 11:54:24Z",
+        "trace_name": "proc_trace"
     },
     "properties": {
         "CreateTime": "2020-05-17 11:54:24Z",
@@ -76,6 +77,7 @@ It will always contains these fields, which are taken from the Event Header:
 - task_name
 - thread_id
 - timestamp
+- trace_name
 
 ## properties
 This is the meat of the event. Unique to every event type, and sometimes even events of the same event ID can have different properties.
@@ -128,6 +130,7 @@ This array has the JSON at index 0, then the rest of the `header` as the remaini
 9. task_name
 10. thread_id
 11. timestamp
+12. trace_name
 ```
 For example in PowerShell
 ```powershell

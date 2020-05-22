@@ -36,6 +36,3 @@
 
 // Counld't open output stream to output file
 #define SEALIGHTER_ERROR_OUTPUT_FILE 13
- 
-
-

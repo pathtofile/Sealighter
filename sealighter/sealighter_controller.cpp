@@ -405,10 +405,12 @@ template <typename T>
 int add_filters
 (
     details::base_provider<T>* pNew_provider,
+    std::shared_ptr<struct sealighter_context_t> sealighter_context,
     json json_provider
 )
 {
     int status = ERROR_SUCCESS;
+
     if (json_provider["filters"].is_null() ||
         (json_provider["filters"]["any_of"].is_null() && 
          json_provider["filters"]["all_of"].is_null() &&
@@ -417,7 +419,9 @@ int add_filters
        ) {
         // No filters, log everything
         printf("    No event filters\n");
-        pNew_provider->add_on_event_callback((c_provider_callback)&handle_event);
+        pNew_provider->add_on_event_callback([sealighter_context](const EVENT_RECORD& record, const krabs::trace_context& trace_context) {
+            handle_event_context(record, trace_context, sealighter_context);
+        });
     }
     else {
         // Build top-level list
@@ -452,7 +456,10 @@ int add_filters
         if (ERROR_SUCCESS == status) {
             sealighter_all_of top_pred = sealighter_all_of(top_list);
             event_filter filter(top_pred);
-            filter.add_on_event_callback((c_provider_callback)&handle_event);
+
+            filter.add_on_event_callback([sealighter_context](const EVENT_RECORD& record, const krabs::trace_context& trace_context) {
+                handle_event_context(record, trace_context, sealighter_context);
+            });
             pNew_provider->add_filter(filter);
         }
     }
@@ -464,7 +471,7 @@ int add_filters
 /*
     Add Kernel Providers and Create Kernel ETW Session
 */
-int add_kernel_providers
+int add_kernel_traces
 (
     json json_config,
     EVENT_TRACE_PROPERTIES  session_properties
@@ -480,14 +487,13 @@ int add_kernel_providers
 
     // Add any Kernel providers
     try {
-        for (json json_provider : json_config["kernel_providers"]) {
-
-            if (json_provider["name"].is_null()) {
-                printf("Invalid Provider, missing name\n");
+        for (json json_provider : json_config["kernel_traces"]) {
+            if (json_provider["provider_name"].is_null()) {
+                printf("Invalid Provider, missing provider name\n");
                 status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
                 break;
             }
-            provider_name = json_provider["name"].get<std::string>();
+            provider_name = json_provider["provider_name"].get<std::string>();
 
             if (provider_name == "process") {
                 pNew_provider = new kernel::process_provider();
@@ -573,9 +579,19 @@ int add_kernel_providers
                 break;
             }
 
+            // Create context with trace name
+            if (json_provider["trace_name"].is_null()) {
+                printf("Invalid Provider, missing trace name\n");
+                status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
+                break;
+            }
+            std::string trace_name = json_provider["trace_name"].get<std::string>();
+            auto sealighter_context = std::shared_ptr<struct sealighter_context_t>
+                (new sealighter_context_t(trace_name));
+
             // Add any filters
             printf("Kernel Provider: %s\n", provider_name.c_str());
-            status = add_filters(pNew_provider, json_provider);
+            status = add_filters(pNew_provider, sealighter_context, json_provider);
             if (ERROR_SUCCESS == status) {
                 g_kernel_session->enable(*pNew_provider);
             }
@@ -597,7 +613,7 @@ int add_kernel_providers
 /*
     Add User providers and create User ETW Session
 */
-int add_user_providers
+int add_user_traces
 (
     json json_config,
     EVENT_TRACE_PROPERTIES  session_properties,
@@ -610,11 +626,11 @@ int add_user_providers
     g_user_session->set_trace_properties(&session_properties);
     try {
         // Parse the Usermode Providers
-        for (json json_provider : json_config["user_providers"]) {
+        for (json json_provider : json_config["user_traces"]) {
             GUID provider_guid;
             provider<>* pNew_provider;
             std::wstring provider_name;
-            if (json_provider["name"].is_null()) {
+            if (json_provider["provider_name"].is_null()) {
                 printf("Invalid Provider\n");
                 status = SEALIGHTER_ERROR_PARSE_USER_PROVIDER;
                 break;
@@ -622,7 +638,7 @@ int add_user_providers
 
             // If provider_name is a GUID, use that
             // Otherwise pass it off to Krabs to try to resolve
-            provider_name = convert_str_wstr(json_provider["name"].get<std::string>());
+            provider_name = convert_str_wstr(json_provider["provider_name"].get<std::string>());
             provider_guid = convert_wstr_guid(provider_name);
             if (provider_guid != GUID_NULL) {
                 pNew_provider = new provider<>(provider_guid);
@@ -664,8 +680,18 @@ int add_user_providers
                 pNew_provider->trace_flags(data);
             }
 
+            // Create context with trace name
+            if (json_provider["trace_name"].is_null()) {
+                printf("Invalid Provider, missing trace name\n");
+                status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
+                break;
+            }
+            std::string trace_name = json_provider["trace_name"].get<std::string>();
+            auto sealighter_context = std::shared_ptr<struct sealighter_context_t>
+                (new sealighter_context_t(trace_name));
+
             // Add any filters
-            status = add_filters(pNew_provider, json_provider);
+            status = add_filters(pNew_provider, sealighter_context, json_provider);
             if (ERROR_SUCCESS == status) {
                 g_user_session->enable(*pNew_provider);
             }
@@ -779,21 +805,22 @@ int parse_config
     }
 
     if (ERROR_SUCCESS == status) {
-        if (json_config["user_providers"].is_null() && json_config["kernel_providers"].is_null()) {
+        if (json_config["user_traces"].is_null() && json_config["kernel_traces"].is_null()) {
             printf("No User or Kernel providers in config file\n");
             status = SEALIGHTER_ERROR_PARSE_NO_PROVIDERS;
         }
         else {
-            if (!json_config["user_providers"].is_null()) {
-                status = add_user_providers(json_config, session_properties, session_name);
+            if (!json_config["user_traces"].is_null()) {
+                status = add_user_traces(json_config, session_properties, session_name);
             }
 
             // Add kernel providers if needed
-            if (ERROR_SUCCESS == status && !json_config["kernel_providers"].is_null()) {
-                status = add_kernel_providers(json_config, session_properties);
+            if (ERROR_SUCCESS == status && !json_config["kernel_traces"].is_null()) {
+                status = add_kernel_traces(json_config, session_properties);
             }
         }
     }
+
     return status;
 }
 
@@ -907,28 +934,30 @@ int run_sealighter
         printf("Failed to define any ETW Session\n");
         return SEALIGHTER_ERROR_NO_SESSION_CREATED;
     }
-    // Start Trace we've configured
-    // Don't run multithreaded if we don't have to
-    else if (NULL != g_user_session && NULL == g_kernel_session) {
-        printf("Starting User Trace...\n");
-        printf("-----------------------------------------\n");
-        run_trace(g_user_session);
-    }
-    else if (NULL == g_user_session && NULL != g_kernel_session) {
-        printf("Starting Kernel Trace...\n");
-        printf("-----------------------------------------\n");
-        run_trace(g_kernel_session);
-    }
     else {
-        // Have to multi-thread it
-        printf("Starting User and Kernel Traces...\n");
-        printf("-----------------------------------------\n");
-        std::thread user_thread = std::thread(run_trace<details::ut>, g_user_session);
-        std::thread kernel_thread = std::thread(run_trace<details::kt>, g_kernel_session);
-  
-        // Call join, blocking until both have shut down
-        user_thread.join();
-        kernel_thread.join();
+        // Start Trace we've configured
+        // Don't run multithreaded if we don't have to
+        if (NULL != g_user_session && NULL == g_kernel_session) {
+            printf("Starting User Trace...\n");
+            printf("-----------------------------------------\n");
+            run_trace(g_user_session);
+        }
+        else if (NULL == g_user_session && NULL != g_kernel_session) {
+            printf("Starting Kernel Trace...\n");
+            printf("-----------------------------------------\n");
+            run_trace(g_kernel_session);
+        }
+        else {
+            // Have to multi-thread it
+            printf("Starting User and Kernel Traces...\n");
+            printf("-----------------------------------------\n");
+            std::thread user_thread = std::thread(run_trace<details::ut>, g_user_session);
+            std::thread kernel_thread = std::thread(run_trace<details::kt>, g_kernel_session);
+
+            // Call join, blocking until both have shut down
+            user_thread.join();
+            kernel_thread.join();
+        }
     }
 
     // Make sure trace is stopped
