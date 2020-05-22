@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -19,7 +18,7 @@ jobs:
       - name: Setup MsBuild
         uses: microsoft/setup-msbuild@v1
 
-      - name: Build debug
+      - name: Build Debug
         run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Debug sealighter.sln
 
       - name: Build Release
