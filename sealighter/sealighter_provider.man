@@ -33,6 +33,7 @@
 						<data name="task_name" inType="win:UnicodeString" outType="xs:string"></data>
 						<data name="thread_id" inType="win:UInt32" outType="xs:unsignedInt"></data>
 						<data name="timestamp" inType="win:Int64" outType="xs:long"></data>
+						<data name="trace_name" inType="win:AnsiString" outType="xs:string"></data>
 					</template>
 				</templates>
 			</provider>

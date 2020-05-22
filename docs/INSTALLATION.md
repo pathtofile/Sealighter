@@ -19,9 +19,10 @@ For details on what the config file looks like see **[Configuration](CONFIGURATI
         "session_name": "My-Process-Trace",
         "output_format": "stdout"
     },
-    "user_providers": [
+    "user_traces": [
         {
-            "name": "Microsoft-Windows-Kernel-Process",
+            "trace_name": "proc_trace",
+            "provider_name": "Microsoft-Windows-Kernel-Process",
             "keywords_any": 16
         }
     ]

@@ -15,5 +15,8 @@ I mainly work in C, and resort to it more than I probably should, so some of the
 
 
 # TODO before v1.0
- * Build release artefact, and add relase to github
-   * Probably using Azure Devops to do so
+ * Add new stuff to doco:
+   * trace_name
+     * Also now in header
+     * Need to also update Event Log Manifest
+   * max_before_buffer

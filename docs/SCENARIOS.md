@@ -21,9 +21,10 @@ Lets trace a program using [Zac Brown's ideas](https://zacbrown.org/2017/04/11/h
         "output_format": "file",
         "output_filename": "output.json"
     },
-    "user_providers": [
+    "user_traces": [
         {
-            "name": "Microsoft-Windows-DNS-Client",
+            "trace_name": "powershell_dns",
+            "provider_name": "Microsoft-Windows-DNS-Client",
             "filters": {
                 "any_of": {
                     "process_name_contains": "powershell.exe"
@@ -31,7 +32,8 @@ Lets trace a program using [Zac Brown's ideas](https://zacbrown.org/2017/04/11/h
             }
         },
         {
-            "name": "Microsoft-Windows-WMI",
+            "trace_name": "powershell_wmi",
+            "provider_name": "Microsoft-Windows-WMI",
             "filters": {
                 "any_of": {
                     "process_name_contains": "powershell.exe"
@@ -39,7 +41,8 @@ Lets trace a program using [Zac Brown's ideas](https://zacbrown.org/2017/04/11/h
             }
         },
         {
-            "name": "Microsoft-Windows-PowerShell",
+            "trace_name": "powershell_winpshell",
+            "provider_name": "Microsoft-Windows-PowerShell",
             "filters": {
                 "any_of": {
                     "process_name_contains": "powershell.exe"
@@ -47,9 +50,10 @@ Lets trace a program using [Zac Brown's ideas](https://zacbrown.org/2017/04/11/h
             }
         }
     ],
-    "kernel_providers": [
+    "kernel_traces": [
         {
-            "name": "image_load",
+            "trace_name": "powershell_kern_image_load",
+            "provider_name": "image_load",
             "filters": {
                 "any_of": {
                     "process_name_contains": "powershell.exe"
@@ -57,7 +61,8 @@ Lets trace a program using [Zac Brown's ideas](https://zacbrown.org/2017/04/11/h
             }
         },
         {
-            "name": "network_tcpip",
+            "trace_name": "powershell_kern_tcpip",
+            "provider_name": "network_tcpip",
             "filters": {
                 "any_of": {
                     "process_name_contains": "powershell.exe"
@@ -130,9 +135,10 @@ The config will look like this:
         "session_name": "Sealighter-Trace",
         "output_format": "stdout"
     },
-    "user_providers": [
+    "user_traces": [
         {
-            "name": "Microsoft-Windows-Kernel-Process",
+            "trace_name": "proc_trace",
+            "provider_name": "Microsoft-Windows-Kernel-Process",
             "keywords_any": 16,
             "filters": {
                 "any_of": {
@@ -141,7 +147,8 @@ The config will look like this:
             }
         },
         {
-            "name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
+            "trace_name": "shell32_trace",
+            "provider_name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
             "filters": {
                 "any_of": {
                     "any_field_contains": "notepad.exe"
@@ -166,7 +173,8 @@ Start the Sealighter trace, run the PowerShell `.ShellExecute` script, and you s
         "provider_name": "Microsoft.Windows.ShellExecute",
         "task_name": "ShellExecuteExW",
         "thread_id": 16392,
-        "timestamp": "2020-05-19 12:08:08Z"
+        "timestamp": "2020-05-19 12:08:08Z",
+        "trace_name": "shell32_trace"
     },
     "properties": {
         "PartA_PrivTags": 0,
@@ -198,7 +206,8 @@ Start the Sealighter trace, run the PowerShell `.ShellExecute` script, and you s
         "provider_name": "Microsoft-Windows-Kernel-Process",
         "task_name": "ProcessStart",
         "thread_id": 4564,
-        "timestamp": "2020-05-19 12:08:08Z"
+        "timestamp": "2020-05-19 12:08:08Z",
+        "trace_name": "proc_trace"
     },
     "properties": {
         "CreateTime": "2020-05-19 12:08:08Z",

@@ -171,3 +171,12 @@ bool file_exists
 (
     std::string fileName
 );
+
+
+struct sealighter_context_t {
+    sealighter_context_t(std::string name)
+        : trace_name(name)
+    {}
+
+    std::string trace_name;
+};

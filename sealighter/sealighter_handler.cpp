@@ -52,6 +52,7 @@ void threaded_print_ln
 void write_event_log
 (
     krabs::schema   schema,
+    std::string     trace_name,
     std::string event_string
 )
 {
@@ -69,7 +70,8 @@ void write_event_log
         schema.provider_name(),
         schema.task_name(),
         schema.thread_id(),
-        schema.timestamp().QuadPart
+        schema.timestamp().QuadPart,
+        trace_name.c_str()
     );
 
     //status = EventWriteSEALIGHTER_REPORT_EVENT(event_string.c_str());
@@ -100,12 +102,12 @@ void threaded_write_file_ln
 /*
     Convert an ETW Event to JSON
 */
-std::string parse_event_to_json
+json parse_event_to_json
 (
     const EVENT_RECORD&,
     const trace_context&,
-    krabs::schema       schema,
-    const   bool    pretty_print
+    std::string trace_name,
+    krabs::schema       schema
 )
 {
     krabs::parser parser(schema);
@@ -122,7 +124,8 @@ std::string parse_event_to_json
         { "event_version", schema.event_version() },
         { "process_id", schema.process_id()},
         { "provider_name", convert_wstr_str(schema.provider_name()) },
-        { "activity_id", convert_guid_str(schema.activity_id()) }
+        { "activity_id", convert_guid_str(schema.activity_id()) },
+        { "trace_name", trace_name},
     };
 
     json json_event = { {"header", json_header} };
@@ -259,27 +262,29 @@ std::string parse_event_to_json
     }
     json_event["property_types"] = json_properties_types;
     json_event["properties"] = json_properties;
-
-    return convert_json_string(json_event, pretty_print);
+    return json_event;
 }
 
 
-void handle_event
+void handle_event_context
 (
     const EVENT_RECORD& record,
-    const trace_context& trace_context
+    const trace_context& trace_context,
+    std::shared_ptr<struct sealighter_context_t> sealighter_context
 )
 {
-    schema schema(record, trace_context.schema_locator);
     std::string event_string;
+    bool pretty_print;
+    json json_event;
+
+    schema schema(record, trace_context.schema_locator);
+    std::string trace_name = sealighter_context->trace_name;
+    json_event = parse_event_to_json(record, trace_context, trace_name, schema);
+
     // If writing to a file, don't pretty print
     // This makes it 1 line per event
-    if (Output_format::output_file == g_output_format) {
-        event_string = parse_event_to_json(record, trace_context, schema, false);
-    }
-    else {
-        event_string = parse_event_to_json(record, trace_context, schema, true);
-    }
+    pretty_print = (Output_format::output_file != g_output_format);
+    event_string = convert_json_string(json_event, pretty_print);
 
     // Log event if we successfully parsed it
     if (!event_string.empty()) {
@@ -289,13 +294,24 @@ void handle_event
             threaded_print_ln(event_string);
             break;
         case output_event_log:
-            write_event_log(schema, event_string);
+            write_event_log(schema, trace_name, event_string);
             break;
         case output_file:
             threaded_write_file_ln(event_string);
             break;
         }
     }
+}
+
+
+
+void handle_event
+(
+    const EVENT_RECORD& record,
+    const trace_context& trace_context
+)
+{
+    handle_event_context(record, trace_context, NULL);
 }
 
 int setup_logger_file

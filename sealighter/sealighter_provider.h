@@ -384,9 +384,9 @@ Remarks:
 //
 // Event Macro for SEALIGHTER_REPORT_EVENT
 //
-#define EventWriteSEALIGHTER_REPORT_EVENT(json, activity_id, event_flags, event_id, event_name, event_opcode, event_version, process_id, provider_name, task_name, thread_id, timestamp)\
+#define EventWriteSEALIGHTER_REPORT_EVENT(json, activity_id, event_flags, event_id, event_name, event_opcode, event_version, process_id, provider_name, task_name, thread_id, timestamp, trace_name)\
         EventEnabledSEALIGHTER_REPORT_EVENT() ?\
-        Template_sshhzccqzzqi(SealighterHandle, &SEALIGHTER_REPORT_EVENT, json, activity_id, event_flags, event_id, event_name, event_opcode, event_version, process_id, provider_name, task_name, thread_id, timestamp)\
+        Template_sshhzccqzzqis(SealighterHandle, &SEALIGHTER_REPORT_EVENT, json, activity_id, event_flags, event_id, event_name, event_opcode, event_version, process_id, provider_name, task_name, thread_id, timestamp, trace_name)\
         : ERROR_SUCCESS\
 
 #endif // MCGEN_DISABLE_PROVIDER_CODE_GENERATION
@@ -403,11 +403,11 @@ Remarks:
 //
 //Template from manifest : SEALIGHTER_REPORT_TEMPLATE
 //
-#ifndef Template_sshhzccqzzqi_def
-#define Template_sshhzccqzzqi_def
+#ifndef Template_sshhzccqzzqis_def
+#define Template_sshhzccqzzqis_def
 ETW_INLINE
 ULONG
-Template_sshhzccqzzqi(
+Template_sshhzccqzzqis(
     _In_ REGHANDLE RegHandle,
     _In_ PCEVENT_DESCRIPTOR Descriptor,
     _In_opt_ LPCSTR  _Arg0,
@@ -421,12 +421,13 @@ Template_sshhzccqzzqi(
     _In_opt_ PCWSTR  _Arg8,
     _In_opt_ PCWSTR  _Arg9,
     _In_ const unsigned int  _Arg10,
-    _In_ signed __int64  _Arg11
+    _In_ signed __int64  _Arg11,
+    _In_opt_ LPCSTR  _Arg12
     )
 {
-#define ARGUMENT_COUNT_sshhzccqzzqi 12
+#define ARGUMENT_COUNT_sshhzccqzzqis 13
 
-    EVENT_DATA_DESCRIPTOR EventData[ARGUMENT_COUNT_sshhzccqzzqi];
+    EVENT_DATA_DESCRIPTOR EventData[ARGUMENT_COUNT_sshhzccqzzqis];
 
     EventDataDescCreate(&EventData[0], 
                         (_Arg0 != NULL) ? _Arg0 : "NULL",
@@ -462,7 +463,11 @@ Template_sshhzccqzzqi(
 
     EventDataDescCreate(&EventData[11], &_Arg11, sizeof(signed __int64)  );
 
-    return EventWrite(RegHandle, Descriptor, ARGUMENT_COUNT_sshhzccqzzqi, EventData);
+    EventDataDescCreate(&EventData[12], 
+                        (_Arg12 != NULL) ? _Arg12 : "NULL",
+                        (_Arg12 != NULL) ? (ULONG)((strlen(_Arg12) + 1) * sizeof(CHAR)) : (ULONG)sizeof("NULL"));
+
+    return EventWrite(RegHandle, Descriptor, ARGUMENT_COUNT_sshhzccqzzqis, EventData);
 }
 #endif
 

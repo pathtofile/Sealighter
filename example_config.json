@@ -3,13 +3,14 @@
         "session_name": "Sealighter-Trace",
         "output_format": "stdout"
     },
-    "user_providers": [
+    "user_traces": [
         {
-            "name": "Microsoft-Windows-Kernel-Process",
+            "trace_name": "ProcTrace01",
+            "provider_name": "Microsoft-Windows-Kernel-Process",
             "keywords_any": 16,
             "filters": {
                 "any_of": {
-                    "opcode_is": [1, 2]
+                    "id_is": 1
                 }
             }
         }

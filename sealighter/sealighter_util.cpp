@@ -13,10 +13,10 @@ std::string convert_json_string
 )
 {
     if (pretty_print) {
-        return item.dump(4, ' ', false, nlohmann::detail::error_handler_t::replace);
+        return item.dump(4, ' ', false, nlohmann::detail::error_handler_t::ignore);
     }
     else {
-        return item.dump(-1, ' ', false, nlohmann::detail::error_handler_t::replace);
+        return item.dump(-1, ' ', false, nlohmann::detail::error_handler_t::ignore);
     }
 }
 
