@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: microsoft/setup-msbuild@v1
+    - name: build release
+      run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Release sealighter.sln
+    - name: build debug
+      run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Debug sealighter.sln
