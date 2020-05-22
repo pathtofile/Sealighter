@@ -1,5 +1,7 @@
 # Sealighter - Sysmon-Like tool for ETW
 
+![CI](https://github.com/pathtofile/Sealighter/workflows/CI/badge.svg?branch=master)
+
 I created this project to help non-developers dive into researching Event Tracing for Windows (ETW) and Windows PreProcessor Tracing(WPP).
 
 It leverages the feature-rich [Krabs ETW]([htttps://](https://github.com/microsoft/krabsetw)) Library to enable detailed filtering and triage of ETW and WPP Providers and Events.
