@@ -5,10 +5,11 @@
 I created this project to help non-developers dive into researching Event Tracing for Windows (ETW) and Windows PreProcessor Tracing(WPP).
 
 # At-a-glance featues
- - Auto converting ETW and WPP Events to JSON
+ - Subscribie to mutiple ETW and WPP Providers at once
+ - Automagically parse and convert events into JSON
  - Robust Event filtering including filter chaining and filter negation
  - Output to StdOut, File, or Windows Event Log (to be ingested by other tools)
- - Event Stack Traces
+ - Get event stack traces
 
 
 # Overview

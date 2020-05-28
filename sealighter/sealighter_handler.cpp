@@ -226,7 +226,7 @@ json parse_event_to_json
             case TDH_INTYPE_POINTER:
                 json_properties_types[prop_name] = "POINTER";
                 json_properties[prop_name] =
-                    convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
+                    convert_ulong64_hexstring(parser.parse<krabs::pointer>(prop_name_wstr).address);
                 break;
             case TDH_INTYPE_HEXINT32:
             case TDH_INTYPE_HEXINT64:
