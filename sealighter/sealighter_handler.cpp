@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <mutex>
-
+#include <bitset>
 
 // -------------------------
 // GLOBALS - START
@@ -104,7 +104,7 @@ void threaded_write_file_ln
 */
 json parse_event_to_json
 (
-    const EVENT_RECORD&,
+    const EVENT_RECORD& record,
     const trace_context&,
     std::string trace_name,
     krabs::schema       schema
@@ -262,6 +262,35 @@ json parse_event_to_json
     }
     json_event["property_types"] = json_properties_types;
     json_event["properties"] = json_properties;
+
+    // Check if we're meant to parse any extended data
+    if (record.ExtendedDataCount != 0) {
+        // At the moment we only support EVENT_HEADER_EXT_TYPE_STACK_TRACE64
+        // The extra field is TRACE64 (and not TRACE32) even in the event the
+        // process that generated the event is 32Bit
+        for (USHORT i = 0; i < record.ExtendedDataCount; i++)
+        {
+            EVENT_HEADER_EXTENDED_DATA_ITEM data_item = record.ExtendedData[i];
+
+            if (data_item.ExtType == EVENT_HEADER_EXT_TYPE_STACK_TRACE64) {
+                PEVENT_EXTENDED_ITEM_STACK_TRACE64 stacktrace =
+                    (PEVENT_EXTENDED_ITEM_STACK_TRACE64)data_item.DataPtr;
+                uint32_t stack_length = (data_item.DataSize - sizeof(ULONG64)) / sizeof(ULONG64);
+
+                json json_stacktrace = json::array();
+                for (size_t x = 0; x < stack_length; x++)
+                {
+                    // Stacktraces make more sense in hex
+                    json_stacktrace.push_back(convert_ulong64_hexstring(stacktrace->Address[x]));
+                }
+                // We're ignoring the MatchId, which if not 0 then the stack is split across events
+                // But stiching it together would be too much of a pain for the mostly-stateless
+                // Sealighter. So we'll just collect what we've got.
+                json_event["stack_trace"] = json_stacktrace;
+            }
+        }
+    }
+
     return json_event;
 }
 

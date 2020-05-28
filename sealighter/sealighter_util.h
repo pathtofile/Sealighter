@@ -144,6 +144,15 @@ std::string convert_bytes_hexstring
     const std::vector<BYTE>& from
 );
 
+/*
+    Helper to convert a ULONG64 to a
+    hex string representation
+*/
+std::string convert_ulong64_hexstring
+(
+    const ULONG64 from
+);
+
 
 /*
     Helper to convert byte array to an int

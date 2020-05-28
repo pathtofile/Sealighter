@@ -680,6 +680,13 @@ int add_user_traces
                 pNew_provider->trace_flags(data);
             }
 
+            // Check if we want a stacktrace
+            // This is just a helper option, you could also set this in the trace_flags
+            if (!json_provider["report_stacktrace"].is_null() && json_provider["report_stacktrace"].get<bool>()) {
+                // Add the stacktrace trace flag
+                pNew_provider->trace_flags(pNew_provider->trace_flags() | EVENT_ENABLE_PROPERTY_STACK_TRACE);
+            }
+
             // Create context with trace name
             if (json_provider["trace_name"].is_null()) {
                 printf("Invalid Provider, missing trace name\n");

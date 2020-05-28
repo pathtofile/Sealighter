@@ -101,6 +101,7 @@ This is an array of the Usermode or WPP provders you want to subscribe to, e.g.:
     {
         "trace_name": "guid_trace",
         "provider_name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
+        "report_stacktrace": true,
         "filters": {
             "any_of": {
                 "opcode_is": [1, 2]
@@ -142,6 +143,10 @@ Like the `keywords_*` options, it is more efficient use this instead of a Filter
 
 ### trace_flags
 Any advanced flags
+
+### report_stacktrace
+If set to `true`, events will also include a stack trace array of the memory addresses
+of functions that generated the event.
 
 ### filters
 An array of filters to further filter the events to report on. These can be quite complex, so read the [Filtering](FILTERING.md) section for details.
