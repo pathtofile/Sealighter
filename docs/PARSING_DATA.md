@@ -54,14 +54,22 @@ Events are outputted as JSON, for example:
         "ProcessTokenIsElevated": "UINT32",
         "SessionID": "UINT32",
         "TimeDateStamp": "UINT32"
-    }
+    },
+    "stack_trace": [
+        "0x7FFA18BAB944",
+        "0x7FFA1868902A",
+        "0x773817C3"
+    ]
 }
 ```
+
 
 There are 3 sections to the JSON:
  - [header](#header)
  - [properties](#properties)
  - [property_types](#property_types)
+If the `report_stacktrace` option in the provider configuration is used,
+there will also be a [stack_trace](#stack_trace) array.
 
 ## header
 This section is the same for every event, and contains the event metadata.
@@ -86,6 +94,11 @@ Sealighter will attempt to parse every property of every event based upon the pr
 
 ## property_types
 To assist in writing [filters](FILTERING.md), we also log the `TDH_INTYPE` of each property. This can also help if you do wish to write your own code to parse specific events.
+
+## stack_trace
+If the `report_stacktrace` option in the provider configuration is used,
+there will also be a [stack_trace](#stack_trace) array. This is the array of the memory addresses`
+of functions that generated the event.
 
 
 _____________

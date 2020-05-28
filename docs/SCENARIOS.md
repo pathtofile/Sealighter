@@ -11,6 +11,7 @@ These great blogs provide a great example of the power of ETW and WPP:
  - [Tracking process execution](#Tracking%20process%20execution)
  - [Find data in any field](#Find%20data%20in%20any%20field)
  - [Find correlated Events](#Find%20correlated%20Events)
+ - [Use Stack Traces](#Use%20Stack%20Traces)
 
 # Tracking process execution
 Lets trace a program using [Zac Brown's ideas](https://zacbrown.org/2017/04/11/hidden-treasure-intrusion-detection-with-etw-part-1). Create the Following Config:
@@ -252,3 +253,145 @@ To look for providers that use activity IDs, you could use the following filter,
 ```
 
 Then it would be a case of running various ETW or WPP providers, doing "stuff", and seeing if any events get emmited.
+
+
+### Use Stack Traces
+To demonstrate the use of Stack Traces, let's make and trace our own C program that also does `ShellExecute`:
+First we compile the following simple x86 C program and name it `shellcaller.exe`:
+```c++
+#include <Windows.h>
+#include <shellapi.h>
+#include <stdio.h>
+
+__declspec(noinline)
+static void call_com()
+{
+    // Print the base address to make RE faster
+    // You could also find this out by degging the process
+    printf("Base address: 0x%p\n", (void*)GetModuleHandleA(NULL));
+    ShellExecuteA(NULL, "open", "notepad.exe", NULL, NULL, SW_SHOWNORMAL);
+}
+
+int main()
+{
+    call_com();
+    return 0;
+}
+```
+
+Then, we'll run Sealighter with the same sort of config to trace the Shell32 Events,
+but also use `report_stacktrace` to get stack traces:
+```json
+{
+    "session_properties": {
+        "session_name": "Sealighter-Trace",
+        "output_format": "stdout"
+    },
+    "user_traces": [
+        {
+            "trace_name": "shell32_trace",
+            "provider_name": "{382b5e24-181e-417f-a8d6-2155f749e724}",
+            "report_stacktrace": true,
+            "filters": {
+                "any_of": {
+                    "any_field_contains": "shellcaller.exe"
+                }
+            }
+        }
+    ]
+}
+```
+
+Start Sealighter, and ocne the trace has started run `shellcaller.exe` - It should launch
+a `notepad.exe` process, and you should get an output similar to below (but with different numbers):
+```
+Base address: 0x00B80000
+```
+
+Sealighter should also output an event similar to below (but again with different numbers):
+```json
+{
+    "header": {
+        "activity_id": "{6D9D4EDB-33CC-0002-7D4A-A16DCC33D601}",
+        "event_flags": 545,
+        "event_id": 0,
+        "event_name": "ShellExecuteExW",
+        "event_opcode": 1,
+        "event_version": 0,
+        "process_id": 12016,
+        "provider_name": "Microsoft.Windows.ShellExecute",
+        "task_name": "ShellExecuteExW",
+        "thread_id": 5964,
+        "timestamp": "2020-05-28 10:20:07Z",
+        "trace_name": "ShellExecute-Stacktrace"
+    },
+    "properties": {
+        "PartA_PrivTags": 0,
+        "dwHotKey": 0,
+        "fMask": 5376,
+        "hMonitor": "00000000",
+        "hkeyClass": 0,
+        "hwnd": "00000000",
+        "lpClass": "",
+        "lpDirectory": "",
+        "lpFile": "notepad.exe",
+        "lpIDList": "00000000",
+        "lpParameters": "",
+        "lpVerb": "open",
+        "nShow": 1,
+        "site": 7340143,
+        "wilActivity": "4C170000"
+    },
+    "property_types": {
+        "PartA_PrivTags": "UINT64",
+        "dwHotKey": "UINT32",
+        "fMask": "UINT32",
+        "hMonitor": "OTHER",
+        "hkeyClass": "UINT32",
+        "hwnd": "OTHER",
+        "lpClass": "STRINGW",
+        "lpDirectory": "STRINGW",
+        "lpFile": "STRINGW",
+        "lpIDList": "OTHER",
+        "lpParameters": "STRINGW",
+        "lpVerb": "STRINGW",
+        "nShow": "INT32",
+        "site": "UINT32",
+        "wilActivity": "OTHER"
+    },
+    "stack_trace": [
+        "0x7FFA18BAB944",
+        "0x7FFA18692E9F",
+        "0x7FFA1868902A",
+        "0x773817C3",
+        "0x773811B9",
+        "0x7FFA186838C9",
+        "0x7FFA186832BD",
+        "0x7FFA18BE266E",
+        "0x7FFA18BD12F1",
+        "0x7FFA18B84543",
+        "0x7FFA18B844EE",
+        "0x7740169C",
+        "0x773F451B",
+        "0x773F43D9",
+        "0x76DE9F06",
+        "0x76DAEA61",
+        "0x76DAE21B",
+        "0x76DADFF2",
+        "0x76EE05F4",
+        "0x76EE0591",
+        "0xB8106E",
+        "0x7653F989",
+        "0x773F7084",
+        "0x773F7054"
+    ]
+}
+```
+So we see that `shellcaller.exe` did indeed call `ShellExecute` to launch `notepad.exe`
+We now also get a stack trace.
+
+In this example, The base in-memory adrress of `shellcaller.exe` is `0x00B80000`.
+We can also see one of the addresses in the stack is `0xB8106E`, 0x106E bytes into the image.
+
+Now, if We open up a tool like [Ghidra](https://ghidra-sre.org), import `shellcaller.exe` into it,
+and go `0x106E` bytes into the image, we should see our call to `SHELL32.DLL::ShellExecuteA`.

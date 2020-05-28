@@ -4,6 +4,14 @@
 
 I created this project to help non-developers dive into researching Event Tracing for Windows (ETW) and Windows PreProcessor Tracing(WPP).
 
+# At-a-glance featues
+ - Auto converting ETW and WPP Events to JSON
+ - Robust Event filtering including filter chaining and filter negation
+ - Output to StdOut, File, or Windows Event Log (to be ingested by other tools)
+ - Event Stack Traces
+
+
+# Overview
 It leverages the feature-rich [Krabs ETW]([htttps://](https://github.com/microsoft/krabsetw)) Library to enable detailed filtering and triage of ETW and WPP Providers and Events.
 
 You can subscribe and filter multiple provers, including Usermode Providers, Kernel Tracing, and WPP Tracing, and output events as JSON to either stdout, a file, or the Windows Event Log (useful for high-volume traces like `FileIO`). No knowledge of the events the provider may produce, or their format, is nesesary, Sealighter automatically captures and parses any events it is asked to.

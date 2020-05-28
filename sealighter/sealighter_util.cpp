@@ -218,6 +218,16 @@ std::string convert_bytes_hexstring
     return to;
 }
 
+std::string convert_ulong64_hexstring
+(
+    const ULONG64 from
+)
+{
+    std::stringstream to;
+    to << "0x" << std::uppercase << std::hex << from;
+    return to.str();
+}
+
 
 int convert_bytes_sint32
 (
