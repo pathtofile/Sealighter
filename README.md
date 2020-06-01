@@ -2,14 +2,15 @@
 
 ![CI](https://github.com/pathtofile/Sealighter/workflows/CI/badge.svg?branch=master)
 
-I created this project to help non-developers dive into researching Event Tracing for Windows (ETW) and Windows PreProcessor Tracing(WPP).
+I created this roject to help non-developers dive into researching Event Tracing for Windows (ETW) and Windows PreProcessor Tracing(WPP).
 
-# At-a-glance featues
- - Subscribie to mutiple ETW and WPP Providers at once
+# Featues
+ - Subscribe to mutiple ETW and WPP Providers at once
  - Automagically parse and convert events into JSON
  - Robust Event filtering including filter chaining and filter negation
  - Output to StdOut, File, or Windows Event Log (to be ingested by other tools)
  - Get event stack traces
+ - Configuarable Buffering many events in a time period into one with a count, to reduce the number of events generated
 
 
 # Overview
@@ -21,7 +22,7 @@ Events can then be parsed from JSON in Python, PowerShell, or forwarded to Splun
 
 Filtering can be done on various aspects of an Event, from it's ID or OpCode, to matching a property value, to doing an arbitarty string search across the entire event (Useful in WPP traces or when you don't know the event structure, but have an idea of it's contents). You can also chain multiple filters together, or negate the filter. You can also filter the maximum events per ID, useful to investigate a new provider without being flooded by similar events.
 
-
+ 
 # Why this exists
 ETW is an incredibly useful system for both Red and Blue teams. Red teams may glean insight into the inner workings of Windows components, and Blue teams might get valuble insight into suspicious activity.
 
@@ -53,6 +54,8 @@ Please read the following pages:
 **[Configuration](docs/CONFIGURATION.md)** - How to configure Sealighter, including how to specify what Providers to Log, and where to log to.
 
 **[Filtering](docs/FILTERING.md)** - Deep dive into all the types of filtering Sealighter provides.
+
+**[Buffering](docs/BUFFERING.md)** - How to use buffering to report many simliar events as one
 
 **[Parsing Data](docs/PARSING_DATA.md)** - How to get and parse data from Sealighter.
 

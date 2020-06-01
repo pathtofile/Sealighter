@@ -7,7 +7,8 @@ The file is in JSON. An example config file looks like this:
 {
     "session_properties": {
         "session_name": "My-Process-Trace",
-        "output_format": "stdout"
+        "output_format": "stdout",
+        "buffering_timout_seconds":  10
     },
     "user_traces": [
         {
@@ -22,7 +23,16 @@ The file is in JSON. An example config file looks like this:
                 "any_of": {
                     "opcode_is": [1, 2]
                 }
-            }
+            },
+            "buffers": [
+                {
+                    "event_id": 1,
+                    "max_before_buffering": 1,
+                    "fields": [
+                        "ImageName"
+                    ]
+                }
+            ]
         },
     ],
     "kernel_traces": [
@@ -86,6 +96,11 @@ Max Buffers to allocate. Default 48
 
 ### flush_timer
 Buffer Flush timer in seconds. Default 1
+
+### buffering_timout_seconds
+If using [Buffering](BUFFERING.md), this specifes how oftem to flush
+the events, reporting on a group of events as one with a `buffered_count`.
+If using buffering, default is 30 seconds.
 
 _____________
 
@@ -151,6 +166,10 @@ of functions that generated the event.
 ### filters
 An array of filters to further filter the events to report on. These can be quite complex, so read the [Filtering](FILTERING.md) section for details.
 
+### buffers
+Buffering enables the reporitng of many similar events in a time period as one with a count.
+For details, read [Buffering](BUFFERING.md).
+
 _____________
 
 # kernel_traces
@@ -212,3 +231,7 @@ The kernel provider to log. Must be one of:
 
 ### filters
 Like `user_traces`, this is a list of filters to filter the events to report on. These can be quite complex, so read the [Filtering](FILTERING.md) section for details.
+
+### buffers
+Like `user_traces`, buffering enables the reporitng of many similar events in a time period as one with a count.
+For details, read [Buffering](BUFFERING.md).

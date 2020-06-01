@@ -41,3 +41,13 @@ This is an issue that is easilly fixed, and I only realised as I was writing thi
 
 In Silk, when creating a filter by Opcode, Silk manually checks this Opcode is between 0-9.
 However Opcodes are a UCHAR, so they can actually be up to 255.
+
+
+## Stack Traces
+SilkETW doesn't enable reporting of Event Stack Traces, a very usefull set of data to get in some circumstances.
+Sealighter has the ability to do this for usermode providers by enabling the `report_stacktrace` option on a
+per-provider basis
+
+## Buffering
+ETW can produce lots and lots of events. I added the ability to buffer many simliar events in time period into
+one event with a count.

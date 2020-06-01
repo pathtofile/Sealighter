@@ -1,7 +1,7 @@
 # Filtering
- - [Filtering Overview](#Filtering%Overview)
- - [Filter Lists](#Filter%Lists)
- - [Filter Types](#Filter%Types)
+ - [Filtering Overview](#Filtering%20Overview)
+ - [Filter Lists](#Filter%20Lists)
+ - [Filter Types](#Filter%20Types)
 
 
 # Filtering Overview
@@ -43,7 +43,7 @@ Filters are added inside the `filter` key, into one of 3 lists. You do not have 
 "filters": {
     "any_of": {
         "opcode_is": 1,
-        "id_is": 1
+        "event_id_is": 1
     }
 }
 ```
@@ -55,7 +55,7 @@ An event will be reported if it matches *any* of the filters in the `any_of` lis
 "filters": {
     "all_of": {
         "opcode_is": 1,
-        "id_is": 1
+        "event_id_is": 1
     }
 }
 ```
@@ -66,7 +66,7 @@ if a field is an array, e.g.:
 "filters": {
     "all_of": {
         "opcode_is": [1, 2],
-        "id_is": 1
+        "event_id_is": 1
     }
 }
 ```
@@ -78,7 +78,7 @@ Then an event only has to match one of the items in the array, as an event can o
 "filters": {
     "none_of": {
         "opcode_is": 1,
-        "id_is": 1
+        "event_id_is": 1
     }
 }
 ```
@@ -95,7 +95,7 @@ For each filter key, you can either set it to a value (either a number or string
 "filters": {
     "none_of": {
         "process_name_contains": "notepad.exe",
-        "id_is": [1, 2]
+        "event_id_is": [1, 2]
     }
 }
 ```
@@ -104,7 +104,7 @@ If an array, it is the same as if the array is a mini `any_of` list, where the e
 
 The possible filters are:
  - [Header Filters](#Header%20Filters)
-   - [id_is](#id_is)
+   - [event_id_is](#event_id_is)
    - [opcode_is](#opcode_is)
    - [process_id_is](#process_id_is)
    - [version_is](#version_is)
@@ -127,10 +127,10 @@ _____
 These filters filter based upon the Event Header Metadata:
 
 
-### id_is
+### event_id_is
 ```json
 "any_of": {
-    "id_is": 1
+    "event_id_is": 1
 }
 ```
 An event will be reported if its Event ID matches this number.
@@ -297,7 +297,7 @@ This limits the total number of events to report on. Useful for getting a snapsh
 ```json
 "any_of": {
     "max_events_id": {
-        "id_is": 1,
+        "event_id_is": 1,
         "max_events": 1
     }
 }

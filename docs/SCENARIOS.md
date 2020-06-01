@@ -12,6 +12,7 @@ These great blogs provide a great example of the power of ETW and WPP:
  - [Find data in any field](#Find%20data%20in%20any%20field)
  - [Find correlated Events](#Find%20correlated%20Events)
  - [Use Stack Traces](#Use%20Stack%20Traces)
+ - [Use Buffering](#Use%20Buffering)
 
 # Tracking process execution
 Lets trace a program using [Zac Brown's ideas](https://zacbrown.org/2017/04/11/hidden-treasure-intrusion-detection-with-etw-part-1). Create the Following Config:
@@ -143,7 +144,7 @@ The config will look like this:
             "keywords_any": 16,
             "filters": {
                 "any_of": {
-                    "id_is": 1
+                    "event_id_is": 1
                 }
             }
         },
@@ -395,3 +396,48 @@ We can also see one of the addresses in the stack is `0xB8106E`, 0x106E bytes in
 
 Now, if We open up a tool like [Ghidra](https://ghidra-sre.org), import `shellcaller.exe` into it,
 and go `0x106E` bytes into the image, we should see our call to `SHELL32.DLL::ShellExecuteA`.
+
+
+
+## Use Buffering
+Buffering enables the reporitng of many similar events in a time period as one with a count.
+
+For example, Let's create a trace to log process starts, but buffer all process that have the same ImageFileName together, reporting in groups of every 10 seconds. We will use the following config:
+```json
+{
+    "session_properties": {
+        "session_name": "Sealighter-Trace",
+        "output_format": "stdout",
+        "buffering_timout_seconds":  10
+    },
+    "user_traces": [
+        {
+            "trace_name": "ProcTrace01",
+            "provider_name": "Microsoft-Windows-Kernel-Process",
+            "keywords_any": 16,
+            "filters": {
+                "any_of": {
+                    "event_id_is": 1
+                }
+            },
+            "buffers": [
+                {
+                    "event_id": 1,
+                    "max_before_buffering": 0,
+                    "properties_to_match": [
+                        "ImageName"
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+We have created a `Microsoft-Windows-Kernel-Process` to only look at Event ID 1, i.e. `ProcessStart` events.
+We have set the `buffering_timout_seconds` option to 10 seconds.
+We have set 1 buffer for Event 1, to match in the Property `ImageName`.
+
+Running this trace, we will get reports once every 10 seconds. Any matching ImageNames will be
+rolled into a single event with a `buffered_count` field.
+
+Process with different ImageNames will be their own events.
