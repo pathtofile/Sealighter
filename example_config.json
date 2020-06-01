@@ -1,18 +1,30 @@
 ﻿{
     "session_properties": {
         "session_name": "Sealighter-Trace",
-        "output_format": "stdout"
+        "output_format": "stdout",
+        "buffering_timout_seconds":  10
     },
     "user_traces": [
         {
             "trace_name": "ProcTrace01",
-            "provider_name": "Microsoft-Windows-Kernel-Process",
+            "AAAprovider_name": "Microsoft-Windows-Kernel-Process",
+            "provider_name": "{22FB2CD6-0E7B-422B-A0C7-2FAD1FD0E716}",
             "keywords_any": 16,
+            "report_stacktrace": false,
             "filters": {
                 "any_of": {
-                    "id_is": 1
+                    "event_id_is": [ 1, 2 ]
                 }
-            }
+            },
+            "buffers": [
+                {
+                    "event_id": 1,
+                    "max_before_buffering": 0,
+                    "properties_to_match": [
+                        "ImageName"
+                    ]
+                }
+            ]
         }
     ]
 }

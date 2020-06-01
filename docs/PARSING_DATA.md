@@ -19,7 +19,8 @@ Events are outputted as JSON, for example:
         "task_name": "ProcessStart",
         "thread_id": 25932,
         "timestamp": "2020-05-17 11:54:24Z",
-        "trace_name": "proc_trace"
+        "trace_name": "proc_trace",
+        "buffered_count": 2
     },
     "properties": {
         "CreateTime": "2020-05-17 11:54:24Z",
@@ -68,8 +69,10 @@ There are 3 sections to the JSON:
  - [header](#header)
  - [properties](#properties)
  - [property_types](#property_types)
+
 If the `report_stacktrace` option in the provider configuration is used,
 there will also be a [stack_trace](#stack_trace) array.
+
 
 ## header
 This section is the same for every event, and contains the event metadata.
@@ -86,6 +89,10 @@ It will always contains these fields, which are taken from the Event Header:
 - thread_id
 - timestamp
 - trace_name
+
+If [Buffering](BUFFERING.md) is being used and events were buffered together,
+the header will contain an extra field `buffered_count` with the number of events
+that were seen in the `buffering_timout_seconds` period
 
 ## properties
 This is the meat of the event. Unique to every event type, and sometimes even events of the same event ID can have different properties.
@@ -129,7 +136,7 @@ $events = Get-WinEvent -LogName "Sealighter/Operational"
 ```
 
 The event `.message` contains the full JSON, but you can also access the event's `.Properties` array.
-This array has the JSON at index 0, then the rest of the `header` as the remaining properites, i.e.:
+This array has the JSON at index 0, then the rest of the `header` as the remaining properites (except for the optional `buffered_count` field), i.e.:
 ```
 0. json
 1. activity_id

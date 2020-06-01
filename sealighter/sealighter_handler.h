@@ -1,5 +1,45 @@
 #pragma once
 #include "sealighter_krabs.h"
+#include "sealighter_json.h"
+
+
+struct event_buffer_t {
+    event_buffer_t()
+    {}
+
+    json json_event;
+};
+
+
+struct event_buffer_list_t {
+    event_buffer_list_t
+    (
+        std::uint32_t id,
+        std::uint32_t max
+    )
+        : event_id(id)
+        , max_before_buffering(max)
+        , event_count(0)
+    {}
+
+    const std::uint32_t event_id;
+    const std::uint32_t max_before_buffering;
+
+    std::uint32_t event_count;
+    std::vector<std::string> properties_to_compare;
+    std::vector<json> json_event_buffered;
+};
+
+struct sealighter_context_t {
+    sealighter_context_t
+    (
+        std::string name
+    )
+        : trace_name(name)
+    {}
+
+    const std::string trace_name;
+};
 
 /*
     Parse incoming events into JSON and output
@@ -59,3 +99,18 @@ void set_output_format
 (
     Output_format format
 );
+
+void add_buffered_list
+(
+    std::string trace_name,
+    event_buffer_list_t buffered_list
+);
+
+void set_buffer_lists_timeout
+(
+    uint32_t timeout
+);
+
+void start_bufferring();
+
+void stop_bufferring();

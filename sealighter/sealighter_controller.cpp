@@ -326,7 +326,7 @@ int add_filters_to_vector
     try {
         // Add the basic single-value filters
         add_filter_to_vector_basic<predicates::id_is>
-            (json_list, "id_is", pred_vector);
+            (json_list, "event_id_is", pred_vector);
         add_filter_to_vector_basic<predicates::opcode_is>
             (json_list, "opcode_is", pred_vector);
         add_filter_to_vector_basic<predicates::process_id_is>
@@ -585,9 +585,20 @@ int add_kernel_traces
                 status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
                 break;
             }
+
             std::string trace_name = json_provider["trace_name"].get<std::string>();
-            auto sealighter_context = std::shared_ptr<struct sealighter_context_t>
-                (new sealighter_context_t(trace_name));
+            auto sealighter_context =
+                std::shared_ptr<struct sealighter_context_t>(new sealighter_context_t(trace_name));
+            for (json json_buffers : json_provider["buffers"]) {
+                auto event_id = json_buffers["event_id"].get<std::uint32_t>();
+                auto max = json_buffers["max_before_buffering"].get<std::uint32_t>();
+                auto buffer_list = event_buffer_list_t(event_id, max);
+                for (json json_buff_prop: json_buffers["properties_to_match"]) {
+                    buffer_list.properties_to_compare.push_back(json_buff_prop.get<std::string>());
+                }
+
+                add_buffered_list(trace_name, buffer_list);
+            }
 
             // Add any filters
             printf("Kernel Provider: %s\n", provider_name.c_str());
@@ -693,9 +704,20 @@ int add_user_traces
                 status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
                 break;
             }
+
             std::string trace_name = json_provider["trace_name"].get<std::string>();
-            auto sealighter_context = std::shared_ptr<struct sealighter_context_t>
-                (new sealighter_context_t(trace_name));
+            auto sealighter_context =
+                std::shared_ptr<struct sealighter_context_t>(new sealighter_context_t(trace_name));
+            for (json json_buffers : json_provider["buffers"]) {
+                auto event_id = json_buffers["event_id"].get<std::uint32_t>();
+                auto max = json_buffers["max_before_buffering"].get<std::uint32_t>();
+                auto buffer_list = event_buffer_list_t(event_id, max);
+                for (json json_buff_prop : json_buffers["properties_to_match"]) {
+                    buffer_list.properties_to_compare.push_back(json_buff_prop.get<std::string>());
+                }
+
+                add_buffered_list(trace_name, buffer_list);
+            }
 
             // Add any filters
             status = add_filters(pNew_provider, sealighter_context, json_provider);
@@ -803,6 +825,11 @@ int parse_config
                 }
                 printf("Output: %s\n", format.c_str());
             }
+
+            if (!json_props["buffering_timout_seconds"].is_null()) {
+                auto timeout = json_props["buffering_timout_seconds"].get<std::uint32_t>();
+                set_buffer_lists_timeout(timeout);
+            }
         }
     }
     catch (const nlohmann::detail::exception& e) {
@@ -831,28 +858,6 @@ int parse_config
     return status;
 }
 
-
-/*
-    Teardown our Event Logging
- */
-void teardown()
-{
-    DWORD status = ERROR_SUCCESS;
-    
-    // Stop ETW Traces
-    if (NULL != g_user_session) {
-        g_user_session->stop();
-    }
-    if (NULL != g_kernel_session) {
-        g_kernel_session->stop();
-    }
-    
-    // Unregister Event Logger
-    status = EventUnregisterSealighter();
-    if (ERROR_SUCCESS != status) {
-        printf("Error unregisting event logger: %ul\n", status);
-    }
-}
 
 /*
     Run a trace, and ensure we stop if something goes wrong
@@ -884,7 +889,14 @@ void stop_traces()
     if (NULL != g_kernel_session) {
         g_kernel_session->stop();
     }
+    // Stop bufferring thread if needed
+    stop_bufferring();
+
     teardown_logger_file();
+
+    // Unregister Event Logger
+    (void)EventUnregisterSealighter();
+
 }
 
 
@@ -942,6 +954,9 @@ int run_sealighter
         return SEALIGHTER_ERROR_NO_SESSION_CREATED;
     }
     else {
+        // Setup Buffering thread if needed
+        start_bufferring();
+
         // Start Trace we've configured
         // Don't run multithreaded if we don't have to
         if (NULL != g_user_session && NULL == g_kernel_session) {
