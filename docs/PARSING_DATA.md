@@ -76,7 +76,7 @@ there will also be a [stack_trace](#stack_trace) array.
 
 ## header
 This section is the same for every event, and contains the event metadata.
-It will always contains these fields, which are taken from the Event Header:
+It will always contain these fields, which are taken from the Event Header:
 - activity_id
 - event_flags
 - event_id
@@ -136,7 +136,7 @@ $events = Get-WinEvent -LogName "Sealighter/Operational"
 ```
 
 The event `.message` contains the full JSON, but you can also access the event's `.Properties` array.
-This array has the JSON at index 0, then the rest of the `header` as the remaining properites (except for the optional `buffered_count` field), i.e.:
+This array has the JSON at index 0, then the rest of the `header` as the remaining properties (except for the optional `buffered_count` field), i.e.:
 ```
 0. json
 1. activity_id
@@ -177,8 +177,8 @@ You may also wish to ingest the data into a Splunk or ELK stack.
 You can either write to a file, then upload it, or for streaming write to the event log and use a forwarder like WinLogbeat to forward the data.
 
 
-For super quick experimentations, I quickly setup a temporary Splunk instance in a docker container by:
+For super quick experiments, I quickly set up a temporary Splunk instance in a docker container by:
 ```bash
 docker run --rm --name splunk -d -p 8000:8000 -e 'SPLUNK_START_ARGS=--accept-license' -e 'SPLUNK_PASSWORD=sealighter' splunk/splunk:latest
 ```
-After the container started up, I ran Sealighter writing to a file, then afterwards injested the file and started searching. When I was done for the day, I tore down the container so I never hit the upload limits.
+After the container started up, I ran Sealighter writing to a file, then afterwards ingested the file and started searching. When I was done for the day, I tore down the container, so I never hit the upload limits.
