@@ -663,8 +663,7 @@ int add_user_traces
             // If no keywords_all or keywords_any is set
             // then set a default 'match anything'
             if (json_provider["keywords_all"].is_null() && json_provider["keywords_any"].is_null()) {
-                printf("    Keywords Any: 0xffffffffffff\n");
-                pNew_provider->any(0xffffffffffff);
+                printf("    Keywords: All\n");
             }
             else {
                 if (!json_provider["keywords_all"].is_null()) {
