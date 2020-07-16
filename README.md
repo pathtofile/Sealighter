@@ -2,7 +2,7 @@
 
 ![CI](https://github.com/pathtofile/Sealighter/workflows/CI/badge.svg?branch=master)
 
-I created this project to help non-developers dive into researching Event Tracing for Windows (ETW) and Windows PreProcessor Tracing(WPP).
+I created this project to help non-developers dive into researching Event Tracing for Windows (ETW) and Windows PreProcessor Tracing (WPP).
 
 # Features
  - Subscribe to multiple ETW and WPP Providers at once
