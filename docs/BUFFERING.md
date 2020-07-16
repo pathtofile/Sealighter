@@ -1,7 +1,7 @@
 # Buffering
-Buffering enables the reporitng of many similar events in a time period as one with a count.
+Buffering enables the reporting of many similar events in a time period as one with a count.
 
-Events are buffered tegether by collapsing events with a matching set of properites.
+Events are buffered together by collapsing events with a matching set of properties.
 
 For example, in a Process Trace, you could buffer all process starts of `cmd.exe` together,
 only reporting one event per minute. That event with contain a `buffered_count` field with the

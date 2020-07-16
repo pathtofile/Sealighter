@@ -4,11 +4,9 @@
 #include "sealighter_util.h"
 #include "sealighter_provider.h"
 
-#include <iostream>
 #include <fstream>
 #include <mutex>
-#include <bitset>
-#include <chrono>
+#include <atomic>
 
 // -------------------------
 // GLOBALS - START
@@ -26,12 +24,11 @@ static Output_format g_output_format;
 
 // Hold data for buffering
 static std::map<std::string, std::vector< event_buffer_list_t>> g_buffer_lists;
-// Default to 10 seconds
-static std::uint32_t g_buffer_lists_timeout_seconds = 30;
+// Default to 30 seconds
+static std::uint32_t g_buffer_lists_timeout_seconds = 5;
 static std::mutex g_buffer_lists_mutex;
-static std::mutex g_buffer_thread_mutex;
-static std::thread g_bugger_list_thread;
-static bool g_buffer_list_stop = false;
+static std::thread g_buffer_list_thread;
+static std::atomic_bool g_buffer_thread_stop = false;
 static std::condition_variable g_buffer_list_con_var;
 
 // -------------------------
@@ -71,7 +68,7 @@ void write_event_log
 
     // TODO: Make sure we didn't break this
     // Also fix up schema, no need to to all the str_wstr converting
-    // Also fixz up timestamp string
+    // Also fix up timestamp string
     status = EventWriteSEALIGHTER_REPORT_EVENT(
         event_string.c_str(),
         json_event["header"]["activity_id"].get<std::string>().c_str(),
@@ -477,13 +474,18 @@ void flush_buffered_lists()
 
 void bufferring_thread()
 {
-    auto timeout = std::chrono::seconds(g_buffer_lists_timeout_seconds);
-    std::unique_lock<std::mutex> lock(g_buffer_thread_mutex);
-    while (!g_buffer_list_stop) {
-        while (!g_buffer_list_con_var.wait_for(lock, timeout, []() { return g_buffer_list_stop; })) {
+    std::mutex thread_mutex;
+    std::unique_lock<std::mutex> lock(thread_mutex);
+    auto time_point = std::chrono::system_clock::now() +
+        std::chrono::seconds(g_buffer_lists_timeout_seconds);
+    while (!g_buffer_thread_stop) {
+        while (g_buffer_list_con_var.wait_until(lock, time_point) == std::cv_status::timeout) {
             flush_buffered_lists();
+            time_point = std::chrono::system_clock::now() +
+                std::chrono::seconds(g_buffer_lists_timeout_seconds);
         }
     }
+
     // Flush one last time before ending
     flush_buffered_lists();
 }
@@ -491,30 +493,17 @@ void bufferring_thread()
 void start_bufferring()
 {
     // Only start buffer thread if we need to
-    if (g_buffer_lists.size() != 0 && !g_buffer_list_stop) {
-        g_bugger_list_thread = std::thread(bufferring_thread);
+    if (g_buffer_lists.size() != 0 && !g_buffer_thread_stop.load()) {
+        g_buffer_list_thread = std::thread(bufferring_thread);
     }
 }
 
 
 void stop_bufferring()
 {
-    if (g_buffer_lists.size() != 0 && !g_buffer_list_stop) {
-        try
-        {
-            std::unique_lock<std::mutex> lock(g_buffer_thread_mutex);
-            g_buffer_list_stop = true;
-            lock.unlock();
-            g_buffer_list_con_var.notify_one();
-            if (g_bugger_list_thread.joinable()) {
-                g_bugger_list_thread.join();
-                //g_bugger_list_thread.detach();
-            }
-        }
-        catch (const std::exception& err)
-        {
-            // Could this happen?
-            printf("%s\n", err.what());
-        }
+    if (g_buffer_lists.size() != 0 && !g_buffer_thread_stop.load()) {
+        g_buffer_thread_stop = true;
+        g_buffer_list_con_var.notify_one();
+        g_buffer_list_thread.join();
     }
 }

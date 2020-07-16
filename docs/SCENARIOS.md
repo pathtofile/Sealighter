@@ -106,7 +106,7 @@ for event_string in events:
 # Find data in any field
 Let's investigate a WPP trace using [Matt Graeber's WPP blog](https://posts.specterops.io/data-source-analysis-and-dynamic-windows-re-using-wpp-and-tracelogging-e465f8b653f7) as a guide.
 
-Load up his `TLGMetadataParser.psm1` Script in Powershell, and let's see if there's any WPP providers in `Shell32.dll`:
+Load up his `TLGMetadataParser.psm1` Script in PowerShell, and let's see if there's any WPP providers in `Shell32.dll`:
 ```powershell
 Import-Module .\TLGMetadataParser.psm1
 $shell32 = Get-TraceLoggingMetadata -Path C:\Windows\System32\shell32.dll
@@ -234,9 +234,9 @@ Start the Sealighter trace, run the PowerShell `.ShellExecute` script, and you s
 In my example, the PID of the PowerShell that ran the command was `15724`.
 We can see that PowerShell triggered an event
 
-We can see we generated an event we didn't know existed called `ShellExecuteExW`, which containes the program we ran (`lpFile`) and the arguments (`lpParameters`).
+We can see a generated event that we didn't know existed called `ShellExecuteExW`, which contains the program we ran (`lpFile`) and the arguments (`lpParameters`).
 
-We can see the information also matches up with the `Microsoft-Windows-Kernel-Process` trace, confirming that this was us that triggered the event.
+We can also see the information also matches up with the `Microsoft-Windows-Kernel-Process` trace, confirming that this was us that triggered the event.
 
 
 ----------
@@ -253,7 +253,7 @@ To look for providers that use activity IDs, you could use the following filter,
 }
 ```
 
-Then it would be a case of running various ETW or WPP providers, doing "stuff", and seeing if any events get emmited.
+Then it would be a case of running various ETW or WPP providers, doing "stuff", and seeing if any events get emitted.
 
 
 ### Use Stack Traces
@@ -303,7 +303,7 @@ but also use `report_stacktrace` to get stack traces:
 }
 ```
 
-Start Sealighter, and ocne the trace has started run `shellcaller.exe` - It should launch
+Start Sealighter, and once the trace has started run `shellcaller.exe` - It should launch
 a `notepad.exe` process, and you should get an output similar to below (but with different numbers):
 ```
 Base address: 0x00B80000
@@ -391,7 +391,7 @@ Sealighter should also output an event similar to below (but again with differen
 So we see that `shellcaller.exe` did indeed call `ShellExecute` to launch `notepad.exe`
 We now also get a stack trace.
 
-In this example, The base in-memory adrress of `shellcaller.exe` is `0x00B80000`.
+In this example, The base in-memory address of `shellcaller.exe` is `0x00B80000`.
 We can also see one of the addresses in the stack is `0xB8106E`, 0x106E bytes into the image.
 
 Now, if We open up a tool like [Ghidra](https://ghidra-sre.org), import `shellcaller.exe` into it,
@@ -400,7 +400,7 @@ and go `0x106E` bytes into the image, we should see our call to `SHELL32.DLL::Sh
 
 
 ## Use Buffering
-Buffering enables the reporitng of many similar events in a time period as one with a count.
+Buffering enables the reporting of many similar events in a time period as one with a count.
 
 For example, Let's create a trace to log process starts, but buffer all process that have the same ImageFileName together, reporting in groups of every 10 seconds. We will use the following config:
 ```json

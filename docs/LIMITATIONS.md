@@ -7,16 +7,12 @@ Things may work with non-ascii filtering, config, or events, but they may not.
 Sealighter works only on 64Bit, and no effort will be made to make it work on 32Bit.
 
 ## Be production-ready
-Sealighter is a research tool first, so I would **not** deploy it to 1000s of computer as an EDR replacement.
+Sealighter is a research tool first, so I would **not** deploy it to 1000s of computer, or as an EDR replacement.
 
-## Be consistant between c++ and c code conventions
-I mainly work in C, and resort to it more than I probably should, so some of the C++ was thrown together
+## Be consistent between c++ and c code conventions
+I mainly work in C, and resort to it more than I probably should, so the C++ parts were thrown together a bit hastily.
 
 
-
-# TODO before v1.0
- * Add new stuff to doco:
-   * trace_name
-     * Also now in header
-     * Need to also update Event Log Manifest
-   * max_before_buffer
+# Potential future work:
+* Add [Related Activity IDs](https://github.com/microsoft/krabsetw/issues/64) parsing
+* Code cleanup (ha)

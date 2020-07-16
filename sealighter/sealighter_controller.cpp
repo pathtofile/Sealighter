@@ -663,8 +663,7 @@ int add_user_traces
             // If no keywords_all or keywords_any is set
             // then set a default 'match anything'
             if (json_provider["keywords_all"].is_null() && json_provider["keywords_any"].is_null()) {
-                printf("    Keywords Any: 0xffffffffffff\n");
-                pNew_provider->any(0xffffffffffff);
+                printf("    Keywords: All\n");
             }
             else {
                 if (!json_provider["keywords_all"].is_null()) {
@@ -889,14 +888,6 @@ void stop_traces()
     if (NULL != g_kernel_session) {
         g_kernel_session->stop();
     }
-    // Stop bufferring thread if needed
-    stop_bufferring();
-
-    teardown_logger_file();
-
-    // Unregister Event Logger
-    (void)EventUnregisterSealighter();
-
 }
 
 
@@ -939,7 +930,7 @@ int run_sealighter
     }
 
     // Add ctrl+C handler to make sure we stop the trace
-    if (!SetConsoleCtrlHandler(crl_c_handler, true)) {
+    if (!SetConsoleCtrlHandler(crl_c_handler, TRUE)) {
         printf("failed to set ctrl-c handler\n");
         return SEALIGHTER_ERROR_CTRL_C_REGISTER;
     }
@@ -980,10 +971,12 @@ int run_sealighter
             user_thread.join();
             kernel_thread.join();
         }
-    }
 
-    // Make sure trace is stopped
-    stop_traces();
+        // Teardown and cleanup
+        stop_bufferring();
+        teardown_logger_file();
+        (void)EventUnregisterSealighter();
+    }
 
     return status;
 }

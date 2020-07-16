@@ -3,7 +3,9 @@
 
 Sealighter runs on Windows 7+, x64.
 
-First, grab the latest binary from [Github Releases](https://github.com/pathtofile/Sealighter/releases).
+First, grab the latest binary from [Github Releases](https://github.com/pathtofile/Sealighter/releases).\
+
+You might also need the latest Visual C runtime: https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
 
 ## Log to Standard Output or a File
 
@@ -50,4 +52,4 @@ If you move Sealighter, run the command again. To uninstall the log, run:
 wevtutil um path/to/sealighter_provider.man
 ```
 
-You can also change the size of the Log on disk in the Event Viewer UI, if you plan on recording a large number of events.
+You can also change the size of the Log on disk in the Event Viewer UI, if you plan on recording many events.
