@@ -13,10 +13,6 @@ Sealighter is a research tool first, so I would **not** deploy it to 1000s of co
 I mainly work in C, and resort to it more than I probably should, so the C++ parts were thrown together a bit hastily.
 
 
-
-# TODO before v1.0
- * Add new stuff to doco:
-   * trace_name
-     * Also now in header
-     * Need to also update Event Log Manifest
-   * max_before_buffer
+# Potential future work:
+* Add [Related Activity IDs](https://github.com/microsoft/krabsetw/issues/64) parsing
+* Code cleanup (ha)

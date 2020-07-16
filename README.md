@@ -66,6 +66,9 @@ Please read the following pages:
 # Why it's called Sealighter
 The name is a contraction of [Seafood Highlighter](https://en.wikipedia.org/wiki/Seafood_extender), which is what we call fake crab meat in Oz. As it's built on Krabs ETW, I thought the name was funny.
 
+# Found problems?
+Feel free to raise an issue, although as I state in the [comparison docs](docs/COMPARISION.md) I'm only a single person, and this is a research-ready
+tool, not a production-ready.
 
 # Props and further reading
 - [Great Blog on ETW and WPP from Matt Graeber](https://posts.specterops.io/data-source-analysis-and-dynamic-windows-re-using-wpp-and-tracelogging-e465f8b653f7)

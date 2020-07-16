@@ -7,6 +7,12 @@ I tested it out when FuzzySec first released it, but came across a couple of iss
 I really want to stress, my goal and primary use case of Sealighter is as a *research* platform. SilkETW has some nice features to make it more suitable in a production environment. But for a platform to research new ETW and WPP providers and events, The following were challenges that led me to turn my tooling into a proper project:
 
 
+## Production Vs Research
+Sealighter is designed to help researchers understand and dig into ETW.
+I do not advise anyone using it in a production environment to protect their network, mostly due to it being a single person growing/maintaing this
+project. Use the ideas you learn from using Sealighter to enhanse your own tools or situational awareness.
+
+
 ## Parsing of some Events
 Under the hood, Silk uses the .NET library [Microsoft.Diagnostics.Tracing.TraceEvent](https://github.com/microsoft/perfview/blob/master/documentation/TraceEvent/TraceEventLibrary.md) for its base ETW handling.
 In the past, I've had issues with this library not fully parsing events, reporting only a fraction of the event's properties. An example of this was the `Event(1001)` in the `Microsoft-Windows-WFP` Provider.

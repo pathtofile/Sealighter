@@ -3,7 +3,9 @@
 
 Sealighter runs on Windows 7+, x64.
 
-First, grab the latest binary from [Github Releases](https://github.com/pathtofile/Sealighter/releases).
+First, grab the latest binary from [Github Releases](https://github.com/pathtofile/Sealighter/releases).\
+
+You might also need the latest Visual C runtime: https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
 
 ## Log to Standard Output or a File
 
