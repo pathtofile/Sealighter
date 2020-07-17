@@ -16,7 +16,7 @@ I created this project to help non-developers dive into researching Event Tracin
 ![Screenshot of Sealighter running](docs/screencap.png)
 
 # Overview
-Sealighter leverages the feature-rich [Krabs ETW](htttps://github.com/microsoft/krabsetw) Library to enable detailed filtering and triage of ETW and WPP Providers and Events.
+Sealighter leverages the feature-rich [Krabs ETW](https://github.com/microsoft/krabsetw) Library to enable detailed filtering and triage of ETW and WPP Providers and Events.
 
 You can subscribe and filter multiple providers, including User mode Providers, Kernel Tracing, and WPP Tracing, and output events as JSON to either stdout, a file, or the Windows Event Log (useful for high-volume traces like `FileIO`). No knowledge of the events the provider may produce, or their format, is necessary, Sealighter automatically captures and parses any events it is asked.
 
