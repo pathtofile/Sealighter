@@ -4,9 +4,11 @@
 
 I created this project to help non-developers dive into researching Event Tracing for Windows (ETW) and Windows PreProcessor Tracing (WPP).
 
+![Screenshot of Sealighter running](docs/screencap.png)
+
 # Features
  - Subscribe to multiple ETW and WPP Providers at once
- - Automagically parse and convert events into JSON
+ - Automatically parse events into JSON without needing to know format
  - Robust Event filtering including filter chaining and filter negation
  - Output to Standard out, File, or Windows Event Log (to be ingested by other tools)
  - Get event stack traces
