@@ -6,12 +6,14 @@ I created this project to help non-developers dive into researching Event Tracin
 
 # Features
  - Subscribe to multiple ETW and WPP Providers at once
- - Automagically parse and convert events into JSON
+ - Automatically parse events into JSON without needing to know format
  - Robust Event filtering including filter chaining and filter negation
  - Output to Standard out, File, or Windows Event Log (to be ingested by other tools)
  - Get event stack traces
  - Configurable Buffering many events in a time period into one with a count, to reduce the number of events generated
 
+
+![Screenshot of Sealighter running](docs/screencap.png)
 
 # Overview
 It leverages the feature-rich [Krabs ETW](htttps://https://github.com/microsoft/krabsetw) Library to enable detailed filtering and triage of ETW and WPP Providers and Events.
