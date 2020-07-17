@@ -15,4 +15,5 @@ I mainly work in C, and resort to it more than I probably should, so the C++ par
 
 # Potential future work:
 * Add [Related Activity IDs](https://github.com/microsoft/krabsetw/issues/64) parsing
+* Option to pretty-print to file
 * Code cleanup (ha)
