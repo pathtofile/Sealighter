@@ -7,10 +7,8 @@
     "user_traces": [
         {
             "trace_name": "ProcTrace01",
-            "AAAprovider_name": "Microsoft-Windows-Kernel-Process",
-            "provider_name": "{22FB2CD6-0E7B-422B-A0C7-2FAD1FD0E716}",
+            "provider_name": "Microsoft-Windows-Kernel-Process",
             "keywords_any": 16,
-            "report_stacktrace": false,
             "filters": {
                 "any_of": {
                     "event_id_is": [ 1, 2 ]
@@ -19,7 +17,7 @@
             "buffers": [
                 {
                     "event_id": 1,
-                    "max_before_buffering": 0,
+                    "max_before_buffering": 10,
                     "properties_to_match": [
                         "ImageName"
                     ]

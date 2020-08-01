@@ -197,13 +197,13 @@ std::string convert_bytes_sidstring
     }
     else {
         // Fallback to printing the raw bytes
-        to = convert_bytes_hexstring(from);
+        to = convert_bytevector_hexstring(from);
     }
     return to;
 }
 
 
-std::string convert_bytes_hexstring
+std::string convert_bytevector_hexstring
 (
     const std::vector<BYTE>& from
 )
@@ -212,6 +212,24 @@ std::string convert_bytes_hexstring
     ss << std::hex << std::uppercase << std::setfill('0');
     for (int c : from) {
         ss << std::setw(2) << c;
+    }
+
+    std::string to = ss.str();
+    return to;
+}
+
+
+std::string convert_bytearray_hexstring
+(
+    BYTE* from,
+    int len
+)
+{
+    std::ostringstream ss;
+    ss << std::hex << std::uppercase << std::setfill('0');
+    for (int i = 0; i < len; i++) {
+        ss << std::setw(2) << (int)from[i];
+
     }
 
     std::string to = ss.str();

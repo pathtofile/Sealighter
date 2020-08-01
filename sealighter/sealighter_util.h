@@ -135,13 +135,24 @@ std::string convert_bytes_sidstring
 
 
 /*
+    Helper to convert byte vector to a
+    hexidecimal string representation
+    (will *not* have a leading "0x")
+*/
+std::string convert_bytevector_hexstring
+(
+    const std::vector<BYTE>& from
+);
+
+/*
     Helper to convert byte array to a
     hexidecimal string representation
     (will *not* have a leading "0x")
 */
-std::string convert_bytes_hexstring
+std::string convert_bytearray_hexstring
 (
-    const std::vector<BYTE>& from
+    BYTE* from,
+    int len
 );
 
 /*
