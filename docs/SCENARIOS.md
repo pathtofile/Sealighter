@@ -1,7 +1,7 @@
 # Scenarios
 
 # ETW and WPP Overviews and examples
-These great blogs provide a great example of the power of ETW and WPP:
+These great blogs provide a great example of the power of ETW, TraceLogging, and WPP:
 - [Data Source Analysis and Dynamic Windows RE using WPP and TraceLogging](https://posts.specterops.io/data-source-analysis-and-dynamic-windows-re-using-wpp-and-tracelogging-e465f8b653f7)
 - [Hidden Treasure: Intrusion Detection with ETW](https://zacbrown.org/2017/04/11/hidden-treasure-intrusion-detection-with-etw-part-1)
 - [Tampering with Windows Event Tracing: Background, Offense, and Defense](https://medium.com/palantir/tampering-with-windows-event-tracing-background-offense-and-defense-4be7ac62ac63)
@@ -13,6 +13,7 @@ These great blogs provide a great example of the power of ETW and WPP:
  - [Find correlated Events](#Find%20correlated%20Events)
  - [Use Stack Traces](#Use%20Stack%20Traces)
  - [Use Buffering](#Use%20Buffering)
+ - [WPP Tracing](#WPP%20Tracing)
 
 # Tracking process execution
 Lets trace a program using [Zac Brown's ideas](https://zacbrown.org/2017/04/11/hidden-treasure-intrusion-detection-with-etw-part-1). Create the Following Config:
@@ -104,9 +105,9 @@ for event_string in events:
 
 
 # Find data in any field
-Let's investigate a WPP trace using [Matt Graeber's WPP blog](https://posts.specterops.io/data-source-analysis-and-dynamic-windows-re-using-wpp-and-tracelogging-e465f8b653f7) as a guide.
+Let's investigate a TraceLogging trace using [Matt Graeber's blog](https://posts.specterops.io/data-source-analysis-and-dynamic-windows-re-using-wpp-and-tracelogging-e465f8b653f7) as a guide.
 
-Load up his `TLGMetadataParser.psm1` Script in PowerShell, and let's see if there's any WPP providers in `Shell32.dll`:
+Load up his `TLGMetadataParser.psm1` Script in PowerShell, and let's see if there's any TraceLogging providers in `Shell32.dll`:
 ```powershell
 Import-Module .\TLGMetadataParser.psm1
 $shell32 = Get-TraceLoggingMetadata -Path C:\Windows\System32\shell32.dll
@@ -129,7 +130,7 @@ $shellobj.ShellExecute("notepad.exe", "test.txt")
 
 Let's Create a Sealighter trace with two providers:
 1. A Process Trace, where we'll get all process starts (Event Id 2)
-2. A WPP trace for the ShellExecute provider, searching for any event that contains the string "cmd.exe"
+2. A TraceLogging trace for the ShellExecute provider, searching for any event that contains the string "cmd.exe"
 The config will look like this:
 ```json
 {
@@ -253,7 +254,7 @@ To look for providers that use activity IDs, you could use the following filter,
 }
 ```
 
-Then it would be a case of running various ETW or WPP providers, doing "stuff", and seeing if any events get emitted.
+Then it would be a case of running various ETW, TraceLogging, or WPP providers, doing "stuff", and seeing if any events get emitted.
 
 
 ### Use Stack Traces
@@ -441,3 +442,84 @@ Running this trace, we will get reports once every 10 seconds. Any matching Imag
 rolled into a single event with a `buffered_count` field.
 
 Process with different ImageNames will be their own events.
+
+
+## WPP Tracing
+WPP Tracing is special, as the format of the events are not contained in the trace at runtime.
+The format is usually compiled into the pdb file, or in a seperate TMF file.
+
+Curretly Sealighter cannot auto-parse WPP events, however we can get the raw event data, and parse them
+after the fact with Python.
+
+As an example, lets trace the OLE32 COM provider. Using the microsoft documentation [here](https://support.microsoft.com/en-us/help/926098/how-to-enable-com-and-com-diagnostic-tracing), first enable OLE32 tracing by runnig the following command in an elevated prompt:
+```
+reg add HKEY_LOCAL_MACHINE\Software\Microsoft\OLE\Tracing /v ExecutablesToTrace /t REG_MULTI_SZ /d * /f
+```
+Now we can run a sealighter trace.
+
+We need to log not only the WPP provider GUID, but also the message GUID, as WPP messages get delivered
+to their own provider. We know these GUIDS by reverse engineering ole32.dll. Keywords and levels in WPP traces are CHARs, so to get all events we will set both to 0xff, i.e. `255`.
+We will use `dump_raw_event` to dump the raw hex-encoded bytes, and also limit it to just 10 messages,
+to prevent the trace from flooding us with too much information. The end config shoud look something like this:
+```json
+{
+    "session_properties": {
+        "session_name": "Sealighter-Trace",
+        "output_format": "file",
+        "output_filename": "ole.json"
+    },
+    "user_traces": [
+        {
+            "trace_name": "ole32",
+            "provider_name": "{BDA92AE8-9F11-4D49-BA1D-A4C2ABCA692E}",
+            "keywords_any": 255,
+            "level": 255
+        },
+        {
+            "trace_name": "ole32-message",
+            "provider_name": "{0F480EA8-F109-39A3-8A27-36DC7E84A294}",
+            "dump_raw_event": true,
+            "filters": {
+                "any_of": {
+                    "max_events_total": 10
+                }
+            },
+        }
+    ]
+}
+```
+Note the GUIDs might be different with different versions of the dll.
+Start the trace, wait 30 seconds, and you should have 10 events in `ole.json`.
+We know from reverse engineering that the messages we logged are just a ANSI string, so
+we can parse the file with this simple python script:
+```python
+import json
+import binascii
+
+with open("ole.json", "r") as f:
+    for line in f:
+        # Get the event in JSON format
+        event = json.loads(line)
+        process_id = event["header"]["process_id"]
+        # Extract and convert the raw bytes
+        raw_hex = event["raw"]
+        raw_bytes = binascii.unhexlify(raw_hex)
+        raw_string = raw_bytes.decode("utf16")
+        # Print the string
+        print(f"[{process_id}] - {raw_string}")
+```
+Run the script, and you should see output like the following:
+```
+[1516] - (onecore\com\combase\common\internal\comtrace.cxx):(InitializeTracing):(159) Starting OLE32 tracing for: C:\WINDOWS\system32\conhost.exe
+[1316] - (onecore\com\combase\rpcss\objex\manager.cxx):(_ServerAllocateOIDs):(2968) process:000001634C6BC9C0 PID:618 C:\WINDOWS\System32\svchost.exe OXID:AAC34D291DA574F0
+[1316] - (onecore\com\combase\rpcss\objex\manager.cxx):(ServerAllocateOIDsInternal):(2866) process:000001634C6BC9C0 PID:618 C:\WINDOWS\System32\svchost.exe Server OXID:AAC34D291DA574F0
+[1316] - (onecore\com\combase\rpcss\objex\idtable.hxx):(CIdKey::CIdKey):(42) this:000000247377E8F0 ID:AAC34D291DA574F0
+```
+
+Once finished, we can stop OLE tracing by delting the reg key we created:
+```
+reg delete HKEY_LOCAL_MACHINE\Software\Microsoft\OLE\Tracing /v ExecutablesToTrace /f 
+```
+
+In the future Sealighter might enable you to define the event structure at runtime so events look like other ETW events, but not right now.
+For more information on WPP tracing, again see [Matt Graeber's blog](https://posts.specterops.io/data-source-analysis-and-dynamic-windows-re-using-wpp-and-tracelogging-e465f8b653f7) as a guide.
