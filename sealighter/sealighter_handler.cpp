@@ -115,11 +115,11 @@ json parse_event_to_json
 (
     const EVENT_RECORD& record,
     const trace_context&,
-    std::string trace_name,
+    std::shared_ptr<struct sealighter_context_t> sealighter_context,
     krabs::schema       schema
 )
 {
-    krabs::parser parser(schema);
+    std::string trace_name = sealighter_context->trace_name;
     json json_properties;
     json json_properties_types;
     json json_header = {
@@ -139,138 +139,150 @@ json parse_event_to_json
 
     json json_event = { {"header", json_header} };
 
-    for (krabs::property& prop : parser.properties())
-    {
-        std::wstring prop_name_wstr = prop.name();
-        std::string prop_name = convert_wstr_str(prop_name_wstr);
+    // Check if we are just dumping the raw event, or attempting to parse it
+    if (sealighter_context->dump_raw_event) {
+        std::string raw_hex = convert_bytearray_hexstring((BYTE*)record.UserData, record.UserDataLength);
+        json_event["raw"] = raw_hex;
+    }
+    else {
+        krabs::parser parser(schema);
+        for (krabs::property& prop : parser.properties()) {
+            std::wstring prop_name_wstr = prop.name();
+            std::string prop_name = convert_wstr_str(prop_name_wstr);
 
-        try
-        {
-            switch (prop.type())
+            try
             {
-            case TDH_INTYPE_ANSISTRING:
-                json_properties_types[prop_name] = "STRINGA";
-                json_properties[prop_name] = parser.parse<std::string>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_UNICODESTRING:
-                json_properties_types[prop_name] = "STRINGW";
-                json_properties[prop_name] = convert_wstr_str(parser.parse<std::wstring>(prop_name_wstr));
-                break;
-            case TDH_INTYPE_INT8:
-                json_properties_types[prop_name] = "INT8";
-                json_properties[prop_name] = parser.parse<std::int8_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_UINT8:
-                json_properties_types[prop_name] = "UINT8";
-                json_properties[prop_name] = parser.parse<std::uint8_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_INT16:
-                json_properties_types[prop_name] = "INT16";
-                json_properties[prop_name] = parser.parse<std::int16_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_UINT16:
-                json_properties_types[prop_name] = "UINT16";
-                json_properties[prop_name] = parser.parse<std::uint16_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_INT32:
-                json_properties_types[prop_name] = "INT32";
-                json_properties[prop_name] = parser.parse<std::int32_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_UINT32:
-                json_properties_types[prop_name] = "UINT32";
-                json_properties[prop_name] = parser.parse<std::uint32_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_INT64:
-                json_properties_types[prop_name] = "INT64";
-                json_properties[prop_name] = parser.parse<std::int64_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_UINT64:
-                json_properties_types[prop_name] = "UINT64";
-                json_properties[prop_name] = parser.parse<std::uint64_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_FLOAT:
-                json_properties_types[prop_name] = "FLOAT";
-                json_properties[prop_name] = parser.parse<std::float_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_DOUBLE:
-                json_properties_types[prop_name] = "DOUBLE";
-                json_properties[prop_name] = parser.parse<std::double_t>(prop_name_wstr);
-                break;
-            case TDH_INTYPE_BOOLEAN:
-                json_properties_types[prop_name] = "BOOLEAN";
-                json_properties[prop_name] =
+                switch (prop.type())
+                {
+                case TDH_INTYPE_ANSISTRING:
+                    json_properties[prop_name] = parser.parse<std::string>(prop_name_wstr);
+                    json_properties_types[prop_name] = "STRINGA";
+                    break;
+                case TDH_INTYPE_UNICODESTRING:
+                    json_properties[prop_name] = convert_wstr_str(parser.parse<std::wstring>(prop_name_wstr));
+                    json_properties_types[prop_name] = "STRINGW";
+                    break;
+                case TDH_INTYPE_INT8:
+                    json_properties[prop_name] = parser.parse<std::int8_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "INT8";
+                    break;
+                case TDH_INTYPE_UINT8:
+                    json_properties[prop_name] = parser.parse<std::uint8_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "UINT8";
+                    break;
+                case TDH_INTYPE_INT16:
+                    json_properties[prop_name] = parser.parse<std::int16_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "INT16";
+                    break;
+                case TDH_INTYPE_UINT16:
+                    json_properties[prop_name] = parser.parse<std::uint16_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "UINT16";
+                    break;
+                case TDH_INTYPE_INT32:
+                    json_properties[prop_name] = parser.parse<std::int32_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "INT32";
+                    break;
+                case TDH_INTYPE_UINT32:
+                    json_properties[prop_name] = parser.parse<std::uint32_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "UINT32";
+                    break;
+                case TDH_INTYPE_INT64:
+                    json_properties[prop_name] = parser.parse<std::int64_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "INT64";
+                    break;
+                case TDH_INTYPE_UINT64:
+                    json_properties[prop_name] = parser.parse<std::uint64_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "UINT64";
+                    break;
+                case TDH_INTYPE_FLOAT:
+                    json_properties[prop_name] = parser.parse<std::float_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "FLOAT";
+                    break;
+                case TDH_INTYPE_DOUBLE:
+                    json_properties[prop_name] = parser.parse<std::double_t>(prop_name_wstr);
+                    json_properties_types[prop_name] = "DOUBLE";
+                    break;
+                case TDH_INTYPE_BOOLEAN:
+                    json_properties[prop_name] =
+                        json_properties_types[prop_name] = "BOOLEAN";
                     convert_bytes_bool(parser.parse<krabs::binary>(prop_name_wstr).bytes());
-                break;
-            case TDH_INTYPE_BINARY:
-                json_properties_types[prop_name] = "BINARY";
-                json_properties[prop_name] =
-                    convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
-                break;
-            case TDH_INTYPE_GUID:
-                json_properties_types[prop_name] = "GUID";
-                json_properties[prop_name] =
-                    convert_guid_str(parser.parse<krabs::guid>(prop_name_wstr));
-                break;
-            case TDH_INTYPE_FILETIME:
-                json_properties_types[prop_name] = "FILETIME";
-                json_properties[prop_name] = convert_filetime_string(
-                    parser.parse<FILETIME>(prop_name_wstr));
-                break;
-            case TDH_INTYPE_SYSTEMTIME:
-                json_properties_types[prop_name] = "SYSTEMTIME";
-                json_properties[prop_name] = convert_systemtime_string(
-                    parser.parse<SYSTEMTIME>(prop_name_wstr));
-                break;
-            case TDH_INTYPE_SID:
-                json_properties_types[prop_name] = "SID";
-                json_properties[prop_name] = convert_bytes_sidstring(
-                    parser.parse<krabs::binary>(prop_name_wstr).bytes());
-                break;
-            case TDH_INTYPE_WBEMSID:
-                // *Supposedly* like SID?
-                json_properties_types[prop_name] = "WBEMSID";
-                json_properties[prop_name] = convert_bytes_hexstring(
-                    parser.parse<krabs::binary>(prop_name_wstr).bytes());
-                break;
-            case TDH_INTYPE_POINTER:
-                json_properties_types[prop_name] = "POINTER";
-                json_properties[prop_name] =
-                    convert_ulong64_hexstring(parser.parse<krabs::pointer>(prop_name_wstr).address);
-                break;
-            case TDH_INTYPE_HEXINT32:
-            case TDH_INTYPE_HEXINT64:
-            case TDH_INTYPE_MANIFEST_COUNTEDSTRING:
-            case TDH_INTYPE_MANIFEST_COUNTEDANSISTRING:
-            case TDH_INTYPE_RESERVED24:
-            case TDH_INTYPE_MANIFEST_COUNTEDBINARY:
-            case TDH_INTYPE_COUNTEDSTRING:
-            case TDH_INTYPE_COUNTEDANSISTRING:
-            case TDH_INTYPE_REVERSEDCOUNTEDSTRING:
-            case TDH_INTYPE_REVERSEDCOUNTEDANSISTRING:
-            case TDH_INTYPE_NONNULLTERMINATEDSTRING:
-            case TDH_INTYPE_NONNULLTERMINATEDANSISTRING:
-            case TDH_INTYPE_UNICODECHAR:
-            case TDH_INTYPE_ANSICHAR:
-            case TDH_INTYPE_SIZET:
-            case TDH_INTYPE_HEXDUMP:
-            case TDH_INTYPE_NULL:
-            default:
-                json_properties_types[prop_name] = "OTHER";
-                json_properties[prop_name] =
-                    convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
-                break;
+                    break;
+                case TDH_INTYPE_BINARY:
+                    json_properties[prop_name] =
+                        convert_bytevector_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
+                    json_properties_types[prop_name] = "BINARY";
+                    break;
+                case TDH_INTYPE_GUID:
+                    json_properties[prop_name] =
+                        convert_guid_str(parser.parse<krabs::guid>(prop_name_wstr));
+                    json_properties_types[prop_name] = "GUID";
+                    break;
+                case TDH_INTYPE_FILETIME:
+                    json_properties[prop_name] = convert_filetime_string(
+                        parser.parse<FILETIME>(prop_name_wstr));
+                    json_properties_types[prop_name] = "FILETIME";
+                    break;
+                case TDH_INTYPE_SYSTEMTIME:
+                    json_properties[prop_name] = convert_systemtime_string(
+                        parser.parse<SYSTEMTIME>(prop_name_wstr));
+                    json_properties_types[prop_name] = "SYSTEMTIME";
+                    break;
+                case TDH_INTYPE_SID:
+                    json_properties[prop_name] = convert_bytes_sidstring(
+                        parser.parse<krabs::binary>(prop_name_wstr).bytes());
+                    json_properties_types[prop_name] = "SID";
+                    break;
+                case TDH_INTYPE_WBEMSID:
+                    // *Supposedly* like SID?
+                    json_properties[prop_name] = convert_bytevector_hexstring(
+                        parser.parse<krabs::binary>(prop_name_wstr).bytes());
+                    json_properties_types[prop_name] = "WBEMSID";
+                    break;
+                case TDH_INTYPE_POINTER:
+                    json_properties[prop_name] =
+                        convert_ulong64_hexstring(parser.parse<krabs::pointer>(prop_name_wstr).address);
+                    json_properties_types[prop_name] = "POINTER";
+                    break;
+                case TDH_INTYPE_HEXINT32:
+                case TDH_INTYPE_HEXINT64:
+                case TDH_INTYPE_MANIFEST_COUNTEDSTRING:
+                case TDH_INTYPE_MANIFEST_COUNTEDANSISTRING:
+                case TDH_INTYPE_RESERVED24:
+                case TDH_INTYPE_MANIFEST_COUNTEDBINARY:
+                case TDH_INTYPE_COUNTEDSTRING:
+                case TDH_INTYPE_COUNTEDANSISTRING:
+                case TDH_INTYPE_REVERSEDCOUNTEDSTRING:
+                case TDH_INTYPE_REVERSEDCOUNTEDANSISTRING:
+                case TDH_INTYPE_NONNULLTERMINATEDSTRING:
+                case TDH_INTYPE_NONNULLTERMINATEDANSISTRING:
+                case TDH_INTYPE_UNICODECHAR:
+                case TDH_INTYPE_ANSICHAR:
+                case TDH_INTYPE_SIZET:
+                case TDH_INTYPE_HEXDUMP:
+                case TDH_INTYPE_NULL:
+                default:
+                    json_properties[prop_name] =
+                        convert_bytevector_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
+                    json_properties_types[prop_name] = "OTHER";
+                    break;
+                }
+            }
+            catch (...)
+            {
+                // Failed to parse, default to hex
+                // Try hex, if something even worse is up return empty
+                try
+                {
+                    json_properties[prop_name] =
+                        convert_bytevector_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
+                    json_properties_types[prop_name] = "ERROR";
+                }
+                catch (...) {}
             }
         }
-        catch (std::runtime_error&)
-        {
-            // Failed to parse, default to hex
-            json_properties_types[prop_name] = "OTHER";
-            json_properties[prop_name] =
-                convert_bytes_hexstring(parser.parse<krabs::binary>(prop_name_wstr).bytes());
-        }
+        json_event["property_types"] = json_properties_types;
+        json_event["properties"] = json_properties;
     }
-    json_event["property_types"] = json_properties_types;
-    json_event["properties"] = json_properties;
 
     // Check if we're meant to parse any extended data
     if (record.ExtendedDataCount != 0) {
@@ -340,10 +352,10 @@ void handle_event_context
 {
     json json_event;
     schema schema(record, trace_context.schema_locator);
-    std::string trace_name = sealighter_context->trace_name;
     bool buffered = false;
 
-    json_event = parse_event_to_json(record, trace_context, trace_name, schema);
+    std::string trace_name = sealighter_context->trace_name;
+    json_event = parse_event_to_json(record, trace_context, sealighter_context, schema);
 
     // Only care about event buffering if required
     if (g_buffer_lists.size() > 0 && g_buffer_lists.find(trace_name) != g_buffer_lists.end()) {

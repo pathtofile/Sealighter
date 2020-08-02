@@ -33,12 +33,15 @@ struct event_buffer_list_t {
 struct sealighter_context_t {
     sealighter_context_t
     (
-        std::string name
+        std::string name,
+        bool dump_event
     )
         : trace_name(name)
+        , dump_raw_event(dump_event)
     {}
 
     const std::string trace_name;
+    const bool dump_raw_event;
 };
 
 /*

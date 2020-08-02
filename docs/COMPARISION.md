@@ -4,7 +4,7 @@
 
 I tested it out when FuzzySec first released it, but came across a couple of issue that mean it didn't replace my personal tooling as a research platform.
 
-I really want to stress, my goal and primary use case of Sealighter is as a *research* platform. SilkETW has some nice features to make it more suitable in a production environment. But for a platform to research new ETW and WPP providers and events, The following were challenges that led me to turn my tooling into a proper project:
+I really want to stress, my goal and primary use case of Sealighter is as a *research* platform. SilkETW has some nice features to make it more suitable in a production environment. But for a platform to research new ETW, TraceLogging, and WPP providers and events, The following were challenges that led me to turn my tooling into a proper project:
 
 
 ## Production Vs Research

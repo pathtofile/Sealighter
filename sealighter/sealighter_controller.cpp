@@ -588,7 +588,7 @@ int add_kernel_traces
 
             std::string trace_name = json_provider["trace_name"].get<std::string>();
             auto sealighter_context =
-                std::shared_ptr<struct sealighter_context_t>(new sealighter_context_t(trace_name));
+                std::shared_ptr<struct sealighter_context_t>(new sealighter_context_t(trace_name, false));
             for (json json_buffers : json_provider["buffers"]) {
                 auto event_id = json_buffers["event_id"].get<std::uint32_t>();
                 auto max = json_buffers["max_before_buffering"].get<std::uint32_t>();
@@ -599,6 +599,7 @@ int add_kernel_traces
 
                 add_buffered_list(trace_name, buffer_list);
             }
+
 
             // Add any filters
             printf("Kernel Provider: %s\n", provider_name.c_str());
@@ -641,11 +642,19 @@ int add_user_traces
             GUID provider_guid;
             provider<>* pNew_provider;
             std::wstring provider_name;
+            std::string trace_name;
             if (json_provider["provider_name"].is_null()) {
                 printf("Invalid Provider\n");
                 status = SEALIGHTER_ERROR_PARSE_USER_PROVIDER;
                 break;
             }
+
+            if (json_provider["trace_name"].is_null()) {
+                printf("Invalid Provider, missing trace name\n");
+                status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
+                break;
+            }
+            trace_name = json_provider["trace_name"].get<std::string>();
 
             // If provider_name is a GUID, use that
             // Otherwise pass it off to Krabs to try to resolve
@@ -659,6 +668,7 @@ int add_user_traces
             }
 
             wprintf(L"User Provider: %s\n", provider_name.c_str());
+            printf("    Trace Name: %s\n", trace_name.c_str());
 
             // If no keywords_all or keywords_any is set
             // then set a default 'match anything'
@@ -698,15 +708,15 @@ int add_user_traces
             }
 
             // Create context with trace name
-            if (json_provider["trace_name"].is_null()) {
-                printf("Invalid Provider, missing trace name\n");
-                status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
-                break;
+
+            // Check if we're dumping the raw event, or attempting to parse it
+            bool dump_raw_event = false;
+            if (!json_provider["dump_raw_event"].is_null()) {
+                dump_raw_event = json_provider["dump_raw_event"].get<bool>();
             }
 
-            std::string trace_name = json_provider["trace_name"].get<std::string>();
             auto sealighter_context =
-                std::shared_ptr<struct sealighter_context_t>(new sealighter_context_t(trace_name));
+                std::shared_ptr<struct sealighter_context_t>(new sealighter_context_t(trace_name, dump_raw_event));
             for (json json_buffers : json_provider["buffers"]) {
                 auto event_id = json_buffers["event_id"].get<std::uint32_t>();
                 auto max = json_buffers["max_before_buffering"].get<std::uint32_t>();

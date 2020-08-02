@@ -105,7 +105,7 @@ If using buffering, default is 30 seconds.
 _____________
 
 # user_traces
-This is an array of the User mode or WPP providers you want to subscribe to, e.g.:
+This is an array of the User mode, TraceLogging, or WPP providers you want to subscribe to, e.g.:
 ```json
 "user_traces": [
     {
@@ -135,7 +135,7 @@ filters the event hit on.
 
 ### provider_name
 The name or GUID of the Provider to enable.
-For WPP Traces, this *must* be the GUID.
+For TraceLogging and WPP Traces, this *must* be the GUID.
 
 ### keywords_any
 Only report on Events that has these at least some of these keyword flags. See [Scenarios](SCENARIOS.md) for examples on finding information on a provider's keywords.
@@ -169,6 +169,17 @@ An array of filters to further filter the events to report on. These can be quit
 ### buffers
 Buffering enables the reporting of many similar events in a time period as one with a count.
 For details, read [Buffering](BUFFERING.md).
+
+### dump_raw_event
+```json
+    {
+        "trace_name": "tracelogging_trace",
+        "provider_name": "{75697175-75e2-4d85-83bc-7278acc12de4}",
+        "dump_raw_event": true
+    },
+```
+If `dump_raw_event` is true, instead of attempting to parse the event, return the hex-encoded raw bytes of the event.
+The bytes will be in the `raw` tag. This is useful for WPP traces, where the event data structure is not known.
 
 _____________
 
