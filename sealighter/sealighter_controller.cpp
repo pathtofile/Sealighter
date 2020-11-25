@@ -713,6 +713,9 @@ int add_user_traces
             bool dump_raw_event = false;
             if (!json_provider["dump_raw_event"].is_null()) {
                 dump_raw_event = json_provider["dump_raw_event"].get<bool>();
+                if (dump_raw_event) {
+                    printf("    Dumping Raw Events\n");
+                }
             }
 
             auto sealighter_context =
