@@ -7,3 +7,5 @@ sealighter/x64
 
 # Some testing might create this file:
 out.json
+run.bat
+config.json
