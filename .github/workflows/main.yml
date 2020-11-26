@@ -18,11 +18,6 @@ jobs:
       - name: Setup MsBuild
         uses: microsoft/setup-msbuild@v1
 
-      # This is added as a tempory fix, due to a Bug in MSBuild/Visual Studio
-      # For more info see: https://developercommunity2.visualstudio.com/t/IntelliSense-fails-because-designtime-bu/1157856
-      - name: Temp fix for VS Bug
-        run: cp sealighter\Directory.Build.props krabsetw\Microsoft.O365.Security.Native.ETW\
-
       - name: Build Debug
         run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Debug sealighter.sln
 
