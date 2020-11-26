@@ -714,7 +714,7 @@ int add_user_traces
             if (!json_provider["dump_raw_event"].is_null()) {
                 dump_raw_event = json_provider["dump_raw_event"].get<bool>();
                 if (dump_raw_event) {
-                    printf("    Dumping Raw Events\n");
+                    printf("    Recording raw events\n");
                 }
             }
 
