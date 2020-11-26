@@ -1,0 +1,5 @@
+<!-- This is added as a tempory fix, due to a Bug in MSBuild/Visual Studio -->
+<!-- For more info see: https://developercommunity2.visualstudio.com/t/IntelliSense-fails-because-designtime-bu/1157856 -->
+<Project>
+<Target Name="GetClCommandLineForReference"/>
+</Project>
