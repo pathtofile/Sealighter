@@ -1,4 +1,4 @@
-# Sealighter - Sysmon-Like research tool for ETW
+# Sealighter - Easy ETW Tracing for Researchers
 
 ![CI](https://github.com/pathtofile/Sealighter/workflows/CI/badge.svg?branch=master)
 
