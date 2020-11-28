@@ -1,4 +1,4 @@
-# Sealighter - Easy ETW Tracing for Researchers
+# Sealighter - Easy ETW Tracing for Security Research
 
 ![CI](https://github.com/pathtofile/Sealighter/workflows/CI/badge.svg?branch=master)
 
