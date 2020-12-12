@@ -611,7 +611,6 @@ int add_kernel_traces
                 printf("Failed to add filters to: %s\n", provider_name.c_str());
                 break;
             }
-
         }
     }
     catch (const nlohmann::detail::exception & e) {
@@ -692,6 +691,10 @@ int add_user_traces
                 uint64_t data = json_provider["level"].get<std::uint64_t>();
                 printf("    Level: 0x%llx\n", data);
                 pNew_provider->level(data);
+            }
+            else {
+                // Set Max Level
+                pNew_provider->level(0xff);
             }
 
             if (!json_provider["trace_flags"].is_null()) {
