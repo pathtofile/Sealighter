@@ -611,7 +611,6 @@ int add_kernel_traces
                 printf("Failed to add filters to: %s\n", provider_name.c_str());
                 break;
             }
-
         }
     }
     catch (const nlohmann::detail::exception & e) {
@@ -693,6 +692,10 @@ int add_user_traces
                 printf("    Level: 0x%llx\n", data);
                 pNew_provider->level(data);
             }
+            else {
+                // Set Max Level
+                pNew_provider->level(0xff);
+            }
 
             if (!json_provider["trace_flags"].is_null()) {
                 uint64_t data = json_provider["trace_flags"].get<std::uint64_t>();
@@ -713,6 +716,9 @@ int add_user_traces
             bool dump_raw_event = false;
             if (!json_provider["dump_raw_event"].is_null()) {
                 dump_raw_event = json_provider["dump_raw_event"].get<bool>();
+                if (dump_raw_event) {
+                    printf("    Recording raw events\n");
+                }
             }
 
             auto sealighter_context =
