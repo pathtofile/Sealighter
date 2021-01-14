@@ -750,6 +750,12 @@ int add_user_traces
         printf("%s\n", e.what());
         status = SEALIGHTER_ERROR_PARSE_USER_PROVIDER;
     }
+
+    // If everything is good, also add a default handler
+    if (ERROR_SUCCESS == status) {
+        g_user_session->set_default_event_callback(handle_event);
+    }
+
     return status;
 }
 
