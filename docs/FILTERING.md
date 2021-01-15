@@ -1,7 +1,7 @@
 # Filtering
- - [Filtering Overview](#Filtering%20Overview)
- - [Filter Lists](#Filter%20Lists)
- - [Filter Types](#Filter%20Types)
+ - [Filtering Overview](#Filtering-Overview)
+ - [Filter Lists](#Filter-Lists)
+ - [Filter Types](#Filter-Types)
 
 
 # Filtering Overview
@@ -103,20 +103,20 @@ For each filter key, you can either set it to a value (either a number or string
 If an array, it is the same as if the array is a mini `any_of` list, where the event only has to match one of them to match.
 
 The possible filters are:
- - [Header Filters](#Header%20Filters)
+ - [Header Filters](#Header-Filters)
    - [event_id_is](#event_id_is)
    - [opcode_is](#opcode_is)
    - [process_id_is](#process_id_is)
    - [version_is](#version_is)
    - [activity_id_is](#activity_id_is)
    - [process_name_contains](#process_name_contains)
- - [Property Filters](#Property%20Filters)
+ - [Property Filters](#Property-Filters)
    - [property_is](#property_is)
    - [property_equals/property_iequals](#property_equals/property_iequals)
    - [property_contains/property_icontains](#property_contains/property_icontains)
    - [property_starts_with/property_istarts_with](#property_starts_with/property_istarts_with)
    - [property_ends_with/property_iends_with](#property_ends_with/property_iends_with)
- - [Discovery Filters](#Discovery%20Filters)
+ - [Discovery Filters](#Discovery-Filters)
    - [any_field_contains](#any_field_contains)
    - [max_events_total](#max_events_total)
    - [max_events_id](#max_events_id)

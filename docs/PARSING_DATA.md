@@ -1,6 +1,6 @@
 # Parsing Data
- - [Event Format](#Event%20Format)
- - [Parsing Data](#Parsing%20Data)
+ - [Event Format](#Event-Format)
+ - [Parsing Data](#Parsing-Data)
 
 
 ## Event Format

@@ -8,12 +8,12 @@ These great blogs provide a great example of the power of ETW, TraceLogging, and
 
 
 # Example uses using Sealighter
- - [Tracking process execution](#Tracking%20process%20execution)
- - [Find data in any field](#Find%20data%20in%20any%20field)
- - [Find correlated Events](#Find%20correlated%20Events)
- - [Use Stack Traces](#Use%20Stack%20Traces)
- - [Use Buffering](#Use%20Buffering)
- - [WPP Tracing](#WPP%20Tracing)
+ - [Tracking process execution](#Tracking-process-execution)
+ - [Find data in any field](#Find-data-in-any-field)
+ - [Find correlated Events](#Find-correlated-Events)
+ - [Use Stack Traces](#Use-Stack-Traces)
+ - [Use Buffering](#Use-Buffering)
+ - [WPP Tracing](#WPP-Tracing)
 
 # Tracking process execution
 Lets trace a program using [Zac Brown's ideas](https://zacbrown.org/2017/04/11/hidden-treasure-intrusion-detection-with-etw-part-1). Create the Following Config:
