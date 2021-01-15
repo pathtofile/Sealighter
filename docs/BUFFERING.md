@@ -9,8 +9,8 @@ number of `cmd.exe`s seen that minute.
 
 
 There are two things to configure to enable buffering:
- - [Buffering Timeout](#Buffering%20Timeout)
- - [Per-Provider Buffers](#Per-Provider%20Buffers)
+ - [Buffering Timeout](#Buffering-Timeout)
+ - [Per-Provider Buffers](#Per-Provider-Buffers)
 
 ## Buffering Timeout
 By setting the `buffering_timout_seconds` option in the `session_properties` config
