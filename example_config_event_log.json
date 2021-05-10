@@ -1,7 +1,7 @@
 {
     "session_properties": {
         "session_name": "Sealighter-Trace",
-        "output_format": "stdout"
+        "output_format": "event_log"
     },
     "user_traces": [
         {

@@ -62,12 +62,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)krabsetw\krabs;$(SolutionDir)krabsetw\Microsoft.O365.Security.Native.ETW;$(SolutionDir)packages\boost.1.68.0.0\lib\native\include;$(SolutionDir)json\single_include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\krabsetw\krabs;$(ProjectDir)..\krabsetw\Microsoft.O365.Security.Native.ETW;$(ProjectDir)..\json\single_include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AddModuleNamesToAssembly>$(SolutionDir)manifest\event_log.res</AddModuleNamesToAssembly>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -84,14 +83,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)krabsetw\krabs;$(SolutionDir)krabsetw\Microsoft.O365.Security.Native.ETW;$(SolutionDir)packages\boost.1.68.0.0\lib\native\include;$(SolutionDir)json\single_include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\krabsetw\krabs;$(ProjectDir)..\krabsetw\Microsoft.O365.Security.Native.ETW;$(ProjectDir)..\json\single_include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AddModuleNamesToAssembly>$(SolutionDir)manifest\event_log.res</AddModuleNamesToAssembly>
     </Link>
     <PreBuildEvent>
       <Command>
