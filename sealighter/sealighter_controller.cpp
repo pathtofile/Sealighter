@@ -119,7 +119,7 @@ void add_filter_to_vector_property_compare
 {
     std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
     if (!root[element].is_null()) {
-        printf("        %s: %s\n", element.c_str(), convert_json_string(root[element], false).c_str());
+        log_messageA("        %s: %s\n", element.c_str(), convert_json_string(root[element], false).c_str());
         if (root[element].is_array()) {
             for (json item : root[element]) {
                 add_filter_to_vector_property_compare_item<ComparerA, ComparerW>(item, list);
@@ -220,7 +220,7 @@ void add_filter_to_vector_property_is
 {
     std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
     if (!root.is_null()) {
-        printf("        Property Is: %s\n", convert_json_string(root, false).c_str());
+        log_messageA("        Property Is: %s\n", convert_json_string(root, false).c_str());
         if (root.is_array()) {
             for (json item : root) {
                 add_filter_to_vector_property_is_item(item, list);
@@ -254,7 +254,7 @@ void add_filter_to_vector_basic_pair
 {
     std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
     if (!root[element].is_null()) {
-        printf("        %s: %s\n", element.c_str(), convert_json_string(root[element], false).c_str());
+        log_messageA("        %s: %s\n", element.c_str(), convert_json_string(root[element], false).c_str());
         if (root[element].is_array()) {
             for (json item : root[element]) {
                 if (!item[item1_name].is_null() && !item[item2_name].is_null()) {
@@ -295,7 +295,7 @@ void add_filter_to_vector_basic
 {
     std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
     if (!root[element].is_null()) {
-        printf("        %s: %s\n", element.c_str(), convert_json_string(root[element], false).c_str());
+        log_messageA("        %s: %s\n", element.c_str(), convert_json_string(root[element], false).c_str());
         // If a list, filter can be any of them
         if (root[element].is_array()) {
             for (json item : root[element]) {
@@ -390,8 +390,8 @@ int add_filters_to_vector
             (json_list, "activity_id_is", pred_vector);
     }
     catch (const nlohmann::detail::exception& e) {
-        printf("failed to add filters from config to provider\n");
-        printf("%s\n", e.what());
+        log_messageA("failed to add filters from config to provider\n");
+        log_messageA("%s\n", e.what());
         status = SEALIGHTER_ERROR_PARSE_FILTER;
     }    
     return status;
@@ -418,7 +418,7 @@ int add_filters
         )
        ) {
         // No filters, log everything
-        printf("    No event filters\n");
+        log_messageA("    No event filters\n");
         pNew_provider->add_on_event_callback([sealighter_context](const EVENT_RECORD& record, const krabs::trace_context& trace_context) {
             handle_event_context(record, trace_context, sealighter_context);
         });
@@ -428,7 +428,7 @@ int add_filters
         // All 3 options will eventually be ANDed together
         std::vector<std::shared_ptr<predicates::details::predicate_base>> top_list;
         if (!json_provider["filters"]["any_of"].is_null()) {
-            printf("    Filtering any of:\n");
+            log_messageA("    Filtering any of:\n");
             std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
             status = add_filters_to_vector(list, json_provider["filters"]["any_of"]);
             if (ERROR_SUCCESS == status) {
@@ -436,7 +436,7 @@ int add_filters
             }
         }
         if (ERROR_SUCCESS == status && !json_provider["filters"]["all_of"].is_null()) {
-            printf("    Filtering all of:\n");
+            log_messageA("    Filtering all of:\n");
             std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
             status = add_filters_to_vector(list, json_provider["filters"]["all_of"]);
             if (ERROR_SUCCESS == status) {
@@ -444,7 +444,7 @@ int add_filters
             }
         }
         if (ERROR_SUCCESS == status && !json_provider["filters"]["none_of"].is_null()) {
-            printf("    Filtering none of:\n");
+            log_messageA("    Filtering none of:\n");
             std::vector<std::shared_ptr<predicates::details::predicate_base>> list;
             status = add_filters_to_vector(list, json_provider["filters"]["none_of"]);
             if (ERROR_SUCCESS == status) {
@@ -489,7 +489,7 @@ int add_kernel_traces
     try {
         for (json json_provider : json_config["kernel_traces"]) {
             if (json_provider["provider_name"].is_null()) {
-                printf("Invalid Provider, missing provider name\n");
+                log_messageA("Invalid Provider, missing provider name\n");
                 status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
                 break;
             }
@@ -574,14 +574,14 @@ int add_kernel_traces
                 pNew_provider = new kernel::object_manager_provider();
             }
             else {
-                printf("Invalid Provider: %s\n", provider_name.c_str());
+                log_messageA("Invalid Provider: %s\n", provider_name.c_str());
                 status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
                 break;
             }
 
             // Create context with trace name
             if (json_provider["trace_name"].is_null()) {
-                printf("Invalid Provider, missing trace name\n");
+                log_messageA("Invalid Provider, missing trace name\n");
                 status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
                 break;
             }
@@ -602,20 +602,20 @@ int add_kernel_traces
 
 
             // Add any filters
-            printf("Kernel Provider: %s\n", provider_name.c_str());
+            log_messageA("Kernel Provider: %s\n", provider_name.c_str());
             status = add_filters(pNew_provider, sealighter_context, json_provider);
             if (ERROR_SUCCESS == status) {
                 g_kernel_session->enable(*pNew_provider);
             }
             else {
-                printf("Failed to add filters to: %s\n", provider_name.c_str());
+                log_messageA("Failed to add filters to: %s\n", provider_name.c_str());
                 break;
             }
         }
     }
     catch (const nlohmann::detail::exception & e) {
-        printf("invalid kernel provider in config file\n");
-        printf("%s\n", e.what());
+        log_messageA("invalid kernel provider in config file\n");
+        log_messageA("%s\n", e.what());
         status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
     }
     return status;
@@ -643,13 +643,13 @@ int add_user_traces
             std::wstring provider_name;
             std::string trace_name;
             if (json_provider["provider_name"].is_null()) {
-                printf("Invalid Provider\n");
+                log_messageA("Invalid Provider\n");
                 status = SEALIGHTER_ERROR_PARSE_USER_PROVIDER;
                 break;
             }
 
             if (json_provider["trace_name"].is_null()) {
-                printf("Invalid Provider, missing trace name\n");
+                log_messageA("Invalid Provider, missing trace name\n");
                 status = SEALIGHTER_ERROR_PARSE_KERNEL_PROVIDER;
                 break;
             }
@@ -659,37 +659,37 @@ int add_user_traces
             // Otherwise pass it off to Krabs to try to resolve
             provider_name = convert_str_wstr(json_provider["provider_name"].get<std::string>());
             provider_guid = convert_wstr_guid(provider_name);
+
             if (provider_guid != GUID_NULL) {
                 pNew_provider = new provider<>(provider_guid);
             }
             else {
                 pNew_provider = new provider<>(provider_name);
             }
-
-            wprintf(L"User Provider: %s\n", provider_name.c_str());
-            printf("    Trace Name: %s\n", trace_name.c_str());
+            log_messageW(L"User Provider: %s\n", provider_name.c_str());
+            log_messageA("    Trace Name: %s\n", trace_name.c_str());
 
             // If no keywords_all or keywords_any is set
             // then set a default 'match anything'
             if (json_provider["keywords_all"].is_null() && json_provider["keywords_any"].is_null()) {
-                printf("    Keywords: All\n");
+                log_messageA("    Keywords: All\n");
             }
             else {
                 if (!json_provider["keywords_all"].is_null()) {
                     uint64_t data = json_provider["keywords_all"].get<std::uint64_t>();
-                    printf("    Keywords All: 0x%llx\n", data);
+                    log_messageA("    Keywords All: 0x%llx\n", data);
                     pNew_provider->all(data);
                 }
 
                 if (!json_provider["keywords_any"].is_null()) {
                     uint64_t data = json_provider["keywords_any"].get<std::uint64_t>();
-                    printf("    Keywords Any: 0x%llx\n", data);
+                    log_messageA("    Keywords Any: 0x%llx\n", data);
                     pNew_provider->any(data);
                 }
             }
             if (!json_provider["level"].is_null()) {
                 uint64_t data = json_provider["level"].get<std::uint64_t>();
-                printf("    Level: 0x%llx\n", data);
+                log_messageA("    Level: 0x%llx\n", data);
                 pNew_provider->level(data);
             }
             else {
@@ -699,7 +699,7 @@ int add_user_traces
 
             if (!json_provider["trace_flags"].is_null()) {
                 uint64_t data = json_provider["trace_flags"].get<std::uint64_t>();
-                printf("    Trace Flags: 0x%llx\n", data);
+                log_messageA("    Trace Flags: 0x%llx\n", data);
                 pNew_provider->trace_flags(data);
             }
 
@@ -717,7 +717,7 @@ int add_user_traces
             if (!json_provider["dump_raw_event"].is_null()) {
                 dump_raw_event = json_provider["dump_raw_event"].get<bool>();
                 if (dump_raw_event) {
-                    printf("    Recording raw events\n");
+                    log_messageA("    Recording raw events\n");
                 }
             }
 
@@ -740,14 +740,14 @@ int add_user_traces
                 g_user_session->enable(*pNew_provider);
             }
             else {
-                wprintf(L"Failed to add filters to: %s\n", provider_name.c_str());
+                log_messageW(L"Failed to add filters to: %s\n", provider_name.c_str());
                 break;
             }
         }
     }
     catch (const nlohmann::detail::exception & e) {
-        printf("invalid providers in config file\n");
-        printf("%s\n", e.what());
+        log_messageA("invalid providers in config file\n");
+        log_messageA("%s\n", e.what());
         status = SEALIGHTER_ERROR_PARSE_USER_PROVIDER;
     }
 
@@ -766,25 +766,17 @@ int add_user_traces
 */
 int parse_config
 (
-    std::string       config_path
+    std::string       config_string
 )
 {
     int     status = ERROR_SUCCESS;
-    json    json_config;
     EVENT_TRACE_PROPERTIES  session_properties = { 0 };
     std::wstring    session_name = L"Sealighter-Trace";
-
-    if (!file_exists(config_path)) {
-        printf("Error: Config file doesn't exist\n");
-        return SEALIGHTER_ERROR_MISSING_CONFIG;
-    }
+    json    json_config;
 
     try {
-        std::ifstream   config_stream(config_path);
-
         // Read in config file
-        config_stream >> json_config;
-        config_stream.close();
+        json_config = json::parse(config_string);
 
         // Set defaults
         session_properties.BufferSize = 256;
@@ -799,7 +791,7 @@ int parse_config
         {
             if (!json_props["session_name"].is_null()) {
                 session_name = convert_str_wstr(json_props["session_name"].get<std::string>());
-                wprintf(L"Session Name: %s\n", session_name.c_str());
+                log_messageW(L"Session Name: %s\n", session_name.c_str());
             }
 
             if (!json_props["buffer_size"].is_null()) {
@@ -831,7 +823,7 @@ int parse_config
                 }
                 else if ("file" == format) {
                     if (json_props["output_filename"].is_null()) {
-                        printf("When output_format == 'file', also set 'output_filename'\n");
+                        log_messageA("When output_format == 'file', also set 'output_filename'\n");
                         status = SEALIGHTER_ERROR_OUTPUT_FILE;
                     }
                     else {
@@ -841,10 +833,10 @@ int parse_config
                     }
                 }
                 else {
-                    printf("Invalid output_format\n");
+                    log_messageA("Invalid output_format\n");
                     status = SEALIGHTER_ERROR_OUTPUT_FORMAT;
                 }
-                printf("Output: %s\n", format.c_str());
+                log_messageA("Outputs: %s\n", format.c_str());
             }
 
             if (!json_props["buffering_timout_seconds"].is_null()) {
@@ -854,14 +846,14 @@ int parse_config
         }
     }
     catch (const nlohmann::detail::exception& e) {
-        printf("invalid session properties in config file\n");
-        printf("%s\n", e.what());
+        log_messageA("invalid session properties in config file\n");
+        log_messageA("%s\n", e.what());
         status = SEALIGHTER_ERROR_PARSE_CONFIG_PROPS;
     }
 
     if (ERROR_SUCCESS == status) {
         if (json_config["user_traces"].is_null() && json_config["kernel_traces"].is_null()) {
-            printf("No User or Kernel providers in config file\n");
+            log_messageA("No User or Kernel providers in config file\n");
             status = SEALIGHTER_ERROR_PARSE_NO_PROVIDERS;
         }
         else {
@@ -939,7 +931,7 @@ BOOL WINAPI crl_c_handler
 // -------------------------
 int run_sealighter
 (
-    std::string config_path
+    std::string config_string
 )
 {
     int status = ERROR_SUCCESS;
@@ -947,23 +939,23 @@ int run_sealighter
     // Setup Event Logging
     status = EventRegisterSealighter();
     if (ERROR_SUCCESS != status) {
-        printf("Error registering event log: %ul\n", status);
+        log_messageA("Error registering event log: %ul\n", status);
         return SEALIGHTER_ERROR_EVENTLOG_REGISTER;
     }
 
     // Add ctrl+C handler to make sure we stop the trace
     if (!SetConsoleCtrlHandler(crl_c_handler, TRUE)) {
-        printf("failed to set ctrl-c handler\n");
+        log_messageA("failed to set ctrl-c handler\n");
         return SEALIGHTER_ERROR_CTRL_C_REGISTER;
     }
 
     // Parse config file
-    status = parse_config(config_path);
+    status = parse_config(config_string);
     if (ERROR_SUCCESS != status) {
         return status;
     }
     if (NULL == g_user_session && NULL == g_kernel_session) {
-        printf("Failed to define any ETW Session\n");
+        log_messageA("Failed to define any ETW Session\n");
         return SEALIGHTER_ERROR_NO_SESSION_CREATED;
     }
     else {
@@ -973,19 +965,19 @@ int run_sealighter
         // Start Trace we've configured
         // Don't run multithreaded if we don't have to
         if (NULL != g_user_session && NULL == g_kernel_session) {
-            printf("Starting User Trace...\n");
-            printf("-----------------------------------------\n");
+            log_messageA("Starting User Trace...\n");
+            log_messageA("-----------------------------------------\n");
             run_trace(g_user_session);
         }
         else if (NULL == g_user_session && NULL != g_kernel_session) {
-            printf("Starting Kernel Trace...\n");
-            printf("-----------------------------------------\n");
+            log_messageA("Starting Kernel Trace...\n");
+            log_messageA("-----------------------------------------\n");
             run_trace(g_kernel_session);
         }
         else {
             // Have to multi-thread it
-            printf("Starting User and Kernel Traces...\n");
-            printf("-----------------------------------------\n");
+            log_messageA("Starting User and Kernel Traces...\n");
+            log_messageA("-----------------------------------------\n");
             std::thread user_thread = std::thread(run_trace<details::ut>, g_user_session);
             std::thread kernel_thread = std::thread(run_trace<details::kt>, g_kernel_session);
 

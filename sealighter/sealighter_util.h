@@ -191,3 +191,6 @@ bool file_exists
 (
     std::string fileName
 );
+
+VOID log_messageA(const CHAR* format, ...);
+VOID log_messageW(const WCHAR* format, ...);

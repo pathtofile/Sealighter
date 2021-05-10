@@ -6,5 +6,5 @@
  */
 int run_sealighter
 (
-    std::string config_path
+    std::string config_string
 );

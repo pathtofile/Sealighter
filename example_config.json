@@ -1,4 +1,4 @@
-﻿{
+{
     "session_properties": {
         "session_name": "Sealighter-Trace",
         "output_format": "stdout",
@@ -13,16 +13,7 @@
                 "any_of": {
                     "event_id_is": [ 1, 2 ]
                 }
-            },
-            "buffers": [
-                {
-                    "event_id": 1,
-                    "max_before_buffering": 10,
-                    "properties_to_match": [
-                        "ImageName"
-                    ]
-                }
-            ]
+            }
         }
     ]
 }

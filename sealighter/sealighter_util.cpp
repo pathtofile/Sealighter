@@ -279,3 +279,29 @@ bool file_exists
     std::ifstream infile(fileName);
     return infile.good();
 }
+
+
+#define MAX_SIZE 4096
+
+VOID log_messageA(const CHAR* format, ...)
+{
+    CHAR message[MAX_SIZE];
+
+    va_list arg_ptr;
+    va_start(arg_ptr, format);
+    _vsnprintf_s(message, MAX_SIZE, MAX_SIZE-1, format, arg_ptr);
+    va_end(arg_ptr);
+    OutputDebugStringA(message);
+    printf(message);
+}
+
+VOID log_messageW(const WCHAR* format, ...)
+{
+    WCHAR message[MAX_SIZE];
+    va_list arg_ptr;
+    va_start(arg_ptr, format);
+    _vsnwprintf_s(message, MAX_SIZE, MAX_SIZE-1, format, arg_ptr);
+    va_end(arg_ptr);
+    OutputDebugStringW(message);
+    wprintf(message);
+}

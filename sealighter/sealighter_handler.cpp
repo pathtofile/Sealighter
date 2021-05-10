@@ -49,7 +49,7 @@ void threaded_print_ln
 )
 {
     g_print_mutex.lock();
-    printf("%s\n", event_string.c_str());
+    log_messageA("%s\n", event_string.c_str());
     g_print_mutex.unlock();
 }
 
@@ -86,7 +86,7 @@ void write_event_log
     );
 
     if (status != ERROR_SUCCESS) {
-        printf("Error %ul line %d\n", status, __LINE__);
+        log_messageA("Error %ul line %d\n", status, __LINE__);
         return;
     }
 }
