@@ -894,7 +894,7 @@ void run_trace(trace<T>* trace)
 /*
     Stop any running trace
 */
-void stop_traces()
+void stop_sealighter()
 {
     if (NULL != g_user_session) {
         g_user_session->stop();
@@ -917,7 +917,7 @@ BOOL WINAPI crl_c_handler
     switch (fdwCtrlType)
     {
     case CTRL_C_EVENT:
-        stop_traces();
+        stop_sealighter();
         return TRUE;
     }
     return FALSE;
