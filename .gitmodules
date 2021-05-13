@@ -1,6 +1,6 @@
 [submodule "krabsetw"]
 	path = krabsetw
-	url = git@github.com:pathtofile/krabsetw.git
+	url = https://github.com/microsoft/krabsetw.git
 	branch = master
 [submodule "json"]
 	path = json
