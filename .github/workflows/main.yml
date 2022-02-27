@@ -16,6 +16,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '4.5.x'
+
       - name: Setup MsBuild
         uses: microsoft/setup-msbuild@v1
 
