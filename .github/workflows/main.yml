@@ -16,13 +16,11 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: '4.5.x'
-
+      # Use Visual Studio 2019
       - name: Setup MsBuild
         uses: microsoft/setup-msbuild@v1
+        with:
+          vs-version: '[16.0.0,16.11.10]'
 
       - name: Build Debug
         run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Debug sealighter.sln
