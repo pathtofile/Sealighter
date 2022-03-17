@@ -16,11 +16,11 @@ jobs:
         with:
           submodules: recursive
 
-      # Use Visual Studio 2019
+      # Use Visual Studio 2017
       - name: Setup MsBuild
-        uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v1.1
         with:
-          vs-version: '[16.0.0,16.11.10]'
+          vs-version: '[15.0,16.0)'
 
       - name: Build Debug
         run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Debug sealighter.sln
