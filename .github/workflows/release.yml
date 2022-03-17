@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -16,7 +16,7 @@ jobs:
           submodules: recursive
 
       - name: Setup MsBuild
-        uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v1.1
 
       - name: Build Debug
         run: msbuild.exe /nologo /m /t:Rebuild /p:Configuration=Debug sealighter.sln
