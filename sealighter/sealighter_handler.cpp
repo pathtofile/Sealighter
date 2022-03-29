@@ -417,7 +417,8 @@ void handle_event
     const trace_context& trace_context
 )
 {
-    handle_event_context(record, trace_context, NULL);
+    auto dummy_context = std::make_shared<struct sealighter_context_t>("", false);
+    handle_event_context(record, trace_context, dummy_context);
 }
 
 int setup_logger_file
