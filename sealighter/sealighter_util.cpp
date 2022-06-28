@@ -292,7 +292,7 @@ VOID log_messageA(const CHAR* format, ...)
     _vsnprintf_s(message, MAX_SIZE, MAX_SIZE-1, format, arg_ptr);
     va_end(arg_ptr);
     OutputDebugStringA(message);
-    printf(message);
+    printf("%s", message);
 }
 
 VOID log_messageW(const WCHAR* format, ...)
@@ -303,5 +303,5 @@ VOID log_messageW(const WCHAR* format, ...)
     _vsnwprintf_s(message, MAX_SIZE, MAX_SIZE-1, format, arg_ptr);
     va_end(arg_ptr);
     OutputDebugStringW(message);
-    wprintf(message);
+    wprintf(L"%s", message);
 }
