@@ -36,3 +36,6 @@
 
 // Counld't open output stream to output file
 #define SEALIGHTER_ERROR_OUTPUT_FILE 13
+
+// Failed to resolve the specified provider
+#define SEALIGHTER_ERROR_NO_PROVIDER 14

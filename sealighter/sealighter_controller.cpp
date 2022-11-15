@@ -136,7 +136,7 @@ void add_filter_to_vector_property_compare
 
 
 /*
-    Add a single "property is" filter to a list. 
+    Add a single "property is" filter to a list.
 */
 void add_filter_to_vector_property_is_item
 (
@@ -393,7 +393,7 @@ int add_filters_to_vector
         log_messageA("failed to add filters from config to provider\n");
         log_messageA("%s\n", e.what());
         status = SEALIGHTER_ERROR_PARSE_FILTER;
-    }    
+    }
     return status;
 }
 
@@ -412,7 +412,7 @@ int add_filters
     int status = ERROR_SUCCESS;
 
     if (json_provider["filters"].is_null() ||
-        (json_provider["filters"]["any_of"].is_null() && 
+        (json_provider["filters"]["any_of"].is_null() &&
          json_provider["filters"]["all_of"].is_null() &&
          json_provider["filters"]["none_of"].is_null()
         )
@@ -664,7 +664,14 @@ int add_user_traces
                 pNew_provider = new provider<>(provider_guid);
             }
             else {
-                pNew_provider = new provider<>(provider_name);
+                try {
+                    pNew_provider = new provider<>(provider_name);
+                }
+                catch (const std::exception & e) {
+                    log_messageA("%s\n", e.what());
+                    status = SEALIGHTER_ERROR_NO_PROVIDER;
+                    break;
+                }
             }
             log_messageW(L"User Provider: %s\n", provider_name.c_str());
             log_messageA("    Trace Name: %s\n", trace_name.c_str());
@@ -882,6 +889,11 @@ void run_trace(trace<T>* trace)
         // Ensure we always stop the trace afterwards
         try {
             trace->start();
+        }
+        catch (const std::exception & e) {
+            log_messageA("%s\n", e.what());
+            trace->stop();
+            throw;
         }
         catch (...) {
             trace->stop();
